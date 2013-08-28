@@ -1,6 +1,5 @@
 package apcs.searchsort.sort;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -18,6 +17,6 @@ public interface SortingAlgorithm {
 	 *            the list to sort
 	 * @return the list, for convenience
 	 */
-	public <T extends Comparator<? super T>> List<T> sort(List<T> list);
+	public <T extends Comparable<? super T>> List<T> sort(List<T> list);
 
 }
