@@ -3,12 +3,12 @@ package apcs.searchsort.sort;
 import java.util.List;
 
 /**
- * Basic insertion sort. Runs in O(n<sup>2</sup>) time.
+ * Basic selection sort. Runs in O(n<sup>2</sup>) time.
  * 
  * @author William Chargin
  * 
  */
-public class InsertionSort implements SortingAlgorithm {
+public class SelectionSort implements SortingAlgorithm {
 
 	@Override
 	public <T extends Comparable<? super T>> List<T> sort(List<T> list) {
