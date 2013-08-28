@@ -8,7 +8,7 @@ import java.util.List;
 public class LinearSearch implements SearchAlgorithm {
     
     @Override
-    public <T> int indexOf(List<T> list, T target) {
+    public <T extends Comparable<? super T>> int indexOf(List<T> list, T target) {
         for (int i=0; i<list.size(); i++) {
             T item = list.get(i);
             if ((target == null && item == null)

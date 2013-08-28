@@ -19,6 +19,6 @@ public interface SearchAlgorithm {
 	 * @param target the item to search for
 	 * @return the index of the item in the list, or {@code -1} if not found
 	 */
-	public <T> int indexOf(List<T> list, T target);
+	public <T extends Comparable<? super T>> int indexOf(List<T> list, T target);
 
 }
