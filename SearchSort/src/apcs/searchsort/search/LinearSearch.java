@@ -12,7 +12,7 @@ public class LinearSearch implements SearchAlgorithm {
         for (int i=0; i<list.size(); i++) {
             T item = list.get(i);
             if ((target == null && item == null)
-             || (target.equals(list.get(i)))) {
+             || (target.equals(item))) {
                 return i;
             }
         }
