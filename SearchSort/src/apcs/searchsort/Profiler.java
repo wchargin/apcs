@@ -91,9 +91,9 @@ public abstract class Profiler<I, O extends TimeStorage, F> {
 		for (int i = 0; i < runs; i++) {
 			beforeRun(input);
 
-			long startTime = System.currentTimeMillis();
+			long startTime = System.nanoTime();
 			O o = run(input);
-			long time = System.currentTimeMillis() - startTime;
+			long time = System.nanoTime() - startTime;
 
 			outputs.add(o);
 			o.setTime(time);
