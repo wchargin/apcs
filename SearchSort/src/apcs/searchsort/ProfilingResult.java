@@ -11,12 +11,12 @@ public class ProfilingResult {
 	/**
 	 * The average time per run.
 	 */
-	public final long averageTime;
+	public final double averageTime;
 
 	/**
 	 * The standard deviation of the run times.
 	 */
-	public final long stddev;
+	public final double stddev;
 
 	/**
 	 * Creates the result with the given arguments.
@@ -26,7 +26,7 @@ public class ProfilingResult {
 	 * @param stddev
 	 *            the standard deviation
 	 */
-	public ProfilingResult(long averageTime, long stddev) {
+	public ProfilingResult(double averageTime, double stddev) {
 		super();
 		this.averageTime = averageTime;
 		this.stddev = stddev;
