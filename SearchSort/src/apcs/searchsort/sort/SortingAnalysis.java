@@ -35,7 +35,7 @@ public class SortingAnalysis {
 
 	public static void main(String[] args) {
 		int runs = parseArgsInt(args, 0, 10);
-		int size = parseArgsInt(args, 1, 1_00_000);
+		int size = parseArgsInt(args, 1, 100_000);
 
 		// Grab names from args + reflection
 		List<SortingAlgorithm> algorithms = new ArrayList<>();
