@@ -67,8 +67,8 @@ public class SortingAnalysis {
 
 		// fallback if nothing
 		if (algorithms.isEmpty()) {
-			algorithms.addAll(Arrays.asList(new MergeSort(), new SelectionSort(),
-					new InsertionSort()));
+			algorithms.addAll(Arrays.asList(new MergeSort(),
+					new SelectionSort(), new InsertionSort()));
 		}
 		new SortingAnalysis(algorithms).analyze(runs, size);
 	}
@@ -155,16 +155,17 @@ public class SortingAnalysis {
 	 *            the defaultvalue
 	 * @return the argument, if it is successfully parsed, or the default value
 	 *         if (a) it is the string {@code "-"}, (b) it contains a non-digit
-	 *         character, or (c) the argument list's length is greater than or
-	 *         equal to the index of the argument (i.e., the argument does not
-	 *         exist in the list)
+	 *         character other than {@code _}, or (c) the argument list's length
+	 *         is greater than or equal to the index of the argument (i.e., the
+	 *         argument does not exist in the list)
 	 */
 	private static int parseArgsInt(String[] args, int index, int defaultValue) {
 		if (args.length <= index) {
 			return defaultValue;
 		}
 
-		String text = args[index].trim();
+		String text = args[index]
+				.replace((CharSequence) "_", (CharSequence) "").trim();
 		if (text.equals("-")) {
 			// Use default
 			return defaultValue;
