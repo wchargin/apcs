@@ -40,7 +40,7 @@ public class MergeSort implements SortingAlgorithm {
 	 */
 	private static <T extends Comparable<? super T>> void mergeSort(
 			List<T> list, int start, int end) {
-		if (end - start < FALLBACK_THRESHOLD) {
+		if (end - start <= FALLBACK_THRESHOLD) {
 			fallback.sort(list.subList(start, end));
 			return;
 		}
