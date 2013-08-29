@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author wchargin
+ * A flexible class to profile operations.
+ * 
+ * @author William Chargin
  * 
  * @param <I>
  *            input for the profiler
@@ -15,20 +17,60 @@ import java.util.List;
  */
 public abstract class Profiler<I, O extends TimeStorage, F> {
 
+	/**
+	 * Invoked before the profiling begins. This will be run once per call to
+	 * {@link #profile(Object, int)}. The default implementation does nothing.
+	 * 
+	 * @param input
+	 *            the input for the profiling call
+	 */
 	protected void beforeProfiling(I input) {
 	}
 
+	/**
+	 * Invoked before each run. The default implementation does nothing.
+	 * 
+	 * @param input
+	 *            the input for the profiling call
+	 */
 	protected void beforeRun(I input) {
 	}
 
+	/**
+	 * Profiles the input.
+	 * 
+	 * @param input
+	 *            the input for the profiling call
+	 * @return the output for this run
+	 */
 	protected abstract O run(I input);
 
+	/**
+	 * Invoked after each run. The default implementation does nothing.
+	 * 
+	 * @param input
+	 *            the input for the profiling call
+	 */
 	protected void afterRun(I input) {
 	}
 
+	/**
+	 * Invoked after the profiling has completed. The default implementation
+	 * does nothing.
+	 * 
+	 * @param input
+	 *            the input for the profiling call
+	 */
 	protected void afterProfiling(I input) {
 	}
 
+	/**
+	 * Synthesizes the run data into a single output.
+	 * 
+	 * @param o
+	 *            the list of data from each run
+	 * @return the synthesized output
+	 */
 	protected abstract F synthesize(List<O> o);
 
 	/**
