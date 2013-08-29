@@ -107,4 +107,26 @@ public abstract class Profiler<I, O extends TimeStorage, F> {
 		return synthesize(outputs);
 	}
 
+	/**
+	 * Automatically generates a standard result for the given set of outputs.
+	 * 
+	 * @param outputs
+	 *            the outputs
+	 * @return the result
+	 */
+	protected static ProfilingResult generateStandardResult(
+			List<? extends TimeStorage> outputs) {
+		double each = 1d / outputs.size();
+		double mean = 0;
+		double stddev = 0;
+		for (TimeStorage tr : outputs) {
+			mean += each * tr.getTime();
+		}
+		for (int i = 0; i < outputs.size(); i++) {
+			stddev += each * Math.pow(mean - outputs.get(i).getTime(), 2);
+		}
+		stddev = Math.sqrt(stddev);
+		return new ProfilingResult(mean, stddev);
+	}
+
 }
