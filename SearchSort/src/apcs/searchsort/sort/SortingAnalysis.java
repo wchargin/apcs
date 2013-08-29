@@ -21,7 +21,7 @@ public class SortingAnalysis {
 	/**
 	 * The list of sorting algorithms to be tested.
 	 */
-	private List<SortingAlgorithm> algos = new ArrayList<>();
+	private List<SortingAlgorithm> algos;
 
 	/**
 	 * Creates the analysis node with the given algorithms.
@@ -29,16 +29,47 @@ public class SortingAnalysis {
 	 * @param algos
 	 *            the algorithms to analyze
 	 */
-	public SortingAnalysis(SortingAlgorithm... algos) {
-		this.algos.addAll(Arrays.asList(algos));
+	public SortingAnalysis(List<SortingAlgorithm> algos) {
+		this.algos = new ArrayList<>(algos);
 	}
 
 	public static void main(String[] args) {
 		int runs = parseArgsInt(args, 0, 10);
 		int size = parseArgsInt(args, 1, 1_00_000);
 
-		SortingAlgorithm[] algorithms = { new MergeSort(), new SelectionSort(),
-				new InsertionSort() };
+		// Grab names from args + reflection
+		List<SortingAlgorithm> algorithms = new ArrayList<>();
+		if (args.length > 2) {
+			for (int i = 2; i < args.length; i++) {
+				String name = args[i].trim();
+				try {
+					Class<?> c = Class.forName(SortingAlgorithm.class
+							.getPackage().getName() + '.' + name);
+					if (!SortingAlgorithm.class.isAssignableFrom(c)) {
+						continue;
+					}
+					Class<? extends SortingAlgorithm> csa = c
+							.asSubclass(SortingAlgorithm.class);
+					for (SortingAlgorithm sa : algorithms) {
+						if (sa.getClass().equals(csa)) {
+							// Duplicate.
+							continue;
+						}
+					}
+					SortingAlgorithm sa = csa.newInstance();
+					algorithms.add(sa);
+				} catch (ClassNotFoundException | InstantiationException
+						| IllegalAccessException e) {
+					continue;
+				}
+			}
+		}
+
+		// fallback if nothing
+		if (algorithms.isEmpty()) {
+			algorithms.addAll(Arrays.asList(new MergeSort(), new SelectionSort(),
+					new InsertionSort()));
+		}
 		new SortingAnalysis(algorithms).analyze(runs, size);
 	}
 
@@ -110,6 +141,7 @@ public class SortingAnalysis {
 			System.out.println();
 		}
 
+		System.out.println("Analysis complete.");
 	}
 
 	/**
