@@ -24,6 +24,16 @@ public class SortingAnalysis {
 	private List<SortingAlgorithm> algos;
 
 	/**
+	 * Whether the validation should be run.
+	 */
+	private boolean validate = true;
+
+	/**
+	 * Whether the profiling should be run.
+	 */
+	private boolean profile = true;
+
+	/**
 	 * Creates the analysis node with the given algorithms.
 	 * 
 	 * @param algos
@@ -36,6 +46,8 @@ public class SortingAnalysis {
 	public static void main(String[] args) {
 		int runs = parseArgsInt(args, 0, 10);
 		int size = parseArgsInt(args, 1, 100_000);
+		boolean skipValidate = parseArgsBoolean(args, "-v", "--skip-validation");
+		boolean skipProfile = parseArgsBoolean(args, "-p", "--skip-profiling");
 
 		// Grab names from args + reflection
 		List<SortingAlgorithm> algorithms = new ArrayList<>();
@@ -70,7 +82,20 @@ public class SortingAnalysis {
 			algorithms.addAll(Arrays.asList(new MergeSort(),
 					new SelectionSort(), new InsertionSort()));
 		}
-		new SortingAnalysis(algorithms).analyze(runs, size);
+		SortingAnalysis analyzer = new SortingAnalysis(algorithms);
+		analyzer.validate = !skipValidate;
+		analyzer.profile = !skipProfile;
+		analyzer.analyze(runs, size);
+	}
+
+	private static boolean parseArgsBoolean(String[] args, String... target) {
+		List<String> arglist = Arrays.<String> asList(args);
+		for (String t : target) {
+			if (arglist.contains(t)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -119,25 +144,32 @@ public class SortingAnalysis {
 			final String algorithmName = algorithm.getClass().getSimpleName();
 			System.out.println("Beginning analysis of algorithm "
 					+ algorithmName + ".");
-			System.out.println("Performing validation.");
-			boolean isValid = SortingValidator.isValid(algorithm,
-					new ArrayList<Integer>(list));
-			if (!isValid) {
-				System.err.println("Validation failed on " + algorithmName
-						+ "!");
-				continue;
-			} else {
-				System.out.println("Validation succeeded.");
+
+			if (validate) {
+				System.out.println("Performing validation.");
+				boolean isValid = SortingValidator.isValid(algorithm,
+						new ArrayList<Integer>(list));
+				if (!isValid) {
+					System.err.println("Validation failed on " + algorithmName
+							+ "!");
+					continue;
+				} else {
+					System.out.println("Validation succeeded.");
+				}
 			}
 
-			System.out.println("Profiling.");
-			SortingProfiler<Integer> profiler = new SortingProfiler<>();
-			SortingSettings<Integer> settings = new SortingSettings<>(
-					algorithm, filler, size);
-			ProfilingResult result = profiler.profile(settings, runs);
-			System.out.println("Profiling complete.");
-			System.out.println("Average time: " + result.averageTime + " ns.");
-			System.out.println("Standard deviation: " + result.stddev + " ns.");
+			if (profile) {
+				System.out.println("Profiling.");
+				SortingProfiler<Integer> profiler = new SortingProfiler<>();
+				SortingSettings<Integer> settings = new SortingSettings<>(
+						algorithm, filler, size);
+				ProfilingResult result = profiler.profile(settings, runs);
+				System.out.println("Profiling complete.");
+				System.out.println("Average time: " + result.averageTime
+						+ " ns.");
+				System.out.println("Standard deviation: " + result.stddev
+						+ " ns.");
+			}
 			System.out.println();
 		}
 
