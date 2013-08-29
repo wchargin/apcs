@@ -9,6 +9,14 @@ import apcs.searchsort.ProfilingResult;
 import apcs.searchsort.TimedRun;
 import apcs.searchsort.sort.SortingProfiler.SortingSettings;
 
+/**
+ * A class for profiling sorting algorithms.
+ * 
+ * @author William Chargin
+ * 
+ * @param <T>
+ *            the class of sorting algorithms
+ */
 public class SortingProfiler<T extends Comparable<? super T>> extends
 		Profiler<SortingSettings<T>, TimedRun, ProfilingResult> {
 
@@ -22,12 +30,27 @@ public class SortingProfiler<T extends Comparable<? super T>> extends
 		Collections.shuffle(input.list);
 	}
 
+	/**
+	 * Settings provided to a profiler, including the algorithm to profile and a
+	 * list-generating method.
+	 * 
+	 * @author William Chargin
+	 * 
+	 * @param <U>
+	 *            the type of object in the list to be sorted by the algorithm
+	 *            to be profiled
+	 */
 	public static class SortingSettings<U extends Comparable<? super U>> {
 		private final SortingAlgorithm sa;
 		private final ListFiller<U> filler;
 		private final int size;
 		private final List<U> list;
 
+		/**Creates the settings.
+		 * @param sa the algorithm to profile
+		 * @param filler the list-filling method
+		 * @param size the size of the list to generate
+		 */
 		public SortingSettings(SortingAlgorithm sa, ListFiller<U> filler,
 				int size) {
 			super();
