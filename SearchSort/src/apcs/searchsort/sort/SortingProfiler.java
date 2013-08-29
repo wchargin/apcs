@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 import apcs.searchsort.Profiler;
+import apcs.searchsort.ProfilingResult;
 import apcs.searchsort.TimedRun;
 import apcs.searchsort.sort.SortingProfiler.SortingSettings;
 
-public class SortingProfiler<T extends Comparable<? super T>>
-		extends
-		Profiler<SortingSettings<T>, TimedRun, SortingProfiler<T>.SortingProfileResult> {
+public class SortingProfiler<T extends Comparable<? super T>> extends
+		Profiler<SortingSettings<T>, TimedRun, ProfilingResult> {
 
 	@Override
 	protected void beforeProfiling(SortingSettings<T> input) {
@@ -35,17 +35,6 @@ public class SortingProfiler<T extends Comparable<? super T>>
 			this.filler = filler;
 			this.size = size;
 			this.list = new ArrayList<>(this.size);
-		}
-	}
-
-	public class SortingProfileResult {
-		public final double averageTime;
-		public final double stddev;
-
-		public SortingProfileResult(double averageTime, double stddev) {
-			super();
-			this.averageTime = averageTime;
-			this.stddev = stddev;
 		}
 	}
 
@@ -79,17 +68,7 @@ public class SortingProfiler<T extends Comparable<? super T>>
 	}
 
 	@Override
-	protected SortingProfileResult synthesize(List<TimedRun> o) {
-		double each = 1d / o.size();
-		double mean = 0;
-		double stddev = 0;
-		for (TimedRun tr : o) {
-			mean += each * tr.getTime();
-		}
-		for (int i = 0; i < o.size(); i++) {
-			stddev += each * Math.pow(mean - o.get(i).getTime(), 2);
-		}
-		stddev = Math.sqrt(stddev);
-		return new SortingProfileResult(mean, stddev);
+	protected ProfilingResult synthesize(List<TimedRun> o) {
+		return SortingProfiler.generateStandardResult(o);
 	}
 }
