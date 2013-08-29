@@ -1,7 +1,6 @@
 package apcs.searchsort.sort;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import apcs.searchsort.Profiler;
@@ -22,12 +21,14 @@ public class SortingProfiler<T extends Comparable<? super T>> extends
 
 	@Override
 	protected void beforeProfiling(SortingSettings<T> input) {
-		input.filler.fillList(input.list, 0, input.size);
+		while (input.size < input.list.size()) {
+			input.list.add(null);
+		}
 	}
 
 	@Override
 	protected void beforeRun(SortingSettings<T> input) {
-		Collections.shuffle(input.list);
+		input.filler.fillList(input.list, 0, input.size);
 	}
 
 	/**
@@ -46,10 +47,15 @@ public class SortingProfiler<T extends Comparable<? super T>> extends
 		private final int size;
 		private final List<U> list;
 
-		/**Creates the settings.
-		 * @param sa the algorithm to profile
-		 * @param filler the list-filling method
-		 * @param size the size of the list to generate
+		/**
+		 * Creates the settings.
+		 * 
+		 * @param sa
+		 *            the algorithm to profile
+		 * @param filler
+		 *            the list-filling method
+		 * @param size
+		 *            the size of the list to generate
 		 */
 		public SortingSettings(SortingAlgorithm sa, ListFiller<U> filler,
 				int size) {
