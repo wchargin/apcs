@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class to
+ * A class to ensure that a sorting algorithm is valid.
  * 
- * @author William
+ * @author William Chargin
  * 
  */
 public final class SortingValidator {
