@@ -8,7 +8,7 @@ import java.util.List;
  * @author William Chargin
  * 
  */
-public class NonRecursiveBinarySearch implements SearchAlgorithm {
+public class IterativeBinarySearch implements SearchAlgorithm {
 
 	@Override
 	public <T extends Comparable<? super T>> int indexOf(List<T> list, T target) {
