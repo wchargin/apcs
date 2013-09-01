@@ -32,8 +32,10 @@ public final class SearchValidator {
 	public static <T extends Comparable<? super T>> boolean isValid(
 			SearchAlgorithm sa, List<T> list) {
 		Collections.shuffle(list);
-		for (int i : new int[] { 0, list.size() / 2,
-				(int) (Math.random() * list.size()) }) {
+		int[] indicesToTest = { 0, list.size() / 2,
+				(int) (Math.random() * list.size()) /* random item */};
+		for (int i : indicesToTest) {
+			// get the item, or null if out of bounds
 			T t = (i < 0 ? null : list.get(i));
 			if (sa.indexOf(list, t) != i) {
 				return false;
