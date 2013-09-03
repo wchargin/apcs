@@ -1,6 +1,5 @@
 package apcs.searchsort.search;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,7 +30,6 @@ public final class SearchValidator {
 	 */
 	public static <T extends Comparable<? super T>> boolean isValid(
 			SearchAlgorithm sa, List<T> list) {
-		Collections.shuffle(list);
 		int[] indicesToTest = { 0, list.size() / 2,
 				(int) (Math.random() * list.size()) /* random item */};
 		for (int i : indicesToTest) {
