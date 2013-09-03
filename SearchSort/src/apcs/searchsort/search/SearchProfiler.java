@@ -1,6 +1,5 @@
 package apcs.searchsort.search;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import apcs.searchsort.Profiler;
@@ -21,8 +20,7 @@ public class SearchProfiler<T extends Comparable<? super T>> extends
 
 	@Override
 	protected void beforeRun(SearchSettings<T> input) {
-		input.nextKey = input.list
-				.get((int) (Math.random() * input.list.size()));
+		input.nextKey = input.list.get((int) (Math.random() * input.list.size()));
 	}
 
 	/**
@@ -37,7 +35,6 @@ public class SearchProfiler<T extends Comparable<? super T>> extends
 	 */
 	public static class SearchSettings<U extends Comparable<? super U>> {
 		private final SearchAlgorithm sa;
-		private final int size;
 		private final List<U> list;
 		private U nextKey;
 
@@ -51,11 +48,10 @@ public class SearchProfiler<T extends Comparable<? super T>> extends
 		 * @param size
 		 *            the size of the list to generate
 		 */
-		public SearchSettings(SearchAlgorithm sa, int size) {
+		public SearchSettings(SearchAlgorithm sa, List<U> list) {
 			super();
 			this.sa = sa;
-			this.size = size;
-			this.list = new ArrayList<>(this.size);
+			this.list = list;
 		}
 	}
 
