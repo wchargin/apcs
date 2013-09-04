@@ -6,7 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "llist.c"
+#include "llist.h"
 
 void traverse(llist *l);
 

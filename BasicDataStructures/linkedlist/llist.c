@@ -4,22 +4,8 @@
  * William Chargin
  * 4 September 2013
  */
-#ifndef __LLIST_C__
-#define __LLIST_C__
-#include <stdio.h>
 #include <stdlib.h>
-
-typedef struct node {
-	int value;
-	struct node* next;
-	struct node* prev;
-} node;
-
-typedef struct llist {
-	int len;
-	struct node* first;
-	struct node* last;
-} llist;
+#include "llist.h"
 
 int ll_size (llist *l) {
 	return l -> len;
@@ -108,5 +94,3 @@ void ll_insert(llist *l, int index, int value) {
 	n -> next = after;
 	n -> prev = before;
 }
-
-#endif
