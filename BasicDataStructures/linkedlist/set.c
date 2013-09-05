@@ -53,7 +53,7 @@ set *s_isect(set *s1, set *s2) {
     node *n;
     n = s1 -> first;
     while (n != NULL) {
-        if (s_contains(s2, value)) {
+        if (s_contains(s2, n -> value)) {
             s_add(dest, n -> value);
         }
         n = n -> next;
@@ -68,7 +68,7 @@ set *s_diff(set *s1, set *s2) {
     node *n;
     n = s1 -> first;
     while (n != NULL) {
-        if (!s_contains(s2, value)) {
+        if (!s_contains(s2, n -> value)) {
             s_add(dest, n -> value);
         }
         n = n -> next;
@@ -81,7 +81,7 @@ set* s_spec(set *s, bool (*p) (int)) {
     set *dest = malloc(sizeof(set));
     
     node *n;
-    n = s1 -> first;
+    n = s -> first;
     while (n != NULL) {
         if ((*p)(n -> value)) {
             s_add(dest, n -> value);

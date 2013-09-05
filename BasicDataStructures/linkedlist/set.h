@@ -6,10 +6,12 @@
  */
 #ifndef __SET_H__
 #define __SET_H__
-#include <stddlib.h>
+#include <stdlib.h>
+#include <stdbool.h> // seriously have to do this??
+#include "llist.h"
 
 // For semantics
-typedef llist set;
+typedef struct llist set;
 
 // These three should return true iff $value \in s$ before the method call.
 bool s_add(set *s, int value);
