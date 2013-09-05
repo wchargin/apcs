@@ -100,7 +100,7 @@ set* s_fullimage(set *s, int (*f) (int)) {
     set *dest = malloc(sizeof(set));
     node *n = s -> first;
     while (n != NULL) {
-        s_add(dest, (*f)(value));
+        s_add(dest, (*f)(n -> value));
         n = n -> next;
     }
     return dest;
