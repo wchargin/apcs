@@ -30,6 +30,10 @@ bool s_contains(set *s, int value) {
     return ll_seek(s, value) != -1;
 }
 
+int s_size(set *s) {
+    return ll_size(s);
+}
+
 set* s_union(set *s1, set *s2) {
     set *dest = malloc(sizeof(set));
     

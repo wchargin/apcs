@@ -18,6 +18,9 @@ bool s_add(set *s, int value);
 bool s_remove(set *s, int value);
 bool s_contains(set *s, int value);
 
+// delegate
+int s_size(set *s);
+
 // Set operations
 set* s_union(set *s1, set *s2);
 set* s_isect(set *s1, set *s2);
