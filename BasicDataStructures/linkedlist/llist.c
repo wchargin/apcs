@@ -28,7 +28,7 @@ void ll_push(llist *l, int value) {
 	l -> len++;
 }
 
-node* ll_pop(llist *l) {
+int ll_pop(llist *l) {
     return ll_remove(l, l -> len - 1);
 }
 
@@ -88,7 +88,7 @@ void ll_insert(llist *l, int index, int value) {
 	l -> len++;
 }
 
-node* ll_remove(llist *l, int index) {
+int ll_remove(llist *l, int index) {
 	node *n = ll_at(l, index);
 	node *before = n -> prev;
 	node *after = n -> next;
@@ -107,6 +107,6 @@ node* ll_remove(llist *l, int index) {
 	    l -> last = before;
 	}
 	
-	return n;
+	return n -> value;
 }
 
