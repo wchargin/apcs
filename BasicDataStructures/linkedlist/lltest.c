@@ -50,13 +50,13 @@ int main(int argc, char** argv) {
     if (l -> first -> value != reference[0]) {
         return error;
     }
-    printf("Phase 2A complete (check first value).\n");
+    printf("Phase 3A complete (check first value).\n");
     error++;
     
     if (l -> last -> value != reference[size - 1]) {
         return error;
     }
-    printf("Phase 2B complete (check last value).\n");
+    printf("Phase 3B complete (check last value).\n");
     error++;
     
     // Check by traversing.
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
             }
         }
     }
-    printf("Phase 3A complete (traverse forward).\n");
+    printf("Phase 4A complete (traverse forward).\n");
     error++;
     
     // Check by backward traversing.
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
             }
         }
     }
-    printf("Phase 3B complete (traverse backward).\n");
+    printf("Phase 4B complete (traverse backward).\n");
     error++;
     
     // Check by indexing.
@@ -98,10 +98,8 @@ int main(int argc, char** argv) {
             }
         }
     }
-    printf("Phase 4 complete (iterate).\n");
+    printf("Phase 5 complete (iterate).\n");
     error++;
-    
-    
     
     printf("Completed without error.\n");
     return 0;
