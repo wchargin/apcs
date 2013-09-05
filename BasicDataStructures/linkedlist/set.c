@@ -103,6 +103,7 @@ bool s_subseteq(set *s1, set *s2) {
         if (!s_contains(s2, n -> value)) {
             return false;
         }
+        n = n -> next;
     }
     return true;
 }
