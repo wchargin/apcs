@@ -24,9 +24,9 @@ int ll_size (llist *l);
 
 void ll_push(llist *l, int value);
 
-node* ll_at(llist *l, int index);
+node* ll_pop(llist *l);
 
-node* ll_pop(llist *l, int index);
+node* ll_at(llist *l, int index);
 
 int ll_get(llist *l, int index);
 
@@ -35,5 +35,7 @@ int ll_set(llist *l, int index, int value);
 int ll_seek(llist *l, int value);
 
 void ll_insert(llist *l, int index, int value);
+
+node* ll_remove(llist *l, int index);
 
 #endif

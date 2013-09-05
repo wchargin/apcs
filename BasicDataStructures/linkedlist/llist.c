@@ -28,6 +28,10 @@ void ll_push(llist *l, int value) {
 	l -> len++;
 }
 
+node* ll_pop(llist *l) {
+    return ll_remove(l, l -> len - 1);
+}
+
 node* ll_at(llist *l, int index) {
 	node *n;
 	if (index < (l -> len) >> 1) {
@@ -47,18 +51,6 @@ node* ll_at(llist *l, int index) {
 	return n;
 }
 
-node* ll_pop(llist *l, int index) {
-	node *n = ll_at(l, index);
-	node *before = n -> prev;
-	node *after = n -> next;
-	if (before != NULL) {
-		before -> next = after;
-	}
-	if (after != NULL) {
-		after -> prev = before;
-	}
-	return n;
-}
 
 int ll_get(llist *l, int index) {
 	return ll_at(l, index) -> value;
@@ -93,4 +85,28 @@ void ll_insert(llist *l, int index, int value) {
 	after -> prev = n;
 	n -> next = after;
 	n -> prev = before;
+	l -> len++;
 }
+
+node* ll_remove(llist *l, int index) {
+	node *n = ll_at(l, index);
+	node *before = n -> prev;
+	node *after = n -> next;
+	if (before != NULL) {
+		before -> next = after;
+	}
+	if (after != NULL) {
+		after -> prev = before;
+	}
+	l -> len--;
+	
+	if (l -> first == n) {
+	    l -> first = after;
+	}
+	if (l -> last == n) {
+	    l -> last = before;
+	}
+	
+	return n;
+}
+
