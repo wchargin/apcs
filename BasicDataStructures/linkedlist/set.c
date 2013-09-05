@@ -96,6 +96,29 @@ set* s_spec(set *s, bool (*p) (int)) {
     return dest;
 }
 
+set* s_fullimage(set *s, int (*f) (int)) {
+    set *dest = malloc(sizeof(set));
+    node *n = s -> first;
+    while (n != NULL) {
+        s_add(dest, (*f)(value));
+        n = n -> next;
+    }
+    return dest;
+}
+
+set* s_image(set *s, bool(*p) (int), int (*f) (int)) {
+    set *dest = malloc(sizeof(set));
+    node *n = s -> first;
+    while (n != NULL) {
+        int value = n -> value;
+        if ((*p)(value)) {
+            s_add(dest, (*f)(value));
+        }
+        n = n -> next;
+    }
+    return dest;
+}
+
 bool s_subseteq(set *s1, set *s2) {
     node *n;
     n = s1 -> first;
