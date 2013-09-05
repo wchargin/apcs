@@ -29,5 +29,9 @@ set* s_diff(set *s1, set *s2); // s1 \ s2; ${x \in s1 | x \notin s2}$
 // Axiom of Specification; see ZFC theory
 set* s_spec(set *s, bool (*p) (int));
 
+// Set tests
+bool s_subseteq(set *s1, set *s2);
+bool s_eq(set *s1, set *s2);
+
 
 #endif

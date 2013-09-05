@@ -95,3 +95,18 @@ set* s_spec(set *s, bool (*p) (int)) {
     
     return dest;
 }
+
+bool s_subseteq(set *s1, set *s2) {
+    node *n;
+    n = s -> first;
+    while (n != NULL) {
+        if (!s_contains(s2, n -> value)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool s_eq(set *s1, set *s2) {
+    return s_subseteq(s1, s2) && s_subseteq(s2, s1);
+}
