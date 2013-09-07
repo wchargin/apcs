@@ -12,10 +12,44 @@
 bool p1(int v);
 bool p2(int v);
 
+// image function for testing
+int f(int v);
+
 int main(int argc, char** argv) {
     int error = 1;
     
-    printf("Phase I: Testing single-set operations."); {
+    printf("Set Testing Framework\n");
+    printf("\n");
+
+    // Test equality first so we can use it in later tests
+    printf("Phase 0: Testing equality methods.\n"); {
+        set *s1 = malloc(sizeof(set));
+        set *s2 = malloc(sizeof(set));
+        int numbers[8] = { -1, 5, 8, 2, 3, 5, 9, 10 };
+        int order1 [8] = { 0, 7, 3, 2, 4, 5, 6, 1 };
+        int order2 [8] = { 6, 2, 7, 3, 1, 0, 5, 4 };
+        int i;
+        for (i = 0; i < 8; i++) {
+            s_add(s1, numbers[order1[i]]);
+            s_add(s2, numbers[order2[i]]);
+        }
+        bool eq = s_eq(s1, s2);
+        if (!eq) {
+            return error;
+        }
+        printf("Equal sets are equal.\n");
+        error++;
+        
+        bool seq = s_subseteq(s1, s2) && s_subseteq(s2, s1);
+        if (!seq) {
+            return error;
+        }
+        printf("Subset works both ways.\n");
+        error++;
+    }
+    
+    printf("\n");
+    printf("Phase I: Testing single-set operations.\n"); {
         set *s = malloc(sizeof(set));
         printf("Set created.\n");
         error++;
@@ -62,7 +96,7 @@ int main(int argc, char** argv) {
         error++;
         
     }
-    
+
     printf("\n");
     printf("Phase II: Testing Multi-Set Operations\n"); {
         set *s1 = malloc(sizeof(set)), *s2 = malloc(sizeof(set));
@@ -219,6 +253,25 @@ int main(int argc, char** argv) {
         }
         
     }
+    printf("\n");
+    printf("Phase IV: Testing Image\n"); {
+        set *s = malloc(sizeof(set));
+        set *control = malloc(sizeof(set));
+        int toadd[6]    = { -1,  3,  5, 2, 0, 1 };
+        int expected[6] = {  3, 11, 27, 6, 2, 3 };
+        int i;
+        for (i = 0; i< 6; i++) {
+            s_add(s, toadd[i]);
+            s_add(control, expected[i]);
+        }
+        set *image = s_fullimage(s, f);
+        bool eq = s_eq(image, control);
+        if (!eq) {
+            return error;
+        }
+        printf("Image set matches control set.\n");
+        error++;
+    }
         
     printf("\n");
     printf("Completed without error.\n");
@@ -230,4 +283,7 @@ bool p1(int v) {
 }
 bool p2(int v) {
     return v % 2 == 0;
+}
+int f(int v) { // image function
+    return v * v + 2;
 }
