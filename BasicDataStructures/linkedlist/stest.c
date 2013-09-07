@@ -256,20 +256,31 @@ int main(int argc, char** argv) {
     printf("\n");
     printf("Phase IV: Testing Image\n"); {
         set *s = malloc(sizeof(set));
-        set *control = malloc(sizeof(set));
-        int toadd[6]    = { -1,  3,  5, 2, 0, 1 };
-        int expected[6] = {  3, 11, 27, 6, 2, 3 };
+        set *control  = malloc(sizeof(set));
+        set *control2 = malloc(sizeof(set)); // image with predicate lambda x: x >= 3
+        int toadd[6]     = { -1,  3,  5, 2, 0, 1 };
+        int expected[6]  = {  3, 11, 27, 6, 2, 3 };
+        int expected2[6] = {     11, 27          };
         int i;
         for (i = 0; i< 6; i++) {
             s_add(s, toadd[i]);
             s_add(control, expected[i]);
+            if (i < 2) s_add(control2, expected2[i]);
         }
         set *image = s_fullimage(s, f);
         bool eq = s_eq(image, control);
         if (!eq) {
             return error;
         }
-        printf("Image set matches control set.\n");
+        printf("Full image set matches control set.\n");
+        error++;
+        
+        set *pimage = s_image(s, p1, f);
+        bool peq = s_eq(pimage, control2);
+        if (!peq) {
+            return error;
+        }
+        printf("Partial image set matches control set.\n");
         error++;
     }
         
