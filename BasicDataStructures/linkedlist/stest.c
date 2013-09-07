@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
             printf("Set contains all required elements.\n");
         }
         
-        printf("Testing specification with p(x) = (x % 2 == 0).\n"); {
+        printf("Testing specification with p(x) = (x %% 2 == 0).\n"); {
             set *sr_p1 = s_spec(s, p2);
             printf("Specification complete.\n");
             error++;
