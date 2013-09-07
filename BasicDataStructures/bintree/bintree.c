@@ -23,7 +23,7 @@ bintree* bt_new() {
     tree -> size = 0;
 }
 
-bintree* bt_add(bintree* tree, int key, int value) {
+void bt_add(bintree* tree, int key, int value) {
     node *n = tree -> root;
     if (n == NULL) {
         tree -> root = (n = mknode(key, value));

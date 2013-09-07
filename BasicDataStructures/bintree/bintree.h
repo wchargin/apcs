@@ -25,7 +25,7 @@ typedef struct bintree {
 // Create a new binary tree
 bintree* bt_new();
 
-bintree* bt_add(bintree *tree, int key, int value);
+void bt_add(bintree *tree, int key, int value);
 
 void bt_traverse(bintree *tree, void (*callback) (node*));
 
