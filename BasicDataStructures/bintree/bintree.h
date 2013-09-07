@@ -27,8 +27,6 @@ bintree* bt_new();
 
 bintree* bt_add(bintree *tree, int key, int value);
 
-void bt_optimize(bintree* tree);
-
 void bt_traverse(bintree *tree, void (*callback) (node*));
 
 #endif

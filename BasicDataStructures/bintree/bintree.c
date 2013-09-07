@@ -61,17 +61,6 @@ bintree* bt_add(bintree* tree, int key, int value) {
     tree -> size++;
 }
 
-void bt_optimize(bintree *tree) {
-    // First, find median element
-    // O(log N) time
-    double each = 1.0 / tree -> size;
-    double average;
-    void callback(node *n) {
-        average += each * n -> value;
-    }
-    bt_traverse(tree, callback);
-}
-
 void bth_traverse(node *n, void(*callback)(node*)) {
     if (n == NULL) {
         return;
