@@ -27,6 +27,8 @@ bintree* bt_new();
 
 void bt_add(bintree *tree, int key, int value);
 
+int bt_get(bintree *tree, int key);
+
 void bt_traverse(bintree *tree, void (*callback) (node*));
 
 #endif

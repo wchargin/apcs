@@ -61,6 +61,21 @@ void bt_add(bintree* tree, int key, int value) {
     tree -> size++;
 }
 
+int bt_get(bintree *tree, int key) {
+    node *n = tree -> root;
+    while (n != NULL) {
+        int nodeKey = n -> key;
+        if (key < nodeKey) {
+            n = n -> left;
+        } else if (key > nodeKey) {
+            n = n -> right;
+        } else {
+            return n -> value;
+        }
+    }
+    return NULL;
+}
+
 void bth_traverse(node *n, void(*callback)(node*)) {
     if (n == NULL) {
         return;
