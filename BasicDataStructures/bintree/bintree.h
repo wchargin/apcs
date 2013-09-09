@@ -32,4 +32,6 @@ bool bt_contains(bintree *tree, int key);
 
 void bt_traverse(bintree *tree, void (*callback) (node*));
 
+void bt_free(bintree *tree);
+
 #endif
