@@ -79,15 +79,15 @@ int main() {
     // 7 {5} {9 {8 11}} = 5 7 8 9 11
     
     printf("Testing inorder traversal... ");
-    // isum should be 1 * 2 + 2 * 4 + 3 * 5 + ... = 134
+    // isum should be 1 * 5 + 2 * 7 + 3 * 8 + ... = 134
     test(e, isum(t, INORDER) == 134, "works fine.");
     
     printf("Testing preorder traversal... ");
-    // isum should be 1 * 7 + 2 * 4 + 3 * 2 + ... = 131
+    // isum should be 1 * 7 + 2 * 5 + 3 * 9 + ... = 131
     test(e, isum(t, PREORDER) == 131, "works fine.");
     
     printf("Testing postorder traversal... ");
-    // isum should be 1 * 2 + 2 * 5 + 3 * 4 + ... = 125
+    // isum should be 1 * 5 + 2 * 8 + 3 * 11 + ... = 125
     test(e, isum(t, POSTORDER) == 125, "works fine.");
     
     printf("Testing free... ");
