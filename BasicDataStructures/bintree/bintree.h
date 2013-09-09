@@ -19,6 +19,7 @@ typedef struct node {
 typedef struct bintree {
     node *root;
     int size;
+    bool successor; // whether to use successor or predecessor for remove
 } bintree;
 
 typedef enum traversal_method {
