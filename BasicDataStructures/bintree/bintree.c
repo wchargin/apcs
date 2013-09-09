@@ -26,7 +26,7 @@ void bt_add(bintree* tree, int key) {
     node *n = tree -> root;
     if (n == NULL) {
         // Tree is empty. Create root node.
-        tree -> root = (n = mknode(key, value));
+        tree -> root = (n = mknode(key));
     } else {
         node *toAdd = mknode(key);
         while (true) {
@@ -48,9 +48,7 @@ void bt_add(bintree* tree, int key) {
                     continue;
                 }
             } else {
-                // Duplicate
-                // Replace value
-                n -> value = value;
+                // Already exists
                 return; // so that size is not incremented
             }
         }
@@ -92,4 +90,13 @@ void bth_traverse(node *n, void(*callback)(node*)) {
 
 void bt_traverse(bintree *tree, void(*callback)(node*)) {
     bth_traverse(tree -> root, callback);
+}
+
+void bt_free(bintree *tree) {
+    void freenode(node *n) {
+        free(n);
+    }
+    // free each node then free the tree
+    bt_traverse(tree, freenode);
+    free(tree);
 }
