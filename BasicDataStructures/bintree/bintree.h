@@ -24,6 +24,8 @@ typedef struct bintree {
 // Create a new binary tree
 bintree* bt_new();
 
+int bt_size(bintree *tree);
+
 void bt_add(bintree *tree, int key);
 
 bool bt_contains(bintree *tree, int key);

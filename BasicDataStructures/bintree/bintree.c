@@ -22,6 +22,10 @@ bintree* bt_new() {
     tree -> size = 0;
 }
 
+int bt_size(bintree *tree) {
+    return tree -> size;
+}
+
 void bt_add(bintree* tree, int key) {
     node *n = tree -> root;
     if (n == NULL) {
