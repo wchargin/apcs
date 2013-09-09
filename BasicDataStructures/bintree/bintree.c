@@ -81,19 +81,34 @@ bool bt_contains(bintree *tree, int key) {
     return n != NULL;
 }
 
-void bth_traverse(node *n, void(*callback)(node*)) {
+void bth_traverse(node *n, traversal_method m, void(*callback)(node*)) {
     if (n == NULL) {
         return;
     }
     node *left = n -> left;
     node *right = n -> right;
-    bth_traverse(left, callback);
-    (*callback)(n);
-    bth_traverse(right, callback);
+    
+    switch (m) {
+    case PREORDER:
+        (*callback)(n);
+        bth_traverse(left, m, callback);
+        bth_traverse(right, m, callback);
+        break;
+    case INORDER:
+        bth_traverse(left, m, callback);
+        (*callback)(n);
+        bth_traverse(right, m, callback);
+        break;
+    case POSTORDER:
+        bth_traverse(left, m, callback);
+        bth_traverse(right, m, callback);
+        (*callback)(n);
+        break;
+    }
 }
 
-void bt_traverse(bintree *tree, void(*callback)(node*)) {
-    bth_traverse(tree -> root, callback);
+void bt_traverse(bintree *tree, traversal_method m, void(*callback)(node*)) {
+    bth_traverse(tree -> root, m, callback);
 }
 
 void bt_free(bintree *tree) {
@@ -101,6 +116,6 @@ void bt_free(bintree *tree) {
         free(n);
     }
     // free each node then free the tree
-    bt_traverse(tree, freenode);
+    bt_traverse(tree, INORDER, freenode);
     free(tree);
 }

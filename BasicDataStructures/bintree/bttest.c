@@ -19,6 +19,17 @@ void test(int* counter, bool test, const char * success, const char* error) {
     }
 }
 
+int isum(bintree *t, traversal_method m) {
+    int i = 0;
+    int isum = 0;
+    void callback(node *n) {
+        isum += (++i) * n -> key;
+    }
+    
+    bt_traverse(t, m, callback);
+    return isum;
+}
+
 int main() {
     printf("Binary Tree Test Shell\n");
     printf("\n");
@@ -58,19 +69,17 @@ int main() {
     printf("Testing contains (negative case)... ");
     test(e, !bt_contains(t, 3), "works fine.\n", "fails!\n");
     
-    printf("Testing inorder traversal... "); {
-        int i = 0;
-        int isum = 0;
-        void callback(node *n) {
-            isum += (++i) * n -> key;
-        }
-        
-        bt_traverse(t, callback);
-        // isum should be 1 * 2 + 2 * 4 + 3 * 5 + ...
-        // = 224
-        
-        test(e, isum == 224, "works fine.\n", "fails!\n");
-    }
+    printf("Testing inorder traversal... ");
+    // isum should be 1 * 2 + 2 * 4 + 3 * 5 + ... = 224
+    test(e, isum(t, INORDER) == 224, "works fine.\n", "fails!\n");
+    
+    printf("Testing preorder traversal... ");
+    // isum should be 1 * 7 + 2 * 4 + 3 * 2 + ... = 217
+    test(e, isum(t, PREORDER) == 211, "works fine.\n", "fails.\n");
+    
+    printf("Testing postorder traversal... ");
+    // isum should be 1 * 2 + 2 * 5 + 3 * 4 + ... = 214
+    test(e, isum(t, POSTORDER) == 214, "works fine.\n", "fails.\n");
     
     printf("Testing free... ");
     bt_free(t);

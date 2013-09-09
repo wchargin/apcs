@@ -21,6 +21,10 @@ typedef struct bintree {
     int size;
 } bintree;
 
+typedef enum traversal_method {
+    PREORDER, INORDER, POSTORDER
+} traversal_method;
+
 // Create a new binary tree
 bintree* bt_new();
 
@@ -30,7 +34,7 @@ void bt_add(bintree *tree, int key);
 
 bool bt_contains(bintree *tree, int key);
 
-void bt_traverse(bintree *tree, void (*callback) (node*));
+void bt_traverse(bintree *tree, traversal_method m, void (*callback) (node*));
 
 void bt_free(bintree *tree);
 
