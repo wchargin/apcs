@@ -83,9 +83,11 @@ void bth_traverse(node *n, void(*callback)(node*)) {
     if (n == NULL) {
         return;
     }
-    bth_traverse(n -> left, callback);
+    node *left = n -> left;
+    node *right = n -> right;
+    bth_traverse(left, callback);
     (*callback)(n);
-    bth_traverse(n -> right, callback);
+    bth_traverse(right, callback);
 }
 
 void bt_traverse(bintree *tree, void(*callback)(node*)) {
