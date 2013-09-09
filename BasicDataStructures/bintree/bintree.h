@@ -11,7 +11,6 @@
 
 typedef struct node {
     int key;
-    int value;
     struct node *parent;
     struct node *left;
     struct node *right;

@@ -10,7 +10,6 @@
 node* mknode(int key, int value) {
     node *n = malloc(sizeof(node));
     n -> key = key;
-    n -> value = value;
     n -> parent = NULL;
     n -> left = NULL;
     n -> right = NULL;
