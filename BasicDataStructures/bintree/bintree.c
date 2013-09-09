@@ -174,6 +174,19 @@ void bt_traverse(bintree *tree, traversal_method m, void(*callback)(node*)) {
     bth_traverse(tree -> root, m, callback);
 }
 
+int bth_nodedepth(node *n) {
+    if (n == NULL) {
+        return 0;
+    }
+    int left = bth_nodedepth(n -> left);
+    int right = bth_nodedepth(n -> right);
+    return 1 /* for this node */ + (left > right ? left : right);
+}
+
+int bt_depth(bintree *tree) {
+    return bth_nodedepth(tree -> root);
+}
+
 void bt_free(bintree *tree) {
     void freenode(node *n) {
         free(n);

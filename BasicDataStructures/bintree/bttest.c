@@ -90,6 +90,9 @@ int main() {
     // isum should be 1 * 5 + 2 * 8 + 3 * 11 + ... = 125
     test(e, isum(t, POSTORDER) == 125, "works fine.");
     
+    printf("Testing depth... ");
+    test(e, bt_depth(t) == 3, "depth correct.");
+    
     printf("Testing free... ");
     bt_free(t);
     test(e, true, "completes without error.");
