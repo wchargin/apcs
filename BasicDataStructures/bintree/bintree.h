@@ -33,6 +33,8 @@ int bt_size(bintree *tree);
 
 void bt_add(bintree *tree, int key);
 
+void bt_remove(bintree *tree, int key);
+
 bool bt_contains(bintree *tree, int key);
 
 void bt_traverse(bintree *tree, traversal_method m, void (*callback) (node*));

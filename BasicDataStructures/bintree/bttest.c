@@ -63,23 +63,32 @@ int main() {
     bt_add(t, 7);
     test(e, bt_size(t) == 7, "size still correct.");
     
+    printf("Removing some items... ");
+    bt_remove(t, 2);
+    bt_remove(t, 4);
+    bt_remove(t, 2);
+    test(e, bt_size(t) == 5, "size still correct.");
+    
     printf("Testing contains (positive case)... ");
     test(e, bt_contains(t, 8), "works fine.");
     
     printf("Testing contains (negative case)... ");
     test(e, !bt_contains(t, 3), "works fine.");
     
+    // Contains:
+    // 7 {5} {9 {8 11}} = 5 7 8 9 11
+    
     printf("Testing inorder traversal... ");
-    // isum should be 1 * 2 + 2 * 4 + 3 * 5 + ... = 224
-    test(e, isum(t, INORDER) == 224, "works fine.");
+    // isum should be 1 * 2 + 2 * 4 + 3 * 5 + ... = 134
+    test(e, isum(t, INORDER) == 134, "works fine.");
     
     printf("Testing preorder traversal... ");
-    // isum should be 1 * 7 + 2 * 4 + 3 * 2 + ... = 217
-    test(e, isum(t, PREORDER) == 211, "works fine.");
+    // isum should be 1 * 7 + 2 * 4 + 3 * 2 + ... = 131
+    test(e, isum(t, PREORDER) == 131, "works fine.");
     
     printf("Testing postorder traversal... ");
-    // isum should be 1 * 2 + 2 * 5 + 3 * 4 + ... = 214
-    test(e, isum(t, POSTORDER) == 214, "works fine.");
+    // isum should be 1 * 2 + 2 * 5 + 3 * 4 + ... = 125
+    test(e, isum(t, POSTORDER) == 125, "works fine.");
     
     printf("Testing free... ");
     bt_free(t);

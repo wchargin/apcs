@@ -76,6 +76,69 @@ node* bth_findnode(bintree *tree, int key) {
     return NULL;
 }
 
+
+
+void bt_remove(bintree *tree, int key) {
+    node *n = bth_findnode(tree, key);
+    if (n == NULL) {
+        // Not in tree
+        return;
+    }
+    
+    if (n -> left == NULL && n -> right == NULL) {
+        // Node has no children.
+        // We can safely remove.
+        
+        if (n -> parent == NULL) {
+            // Node is root
+            tree -> root = NULL;
+        } else {
+            // Node is leaf
+            *((n == n -> parent -> left)
+            ? &(n -> parent -> left)
+            : &(n -> parent -> right)) = NULL;
+        }
+    } else
+    
+    if (n -> left == NULL ^ n -> right == NULL) {
+        // Node has one child
+        // We can replace this with child
+        
+        bool childIsLeft  = n -> left != NULL;
+        bool parentIsLeft = n == n -> parent -> left;
+        
+        *((parentIsLeft)
+        ? &(n -> parent -> left)
+        : &(n -> parent -> right)) = (childIsLeft ? n -> left : n -> right);
+    }
+    
+    else {
+        // Node has two children.
+        node *toReplace;
+        if (tree -> successor) {
+            toReplace = n -> right;
+            while (toReplace -> left != NULL) {
+                toReplace = toReplace -> left;
+            }
+        } else {
+            toReplace = n -> left;
+            while (toReplace -> right != NULL) {
+                toReplace = toReplace -> right;
+            }
+        }
+        n -> key = toReplace -> key;
+        
+        // we looped until toReplace had (at least) one dead end
+        // we can now remove it with one of the above operations
+        bt_remove(tree, toReplace -> key);
+        
+        tree -> successor = !(tree -> successor);
+    }
+
+    free(n);
+    tree -> size--;
+}
+
 bool bt_contains(bintree *tree, int key) {
     node *n = bth_findnode(tree, key);
     return n != NULL;
