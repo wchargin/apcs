@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "bintree.h"
 
-node* mknode(int key, int value) {
+node* mknode(int key) {
     node *n = malloc(sizeof(node));
     n -> key = key;
     n -> parent = NULL;
@@ -22,17 +22,17 @@ bintree* bt_new() {
     tree -> size = 0;
 }
 
-void bt_add(bintree* tree, int key, int value) {
+void bt_add(bintree* tree, int key) {
     node *n = tree -> root;
     if (n == NULL) {
+        // Tree is empty. Create root node.
         tree -> root = (n = mknode(key, value));
     } else {
+        node *toAdd = mknode(key);
         while (true) {
             int nodeKey = n -> key;
             if (key < nodeKey) {
                 if (n -> left == NULL) {
-                    node *toAdd = mknode(key, value);
-                    toAdd -> parent = n;
                     n -> left = toAdd;
                     break;
                 } else {
@@ -41,8 +41,6 @@ void bt_add(bintree* tree, int key, int value) {
                 }
             } else if (key > nodeKey) {
                 if (n -> right == NULL) {
-                    node *toAdd = mknode(key, value);
-                    toAdd -> parent = n;
                     n -> right = toAdd;
                     break;
                 } else {
@@ -56,11 +54,12 @@ void bt_add(bintree* tree, int key, int value) {
                 return; // so that size is not incremented
             }
         }
+        toAdd -> parent = n;
     }
     tree -> size++;
 }
 
-int bt_get(bintree *tree, int key) {
+node* bth_findnode(bintree *tree, int key) {
     node *n = tree -> root;
     while (n != NULL) {
         int nodeKey = n -> key;
@@ -69,10 +68,15 @@ int bt_get(bintree *tree, int key) {
         } else if (key > nodeKey) {
             n = n -> right;
         } else {
-            return n -> value;
+            return n;
         }
     }
     return NULL;
+}
+
+bool bt_contains(bintree *tree, int key) {
+    node *n = bth_findnode(tree, key);
+    return n != NULL;
 }
 
 void bth_traverse(node *n, void(*callback)(node*)) {
