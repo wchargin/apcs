@@ -33,6 +33,12 @@ bintree* bt_clone(bintree *tree);
 
 int bt_size(bintree *tree);
 
+// contents are equal
+bool bt_eq(bintree *t1, bintree *t2);
+
+// contents and structure are equal
+bool bt_eqq(bintree *t1, bintree *t2);
+
 void bt_add(bintree *tree, int key);
 
 void bt_remove(bintree *tree, int key);

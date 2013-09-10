@@ -35,6 +35,43 @@ int bt_size(bintree *tree) {
     return tree -> size;
 }
 
+bool bth_eqfor(bintree *t1, bintree *t2, traversal_method m) {
+    if (t1 == t2) {
+        return true;
+    }
+    int treesize = bt_size(t1);
+    if (treesize != bt_size(t2)) {
+        return false;
+    }
+    
+    bool okay = true;
+    
+    int* values = malloc(treesize * sizeof(int));
+    int i = 0;
+    void firstPass(node *n) {
+        values[i++] = n -> key;
+    }
+    bt_traverse(t1, m, firstPass);
+    
+    i = 0;
+    void secondPass(node *n) {
+        if (n -> key != values[i++]) {
+            okay = false;
+        }
+    }
+    bt_traverse(t2, m, secondPass);
+    
+    return okay;
+}
+
+bool bt_eq(bintree *t1, bintree *t2) {
+    return bth_eqfor(t1, t2, INORDER);
+}
+
+bool bt_eqq(bintree *t1, bintree *t2) {
+    return bth_eqfor(t1, t2, PREORDER); // or POSTORDER
+}
+
 void bt_add(bintree* tree, int key) {
     node *n = tree -> root;
     if (n == NULL) {
