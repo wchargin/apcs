@@ -139,6 +139,33 @@ int main() {
         test(e, expected == 0, "it is correct.");
     }
     
+    printf("Generating two equal but not equivalent trees... "); {
+        bintree *t1 = bt_new();
+        bintree *t2 = bt_new();
+        int v1[9] = { 2,5,4,8,7,6,9,3,1 };
+        int v2[9] = { 4,7,6,2,1,5,8,3,9 };
+        
+        {
+            int i;
+            for (i = 0; i < 9; i++) { 
+                bt_add(t1, v1[i]);
+                bt_add(t2, v2[i]);
+            }
+        }
+        test(e, bt_size(t1) == 9 && bt_size(t2) == 9, "completed successfully.");
+        
+        printf("Ensuring equality... ");
+        test(e, bt_eq(t1, t2), "trees are equal.");
+        
+        printf("Ensuring not equivalent... ");
+        test(e, !bt_eqq(t1, t2), "trees are not equivalent (that's good).");
+        
+        printf("Freeing trees... ");
+        bt_freefull(t1);
+        bt_freefull(t2);
+        test(e, true, "done.");
+    }
+    
     printf("Testing clone... "); {
         bintree *cloned = bt_clone(t);
         test(e, cloned != NULL, "completed without error.");
