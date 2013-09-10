@@ -171,6 +171,38 @@ int main() {
         test(e, okay, "works on all traversal methods.");
     }
     
+    printf("Freeing tree... ");
+    bt_free(t);
+    test(e, true, "done.");
+    
+    printf("Creating tree... ");
+    t = bt_new();
+    test(e, true, "done.");
+    
+    printf("Filling with unoptimized (sorted) structure... ");
+    {
+        int i;
+        for (i = 0; i < 32; i++) {
+            bt_add(t, i);
+        }
+    }
+    test(e, bt_size(t) == 32, "size is correct.");
+    
+    printf("Testing depth...");
+    int predepth = bt_depth(t);
+    test(e, bt_size(t), "depth calculated.");
+    
+    printf("Cloning tree... ");
+    cloned = bt_clone(t);
+    test(e, bt_eqq(t, cloned), "trees are identical.");
+    
+    printf("Optimizing tree... ");
+    bt_optimize(cloned);
+    int postdepth = bt_depth(cloned);
+    test(e, postdepth < predepth, "depth has decreased.");
+    
+    printf("Checking equality... ");
+    test(e, bt_eq(t, cloned), "contents are equal.");
     
     printf("\n");
     printf("All tests completed successfully.\n");

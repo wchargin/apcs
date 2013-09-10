@@ -257,6 +257,66 @@ int bt_depth(bintree *tree) {
     return bth_nodedepth(tree -> root);
 }
 
+void bth_optimizearray(int* in, int* out, int min, int max, int* i) {
+    // `in' is sorted, `out' should be optimized
+    // `i' is the current index in `out'
+    
+    int len /* of subarray */ = max - min;
+    if (len < 1) {
+        // empty subarray
+        return;
+    }
+    if (len == 1) {
+        // just add it
+        out[(*i)++] = in[min];
+        return;
+    } // else
+    
+    // Add the midpoint
+    int midpos = min + ((max - min) >> 1);
+    out[(*i)++] = in[midpos];
+    bth_optimizearray(in, out, min, midpos, i);
+    bth_optimizearray(in, out, midpos + 1, max, i);
+}
+
+void bt_optimize(bintree *tree) {
+    int treesize = bt_size(tree);
+    
+    int *ordered = malloc(treesize * sizeof(int));
+    {
+        int i = 0;
+        void visit(node *n) {
+            ordered[i++] = n -> key;
+        }
+        bt_traverse(tree, INORDER, visit);
+    }
+    
+    
+    int *optimized = malloc(treesize * sizeof(int));
+    {
+        int *i = malloc(sizeof(int));
+        (*i) = 0;
+        bth_optimizearray(ordered, optimized, 0, treesize, i);
+    }
+    
+    // Free all nodes (but don't call freetree; that would free the tree too)
+    void freenode(node *n) {
+        free(n);
+    }
+    bt_traverse(tree, INORDER, freenode);
+    tree -> root = NULL;
+    
+    {
+        int i;
+        for (i = 0; i < treesize; i++) {
+            bt_add(tree, optimized[i]);
+        }
+    }
+    
+    free(optimized);
+    free(ordered);
+}
+
 void bt_free(bintree *tree) {
     void freenode(node *n) {
         free(n);
