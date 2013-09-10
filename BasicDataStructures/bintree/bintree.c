@@ -214,6 +214,51 @@ int* bt_trace(bintree *tree, int key) {
     return path;
 }
 
+int bth_atlevel(int *list, node *n, int levelsRemaining, int *i) {
+    if (n == NULL) {
+        return 0;
+    } else if (levelsRemaining <= 1) {
+        list[(*i)++] = n -> key;
+        return 1;
+    }
+    levelsRemaining--;
+    int l = bth_atlevel(list, n -> left, levelsRemaining, i);
+    int r = bth_atlevel(list, n -> right, levelsRemaining, i);
+    return l + r;
+}
+
+int* bt_atlevel(bintree *tree, int level) {
+    if (level > bt_depth(tree) || level <= 0) {
+        return NULL;
+    }
+    
+    int maxsize = 1;
+    {
+        int i;
+        for (i = 0; i < level; i++) {
+            maxsize *= 2;
+        }
+    }
+    int *a = malloc(maxsize * sizeof(int));
+    a[0] = 0;
+    
+    int *i = malloc(sizeof(int));
+    *i = 0;
+    int size = bth_atlevel(a, tree -> root, level, i);
+    free(i);
+    
+    int *b = malloc((size + 1) * sizeof(int));
+    b[0] = size;
+    {
+        int i;
+        for (i = 0; i < size; i++) {
+            b[i + 1] = a[i];
+        }
+    }
+    free(a);
+    return b;
+}
+
 void bth_traverse(node *n, traversal_method m, void(*callback)(node*)) {
     if (n == NULL) {
         return;

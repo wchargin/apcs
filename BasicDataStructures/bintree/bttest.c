@@ -217,11 +217,10 @@ int main() {
     printf("Testing depth...");
     int predepth = bt_depth(t);
     test(e, bt_size(t), "depth calculated.");
-    
+
     printf("Cloning tree... "); {
         bintree *cloned = bt_clone(t);
         test(e, bt_eqq(t, cloned), "trees are identical.");
-        
         printf("Optimizing tree... ");
         bt_optimize(cloned);
         int postdepth = bt_depth(cloned);
@@ -231,8 +230,30 @@ int main() {
         printf("Checking equality... ");
         test(e, bt_eq(t, cloned), "contents are equal.");
         
+        printf("Generating list of nodes at depth four... ");
+        int *at4 = bt_atlevel(cloned, 4);
+        test(e, true, "list generated.");
+        
+        printf("Checking size, should be 8... ");
+        test(e, at4[0] == 8, "it is.");
+
+        printf("Testing values... ");
+        {
+            // should be { 2, 6, 10, 14, 18, 22, 26, 30 }
+            // which is 4i + 2, i \in [0, 8) \cap \mathbb{Z}
+            bool okay = true;
+            int i;
+            for (i = 0; i < at4[0]; i++) {
+                if (at4[i + 1] != i * 4 + 2) {
+                    okay = false;
+                }
+            }
+            test(e, okay, "all correct.");
+        }
+        
         bt_freefull(cloned);
     }
+    
     
     printf("\n");
     printf("All tests completed successfully.\n");

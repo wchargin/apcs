@@ -52,6 +52,9 @@ int bt_depth(bintree *tree);
 // first value is node depth (which is the length of the rest of the array)
 int* bt_trace(bintree *tree, int key);
 
+// get all keys at a level
+int* bt_atlevel(bintree *tree, int level);
+
 // Make complete binary tree
 void bt_optimize(bintree *tree);
 
