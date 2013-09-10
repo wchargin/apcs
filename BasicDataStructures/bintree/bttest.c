@@ -171,7 +171,7 @@ int main() {
     }
     
     printf("Freeing tree... ");
-    bt_free(t);
+    bt_freefull(t);
     test(e, true, "done.");
     
     printf("Creating tree... ");
@@ -203,6 +203,8 @@ int main() {
         
         printf("Checking equality... ");
         test(e, bt_eq(t, cloned), "contents are equal.");
+        
+        bt_freefull(cloned);
     }
     
     printf("\n");

@@ -297,6 +297,7 @@ void bt_optimize(bintree *tree) {
         int *i = malloc(sizeof(int));
         (*i) = 0;
         bth_optimizearray(ordered, optimized, 0, treesize, i);
+        free(i);
     }
     
     bt_free(tree);
