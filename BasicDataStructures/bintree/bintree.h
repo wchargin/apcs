@@ -57,4 +57,6 @@ void bt_optimize(bintree *tree);
 
 void bt_free(bintree *tree);
 
+void bt_freefull(bintree *tree);
+
 #endif

@@ -323,5 +323,11 @@ void bt_free(bintree *tree) {
     }
     // free each node then free the tree
     bt_traverse(tree, INORDER, freenode);
+    tree -> size = 0;
+    tree -> root = NULL;
+}
+
+void bt_freefull(bintree *tree) {
+    bt_free(tree);
     free(tree);
 }
