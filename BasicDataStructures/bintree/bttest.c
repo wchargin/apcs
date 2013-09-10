@@ -139,15 +139,14 @@ int main() {
         test(e, expected == 0, "it is correct.");
     }
     
-    printf("Testing clone... ");
-    bintree *cloned = bt_clone(t);
-    test(e, cloned != NULL, "completed without error.");
-    
-    printf("Ensuring size match... ");
-    test(e, bt_size(t) == bt_size(cloned), "sizes match.");
-    
-    printf("Ensuring identical structure... ");
-    {
+    printf("Testing clone... "); {
+        bintree *cloned = bt_clone(t);
+        test(e, cloned != NULL, "completed without error.");
+        
+        printf("Ensuring size match... ");
+        test(e, bt_size(t) == bt_size(cloned), "sizes match.");
+        
+        printf("Ensuring identical structure... ");
         bool okay = true;
         traversal_method methods[3] = {INORDER, PREORDER, POSTORDER};
         int m;
@@ -192,17 +191,19 @@ int main() {
     int predepth = bt_depth(t);
     test(e, bt_size(t), "depth calculated.");
     
-    printf("Cloning tree... ");
-    cloned = bt_clone(t);
-    test(e, bt_eqq(t, cloned), "trees are identical.");
-    
-    printf("Optimizing tree... ");
-    bt_optimize(cloned);
-    int postdepth = bt_depth(cloned);
-    test(e, postdepth < predepth, "depth has decreased.");
-    
-    printf("Checking equality... ");
-    test(e, bt_eq(t, cloned), "contents are equal.");
+    printf("Cloning tree... "); {
+        bintree *cloned = bt_clone(t);
+        test(e, bt_eqq(t, cloned), "trees are identical.");
+        
+        printf("Optimizing tree... ");
+        bt_optimize(cloned);
+        int postdepth = bt_depth(cloned);
+        test(e, postdepth < predepth, "depth has decreased.");
+        printf("Depth was %d and is now %d.\n", predepth, postdepth);
+        
+        printf("Checking equality... ");
+        test(e, bt_eq(t, cloned), "contents are equal.");
+    }
     
     printf("\n");
     printf("All tests completed successfully.\n");
