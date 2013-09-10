@@ -139,6 +139,39 @@ int main() {
         test(e, expected == 0, "it is correct.");
     }
     
+    printf("Testing clone... ");
+    bintree *cloned = bt_clone(t);
+    test(e, cloned != NULL, "completed without error.");
+    
+    printf("Ensuring size match... ");
+    test(e, bt_size(t) == bt_size(cloned), "sizes match.");
+    
+    printf("Ensuring identical structure... ");
+    {
+        bool okay = true;
+        traversal_method methods[3] = {INORDER, PREORDER, POSTORDER};
+        int m;
+        int treesize = bt_size(t);
+        for (m = 0; okay && m < sizeof(methods) / sizeof(methods[0]); m++) {
+            int* values = malloc(treesize * sizeof(int));
+            int i = 0;
+            void initializeArray(node *n) {
+                values[i++] = n -> key;
+            }
+            bt_traverse(t, methods[m], initializeArray);
+            
+            i = 0;
+            void check(node *n) {
+                if (n -> key != values[i++]) {
+                    okay = false;
+                }
+            }
+            bt_traverse(cloned, methods[m], check);
+        }
+        test(e, okay, "works on all traversal methods.");
+    }
+    
+    
     printf("\n");
     printf("All tests completed successfully.\n");
     return 0;

@@ -22,6 +22,15 @@ bintree* bt_new() {
     tree -> size = 0;
 }
 
+bintree* bt_clone(bintree *tree) {
+    bintree *clone = bt_new();
+    void visit(node* n) {
+        bt_add(clone, n -> key);
+    }
+    bt_traverse(tree, PREORDER, visit);
+    return clone;
+}
+
 int bt_size(bintree *tree) {
     return tree -> size;
 }

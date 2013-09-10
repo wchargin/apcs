@@ -29,6 +29,8 @@ typedef enum traversal_method {
 // Create a new binary tree
 bintree* bt_new();
 
+bintree* bt_clone(bintree *tree);
+
 int bt_size(bintree *tree);
 
 void bt_add(bintree *tree, int key);
