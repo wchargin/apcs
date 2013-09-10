@@ -76,8 +76,6 @@ node* bth_findnode(bintree *tree, int key) {
     return NULL;
 }
 
-
-
 void bt_remove(bintree *tree, int key) {
     node *n = bth_findnode(tree, key);
     if (n == NULL) {
@@ -142,6 +140,32 @@ void bt_remove(bintree *tree, int key) {
 bool bt_contains(bintree *tree, int key) {
     node *n = bth_findnode(tree, key);
     return n != NULL;
+}
+
+int* bt_trace(bintree *tree, int key) {
+    node *n = bth_findnode(tree, key);
+    if (n == NULL) {
+        return NULL;
+    }
+    
+    node *m = n;
+    
+    int depth = 0;
+    while (m != NULL) {
+        m = m -> parent;
+        depth++;
+    }
+    
+    int *path = malloc((depth + 1) * sizeof(int));
+    path[0] = depth;
+    
+    m = n;
+    int i = 1;
+    while (m != NULL) {
+        path[i++] = m -> key;
+        m = m -> parent;
+    }
+    return path;
 }
 
 void bth_traverse(node *n, traversal_method m, void(*callback)(node*)) {

@@ -41,6 +41,9 @@ void bt_traverse(bintree *tree, traversal_method m, void (*callback) (node*));
 
 int bt_depth(bintree *tree);
 
+// first value is node depth (which is the length of the rest of the array)
+int* bt_trace(bintree *tree, int key);
+
 void bt_free(bintree *tree);
 
 #endif

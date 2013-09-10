@@ -107,12 +107,37 @@ int main() {
     printf("Adding a couple nodes, checking size... ");
     bt_add(t, 5);
     bt_add(t, 3);
+    bt_add(t, 2);
+    bt_add(t, 4);
     bt_add(t, 8);
-    test(e, bt_size(t) == 3, "size is correct.");
+    bt_add(t, 7);
+    bt_add(t, 9);
+    bt_add(t, 10);
+    test(e, bt_size(t) == 8, "size is correct.");
     
     printf("Ensuring traversal works... ");
-    // 1 * 3 + 2 * 5 + 3 * 8 = 37
-    test(e, isum(t, INORDER) == 37, "it does.");
+    // 1 * 2 + 2 * 3 + 3 * 4 + ... = 266
+    test(e, isum(t, INORDER) == 266, "it does.");
+    
+    printf("Generating trace... ");
+    int* trace = bt_trace(t, 10);
+    test(e, true, "completed without error.");
+    
+    printf("Testing trace size (first argument)... ");
+    test(e, trace[0] == 4, "it is correct.");
+    
+    printf("Testing trace contents... ");
+    {
+        // Bitshift voodoo!
+        // Our tree uses numbers in the range [0, 32) so this works fine.
+        // Should have 5, 8, 9, and 10.
+        int expected = (1 << 5) | (1 << 8) | (1 << 9) | (1 << 10);
+        int i;
+        for (i = 1; i <= trace[0]; i++) {
+            expected &= ~(1 << trace[i]);
+        }
+        test(e, expected == 0, "it is correct.");
+    }
     
     printf("\n");
     printf("All tests completed successfully.\n");
