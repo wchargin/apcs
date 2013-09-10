@@ -299,12 +299,7 @@ void bt_optimize(bintree *tree) {
         bth_optimizearray(ordered, optimized, 0, treesize, i);
     }
     
-    // Free all nodes (but don't call freetree; that would free the tree too)
-    void freenode(node *n) {
-        free(n);
-    }
-    bt_traverse(tree, INORDER, freenode);
-    tree -> root = NULL;
+    bt_free(tree);
     
     {
         int i;
