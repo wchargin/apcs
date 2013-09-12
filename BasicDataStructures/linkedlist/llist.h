@@ -38,4 +38,7 @@ void ll_insert(llist *l, int index, int value);
 
 int ll_remove(llist *l, int index);
 
+// reverse in-place
+void ll_reverse(llist *l);
+
 #endif

@@ -110,3 +110,49 @@ int ll_remove(llist *l, int index) {
 	return n -> value;
 }
 
+void ll_reverse_singlylinked(llist *l) {
+    if (ll_size(l) <= 1) {
+        // empty can't be reversed,
+        // singleton is the reverse of itself
+        return;
+    }
+    node *previous = l -> first;
+    node *current = previous -> next;
+    previous -> next = NULL;
+    node *temp;
+    while (current != NULL) {
+        temp = current -> next;
+        current -> next = previous;
+        previous = current;
+        list -> first = current;
+        current = temp;
+    }
+}
+
+void ll_reverse(llist *l) {
+    // This code is for a doubly linked list.
+    // For a singly linked list (which is not how this is implemented) see:
+    // ll_reverse_singlylinked(llist*)
+    
+    if (ll_size(l) <= 1) {
+        // empty can't be reversed,
+        // singleton is the reverse of itself
+        return;
+    }
+    
+    node *current = l -> first;
+    node *temp;
+    
+    while (current != NULL) {
+        temp = current -> next;
+        
+        current -> next = current -> prev;
+        current -> prev = temp;
+        
+        current = temp;
+    }
+    
+    temp = llist -> first;
+    llist -> first = last;
+    llist -> last = temp;
+}
