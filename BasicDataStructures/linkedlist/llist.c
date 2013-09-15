@@ -124,7 +124,7 @@ void ll_reverse_singlylinked(llist *l) {
         temp = current -> next;
         current -> next = previous;
         previous = current;
-        list -> first = current;
+        l -> first = current;
         current = temp;
     }
 }
@@ -152,7 +152,7 @@ void ll_reverse(llist *l) {
         current = temp;
     }
     
-    temp = llist -> first;
-    llist -> first = last;
-    llist -> last = temp;
+    temp = l -> first;
+    l -> first = l -> last;
+    l -> last = temp;
 }
