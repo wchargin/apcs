@@ -39,21 +39,23 @@ public class AnagramSort {
         if (s1.length() != s2.length()) {
             return false;
         }
-        List<Character> c1 = toCharacterList(s1),
-                        c2 = toCharacterList(s2);
-                        
-        Collections.sort(c1);
-        Collections.sort(c2);
         
-        return c1.equals(c2);
-    }
-    
-    private static List<Character> toCharacterList(String s) {
-        List<Character> l = new ArrayList<>(s.length());
-        for (char c : s.toCharArray()) {
-            l.add(c);
+        // +1 for each in s1, -1 for each in s2
+        int[] netFrequency = new int[128 /* assuming in ASCII */];
+        
+        for (char c : s1.toCharArray()) {
+            netFrequency[(int) c]++;
         }
-        return l;
+        for (char c : s2.toCharArray()) {
+            netFrequency[(int) c]--;
+        }
+        // If equal all elements of netFrequency are 0
+        for (int i : netFrequency) {
+            if (i != 0) {
+                return false;
+            }
+        }
+        return true;
     }
     
     /**
