@@ -13,6 +13,11 @@ public class SplatSearch {
     
     public static int findMin(int[] input)
     {
+        if (input[0] < input[input.length - 1]) {
+            // degenerate case
+            return 0;
+        }
+        
         int low = 0, high = input.length/2;
         
         if(input[low] < input[high])
@@ -21,9 +26,9 @@ public class SplatSearch {
             high = input.length - 1;
         }
         
-        while(low != high)
+        while(low + 1 != high)
         {
-            int middle = low + (high-low) >> 1;
+            int middle = low + ((high-low) >> 1);
             if(input[low] > input[middle])
             {
                 high = middle;
