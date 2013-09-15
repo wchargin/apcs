@@ -72,6 +72,36 @@ bool bt_eqq(bintree *t1, bintree *t2) {
     return bth_eqfor(t1, t2, PREORDER); // or POSTORDER
 }
 
+void bth_addr(node *n, node *a) {
+    if (n == NULL) {
+        return;
+    }
+    int nodeKey = n -> key;
+    int akey = a -> key;
+    
+    if (akey == nodeKey) {
+        return;
+    }
+    
+    node **which = (akey < nodeKey ? &(n -> left) : &(n -> right));
+    if (*which == NULL) {
+        // base case; reached (semi-)leaf
+        *which = a;
+        a -> parent = n;
+    } else {
+        bth_addr(*which, a);
+    }
+}
+
+// recursive implementation
+void bt_add_recursive(bintree *tree, int key) {
+    if (tree -> root == NULL) {
+        tree -> root = mknode(key);
+    } else {
+        bth_addr(tree -> root, mknode(key));
+    }
+}
+
 void bt_add(bintree* tree, int key) {
     node *n = tree -> root;
     if (n == NULL) {
