@@ -7,6 +7,14 @@
 #include <stdlib.h>
 #include "llist.h"
 
+node *mknode(int value) {
+    node *n = malloc(sizeof(node));
+    n -> value = value;
+    n -> prev = NULL;
+    n -> next = NULL;
+    return n;
+}
+
 int ll_size (llist *l) {
 	return l -> len;
 }
@@ -14,13 +22,11 @@ int ll_size (llist *l) {
 void ll_push(llist *l, int value) {
 	node* n = l -> last;
 	if (n == NULL) {
-		n = malloc(sizeof(node));
-		n -> value = value;
+		n = mknode(value);
 		l -> first = n;
 		l -> last = n;
 	} else {
-		node* n2 = malloc(sizeof(node));
-		n2 -> value = value;
+		node *n2 = mknode(value);
 		n2 -> prev = n;
 		n -> next = n2;
 		l -> last = n2;
