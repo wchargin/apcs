@@ -42,17 +42,7 @@ bool eq(llist* l, int len, ...) {
 int main() {
     test t; /* tester used throughout */
     llist* l;
-    t = t_new();
-    
-    {
-        int count;
-        printf("\n");
-        printf("Singly-Linked List Test Shell%n\n", &count);
-        for (; count > 0; count--) {
-            printf("=");
-        }
-        printf("\n\n");
-    }
+    t = t_new("Singly-Linked List Test Shell");
     
     printf("Creating list... ");
     l = ll_new();

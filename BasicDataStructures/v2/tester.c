@@ -9,10 +9,20 @@
 #include "tester.h"
 
 /* create a test */
-test t_new() {
+test t_new(const char * string) {
     test t;
+    int count;
+    
     t = malloc(sizeof(int));
     (*t) = 0;
+    
+    printf("\n");
+    printf("%s%n\n", string, &count);
+    for (; count > 0; count--) {
+        printf("=");
+    }
+    printf("\n\n");
+    
     return t;
 }
 
