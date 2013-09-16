@@ -117,3 +117,31 @@ bool bt_contains(bintree *tree, int value) {
     }
     return p != NULL;
 }
+
+/* find deepest common ancestor */
+btnode* bt_ancestor(bintree *tree, int v1, int v2) {
+    btnode *a;
+    bool c, d; /* comparisons */
+    a = tree -> root;
+    
+    if (!(bt_contains(tree, v1) && bt_contains(tree, v2))) {
+        return NULL;
+    }
+    
+    c = d = false;
+    
+    while (a != NULL) {
+        int v = a -> value;
+        c = v1 < v;
+        d = v2 < v;
+        if (c ^ d) {
+            /* diverged; a is the common ancestor */
+            return a;
+        } else {
+            a = c ? a -> left : a -> right;
+        }
+    }
+    
+    /* something weird happened */
+    return NULL;
+}

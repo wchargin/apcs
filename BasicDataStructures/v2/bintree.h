@@ -31,4 +31,7 @@ void bt_remove(bintree *tree, int value);
 /* test if value is in tree */
 bool bt_contains(bintree *tree, int value);
 
+/* find deepest common ancestor */
+btnode* bt_ancestor(bintree *tree, int v1, int v2);
+
 #endif

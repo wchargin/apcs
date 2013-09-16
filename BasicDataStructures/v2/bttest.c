@@ -32,11 +32,28 @@ int main() {
          bt_contains(tree, 2) &&
         !bt_contains(tree, 9) &&
         !bt_contains(tree, 0) &&
-        !bt_contains(tree, -7), "works great.");
+        !bt_contains(tree, -7), "works fine.");
     
     printf("Removing a value... ");
     bt_remove(tree, 3);
-    _(t, !bt_contains(tree, 3), "tree does not contain removed value.");
+    _(t, bt_contains(tree, 5) &&
+         bt_contains(tree, 7) &&
+         bt_contains(tree, 2) &&
+        !bt_contains(tree, 9) &&
+        !bt_contains(tree, 3) &&
+        !bt_contains(tree, -7), "works great.");
+    
+    printf("Finding deepest ancestor of siblings... ");
+    _(t, bt_ancestor(tree, 6, 8) -> value == 7, "correct.");
+    
+    printf("Finding deepest ancestor of distants... ");
+    _(t, bt_ancestor(tree, 2, 8) -> value == 5, "correct.");
+    
+    printf("Finding deepest ancestor of nonexistent... ");
+    _(t, bt_ancestor(tree, 2, 20) == NULL, "correctly null.");
+    
+    printf("Finding deepest ancestor of two nonexistents... ");
+    _(t, bt_ancestor(tree, 50, 60) == NULL, "correctly null.");
     
     t_done();
     return 0;
