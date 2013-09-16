@@ -26,11 +26,6 @@ btnode* bt_mknode(int value) {
 }
 
 void bt_freenode(btnode *n) {
-    if (n == NULL) {
-        return;
-    }
-    bt_freenode(n -> left);
-    bt_freenode(n -> right);
     free(n);
 }
 
@@ -82,6 +77,9 @@ void bth_remove(btnode *parent, btnode *node) {
         
         /* m is now node's successor or predecessor */
         *ref = m;
+        
+        *(usesuccessor ? &(m -> left) : &(m -> right)) = 
+        (usesuccessor ? node -> left : node -> right);
     }
     bt_freenode(node);
 }
