@@ -105,6 +105,17 @@ int main() {
     ll_rmval(l, 1);
     _(t, eq(l, 2, 0, 3), "list is correct.");
     
+    printf("Adding more elements for further tests... ");
+    ll_addb(l, 6);
+    ll_addb(l, 9);
+    ll_addb(l, 12);
+    /* l is now { 0, 3, 6, 9, 12 }*/
+    _(t, true, "done.");
+    
+    printf("Reversing... ");
+    ll_reverse(l);
+    _(t, eq(l, 5, 12, 9, 6, 3, 0), "list is correct.");
+    
     printf("Testing for cycle... ");
     _(t, !ll_cycle(l), "true negative.");
     

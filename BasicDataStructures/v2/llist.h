@@ -46,4 +46,7 @@ void ll_rmval(llist *l, int value);
 /* tests whether the list is cyclic */
 bool ll_cycle(llist *l);
 
+/* reverse list */
+void ll_reverse(llist *l);
+
 #endif

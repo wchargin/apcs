@@ -165,3 +165,20 @@ bool ll_cycle(llist *l) {
     /* turtle == rabbit; cycle found */
     return true;
 }
+
+/* returns new head */
+node* llh_reverse(node *prev, node *n) {
+    node* oldnext;
+    oldnext = n -> next;
+    n -> next = prev;
+    return oldnext == NULL ? n : llh_reverse(n, oldnext);
+}
+
+/* reverse list */
+void ll_reverse(llist *l) {
+    if (l -> head == NULL || l -> head -> next == NULL) {
+        /* empty or singleton; reverse is self */
+        return;
+    }
+    l -> head = llh_reverse(NULL, l -> head);
+}
