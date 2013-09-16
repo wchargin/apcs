@@ -22,6 +22,9 @@ typedef struct llist {
 /* create new list properly */
 llist* ll_new();
 
+/* dispose of list properly */
+void ll_free(llist* l);
+
 /* add to front */
 void ll_addf(llist* l, int value);
 

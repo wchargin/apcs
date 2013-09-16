@@ -15,6 +15,19 @@ llist* ll_new() {
     return l;
 }
 
+/* dispose of list properly */
+void ll_free(llist* l) {
+    node *n;
+    node *t;
+    n = l -> head;
+    while (n != NULL) {
+        t = n;
+        n = n -> next;
+        free(t);
+    }
+    free(l);
+}
+
 node* ll_mknode(int value) {
     node* n = malloc(sizeof(node));
     n -> value = value;
