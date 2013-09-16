@@ -126,6 +126,53 @@ int main() {
     printf("Testing for cycle... ");
     _(t, ll_cycle(l), "true positive.");
     
+    {
+        llist *l1;
+        llist *l2;
+        
+        printf("Creating lists that merge... ");
+        l1 = ll_new(); l2 = ll_new();
+        
+        ll_addf(l1, 6); ll_addf(l1, 5); ll_addf(l1, 4);
+        /* l1: { 4, 5, 6 } */
+        ll_addf(l2, 12); ll_addf(l2, 11); ll_addf(l2, 10);
+        /* l2: { 10, 11, 12 } */
+        
+        {
+            /* make last node in l2 point to first node in l1 */
+            
+            node *n;
+            n = l2 -> head;
+            while (n -> next != NULL) {
+                n = n -> next;
+            }
+            n -> next = l1 -> head;
+        }
+        /* l2: { 10, 11, 12, >l1} */
+        _(t, true, "done.");
+        
+        printf("Testing merge with identical length... ");
+        _(t, ll_mergeat(l1, l2) -> value == 4, "good.");
+        
+        printf("Adding a couple items to first list... ");
+        ll_addf(l1, 20);
+        ll_addf(l1, 21);
+        _(t, ll_mergeat(l1, l2) -> value == 4, "still works.");
+        
+        printf("Adding a bunch of items to second list... ");
+        ll_addf(l2, 30); ll_addf(l2, 31); ll_addf(l2, 32); ll_addf(l2, 33);
+        _(t, ll_mergeat(l1, l2) -> value == 4, "fine here.");
+        
+        printf("Adding duplicate value (but not node) to first... ");
+        ll_addf(l1, 10);
+        _(t, ll_mergeat(l1, l2) -> value == 4, "no confusion.");
+        
+        printf("Freeing lists... ");
+        ll_free(l1);
+        ll_free(l2);
+        _(t, true, "completed without error.");
+    }
+    
     t_done();
     return 0;
 }

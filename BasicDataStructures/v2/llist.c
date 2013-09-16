@@ -195,3 +195,71 @@ void ll_reverse(llist *l) {
     }
     l -> head = llh_reverse(NULL, l -> head);
 }
+
+/* find first merge node */
+node* ll_mergeat(llist *l1, llist *l2) {
+    /* without loss of generality assume l1 longer than l2. then:
+     * for some position i in l1, j in l2:
+     * l1[i+k+c] == l2[j+c] for all c > 0 and some int k
+     * as the lists terminate at the same point, k must be length difference
+     */
+     
+    /* for example (letters are nodes, not values):
+     *
+     * l1 = A B C D E F, l2 = I J D E F
+     * len1 = 7, len2 = 6
+     * trim off first (7-6) of l1 := B C D E F
+     * then loop:
+     *
+     * [B] C  D  E  F | different
+     * [I] J  D  E  F |
+     * 
+     *  B [C] D  E  F | different
+     *  I [J] D  E  F |
+     *
+     *  B  C [D] E  F | same; match found
+     *  I  J [D] E  F | 
+     */
+    int len1 = 0, len2 = 0; /* lengths of l1, l2 */
+    node *t, *s; /* traversal nodes */
+    
+    t = l1 -> head;
+    s = l2 -> head;
+    
+    while (t != NULL) {
+        t = t -> next;
+        len1++;
+    }
+    while (s != NULL) {
+        s = s -> next;
+        len2++;
+    }
+    
+    /* length difference is len1 - len2 */
+    if (len1 < len2) {
+        /* swap for convenience */
+        
+        llist *temp = l1;
+        int templ = len1;
+        
+        l1 = l2;
+        l2 = temp;
+        
+        len1 = len2;
+        len2 = templ;
+    }
+    
+    t = l1 -> head;
+    s = l2 -> head;
+    
+    for (; len1 > len2; len1--) {
+        t = t -> next;
+    }
+    
+    while (t != s) {
+        t = t -> next;
+        s = s -> next;
+    }
+    
+    return t; /* or s */
+}

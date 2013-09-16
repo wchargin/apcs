@@ -52,4 +52,7 @@ bool ll_cycle(llist *l);
 /* reverse list */
 void ll_reverse(llist *l);
 
+/* find first merge node */
+node* ll_mergeat(llist *l1, llist *l2);
+
 #endif
