@@ -85,6 +85,7 @@ void ll_popb(llist *l) {
     if (t -> next == NULL) {
         /* one-element list; use popf */
         ll_popf(l);
+        return;
     }
     while (t -> next -> next != NULL) {
         t = t -> next;
