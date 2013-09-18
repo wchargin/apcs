@@ -61,6 +61,51 @@ int main() {
     printf("Finding predecessor node... ");
     _(t, bt_predecessor(tree, tree->root->right->left)->value==5, "correct.");
     
+    printf("Adding numbers for further tests... "); {
+        int i;
+        for (i = 0; i < 30 /* (2^n - 1) - 1 */; i++) {
+            /* will contain some duplicates but that's okay */
+            /* duplicates just won't be added to the tree */
+            bt_add(tree, i);
+        }
+    }
+    _(t, true, "done.");
+    
+    printf("Converting to linked list... "); {
+        btnode *head = NULL;
+        head = bt_tolist(tree);
+        _(t, head != NULL, "completed without error.");
+        
+        printf("Checking forward traversal... "); {
+            btnode *n = head;
+            bool okay = true;
+            int i = 0;
+            do {
+                if (n -> value != i) {
+                    okay = false;
+                    break;
+                }
+                n = n -> right;
+                i++;
+            } while (n != head);
+            _(t, okay && i == 30, "works fine.");
+        }
+        printf("Checking backward traversal... "); {
+            btnode *n = head -> left;
+            bool okay = true;
+            int i = 29;
+            do {
+                if (n -> value != i) {
+                    okay = false;
+                    break;
+                }
+                n = n -> left;
+                i--;
+            } while (n != head -> left);
+            _(t, okay && i == -1, "works fine.");
+        }
+    }
+    
     t_done();
     return 0;
 }

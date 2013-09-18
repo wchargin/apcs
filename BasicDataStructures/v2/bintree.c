@@ -211,3 +211,41 @@ btnode* bt_predecessor(bintree *tree, btnode *n) {
     
     return pred;
 }
+
+/* helper method for bt_tolist */
+void bth_tolist(bintree *tree, btnode *n) {
+    btnode *pred = NULL, *succ= NULL;
+    if (n == NULL) {
+        return;
+    }
+    pred = bt_predecessor(tree, n);
+    succ = bt_successor(tree, n);
+    bth_tolist(tree, n -> left);
+    bth_tolist(tree, n -> right);
+    n -> left = pred;
+    n -> right = succ;
+}
+
+/* convert to linked list (left=prev, right=next) and return head */
+btnode* bt_tolist(bintree *tree) {
+    btnode *head = NULL, *tail = NULL;
+    btnode *t = NULL;
+    {
+        t = tree -> root;
+        while (t -> left != NULL) {
+            t = t -> left;
+        }
+        head = t;
+    }{
+        t = tree -> root;
+        while (t -> right != NULL) {
+            t = t -> right;
+        }
+        tail = t;
+    }
+    t = NULL;
+    bth_tolist(tree, tree -> root);
+    head -> left = tail;
+    tail -> right = head;
+    return head;
+}

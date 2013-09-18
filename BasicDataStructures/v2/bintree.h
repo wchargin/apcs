@@ -40,4 +40,7 @@ btnode* bt_successor(bintree *tree, btnode *n);
 /* find predecessor node */
 btnode* bt_predecessor(bintree *tree, btnode *n);
 
+/* convert to linked list (left=prev, right=next) and return head */
+btnode* bt_tolist(bintree *tree);
+
 #endif
