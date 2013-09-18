@@ -145,3 +145,69 @@ btnode* bt_ancestor(bintree *tree, int v1, int v2) {
     /* something weird happened */
     return NULL;
 }
+
+/* find successor node */
+btnode* bt_successor(bintree *tree, btnode *n) {
+    btnode *succ = NULL;
+    
+    if (n -> right != NULL) {
+        /* easy case: n has a right tree */
+        succ = n -> right;
+        while (succ -> left != NULL) {
+            succ = succ -> left;
+        }
+    } 
+    else {
+        /* harder case: need to traverse */
+        btnode *t = tree -> root; /* traversal node */
+        
+        /* goal: find deepest ancestor s.t. n is a descendant of left child */
+        /* traverse down tree and save succ at each valid step */
+        while (t != NULL) {
+            if (n -> value < t -> value) {
+                /* n is a left child */
+                succ = t;
+            } else if (n -> value == t -> value) {
+                /* at target node; stop */
+                break;
+            }
+            /* advance pointer down tree */
+            t = (n -> value < t -> value) ? t -> left : t -> right;
+        }
+    }
+    
+    return succ;
+}
+
+/* find predecessor node */
+btnode* bt_predecessor(bintree *tree, btnode *n) {
+    btnode *pred = NULL;
+    
+    if (n -> right != NULL) {
+        /* easy case: n has a right tree */
+        pred = n -> right;
+        while (pred -> left != NULL) {
+            pred = pred -> left;
+        }
+    } 
+    else {
+        /* harder case: need to traverse */
+        btnode *t = tree -> root; /* traversal node */
+        
+        /* goal: find deepest ancestor s.t. n is a descendant of right child */
+        /* traverse down tree and save pred at each valid step */
+        while (t != NULL) {
+            if (n -> value > t -> value) {
+                /* n is a right child */
+                pred = t;
+            } else if (n -> value == t -> value) {
+                /* at target node; stop */
+                break;
+            }
+            /* advance pointer down tree */
+            t = (n -> value < t -> value) ? t -> left : t -> right;
+        }
+    }
+    
+    return pred;
+}

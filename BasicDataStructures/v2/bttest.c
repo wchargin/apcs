@@ -55,6 +55,12 @@ int main() {
     printf("Finding deepest ancestor of two nonexistents... ");
     _(t, bt_ancestor(tree, 50, 60) == NULL, "correctly null.");
     
+    printf("Finding successor node... ");
+    _(t, bt_successor(tree, tree->root->right->left)->value == 7, "correct.");
+    
+    printf("Finding predecessor node... ");
+    _(t, bt_predecessor(tree, tree->root->right->left)->value==5, "correct.");
+    
     t_done();
     return 0;
 }

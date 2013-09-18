@@ -34,4 +34,10 @@ bool bt_contains(bintree *tree, int value);
 /* find deepest common ancestor */
 btnode* bt_ancestor(bintree *tree, int v1, int v2);
 
+/* find successor node */
+btnode* bt_successor(bintree *tree, btnode *n);
+
+/* find predecessor node */
+btnode* bt_predecessor(bintree *tree, btnode *n);
+
 #endif
