@@ -183,11 +183,11 @@ btnode* bt_successor(bintree *tree, btnode *n) {
 btnode* bt_predecessor(bintree *tree, btnode *n) {
     btnode *pred = NULL;
     
-    if (n -> right != NULL) {
-        /* easy case: n has a right tree */
-        pred = n -> right;
-        while (pred -> left != NULL) {
-            pred = pred -> left;
+    if (n -> left != NULL) {
+        /* easy case: n has a left tree */
+        pred = n -> left;
+        while (pred -> right != NULL) {
+            pred = pred -> right;
         }
     } 
     else {
