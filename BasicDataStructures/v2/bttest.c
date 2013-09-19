@@ -68,8 +68,6 @@ int main() {
     printf("Adding numbers for further tests... "); {
         int i;
         for (i = 0; i < 30 /* (2^n - 1) - 1 */; i++) {
-            /* will contain some duplicates but that's okay */
-            /* duplicates just won't be added to the tree */
             bt_add(tree, i);
         }
     }
