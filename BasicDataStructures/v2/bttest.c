@@ -61,6 +61,10 @@ int main() {
     printf("Finding predecessor node... ");
     _(t, bt_predecessor(tree, tree->root->right->left)->value==5, "correct.");
     
+    printf("Wiping tree... ");
+    while (tree -> root != NULL) bt_remove(tree, tree -> root -> value);
+    _(t, tree -> root == NULL, "done.");
+    
     printf("Adding numbers for further tests... "); {
         int i;
         for (i = 0; i < 30 /* (2^n - 1) - 1 */; i++) {
