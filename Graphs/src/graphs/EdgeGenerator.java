@@ -9,7 +9,7 @@ package graphs;
  * @param <T>
  *            the type of values represented by the nodes of the edge
  */
-public interface EdgeGenerator<T, E extends Edge<? super T>> {
+public interface EdgeGenerator<T, E extends Edge<T>> {
 
 	/**
 	 * Generates an edge {@code e} that "connects" the two given nodes,
@@ -23,6 +23,6 @@ public interface EdgeGenerator<T, E extends Edge<? super T>> {
 	 * @return some edge {@code e} such that {@link Edge#connects(Node, Node)
 	 *         e.connects(n1, n2)} is {@code true}.
 	 */
-	public E createEdge(Node<? super T> n1, Node<? super T> n2);
+	public E createEdge(Node<T> n1, Node<T> n2);
 
 }

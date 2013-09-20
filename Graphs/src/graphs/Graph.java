@@ -12,7 +12,7 @@ package graphs;
  * @param <E>
  *            the type of edge in this graph
  */
-public interface Graph<T, N extends Node<? super T>, E extends Edge<? super T>> {
+public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 
 	/**
 	 * Tests whether the given nodes are connected in the graph. This may have a

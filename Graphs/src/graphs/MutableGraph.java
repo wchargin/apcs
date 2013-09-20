@@ -14,7 +14,7 @@ package graphs;
  * @param <E>
  *            the type of edge in this graph
  */
-public interface MutableGraph<T, N extends Node<? super T>, E extends Edge<? super T>>
+public interface MutableGraph<T, N extends Node<T>, E extends Edge<T>>
 		extends Graph<T, N, E> {
 
 	/**

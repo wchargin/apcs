@@ -20,6 +20,6 @@ public interface Edge<T> {
 	 *            the second node in question
 	 * @return whether this connects the first node to the second node
 	 */
-	public boolean connects(Node<? super T> a, Node<? super T> b);
+	public boolean connects(Node<T> a, Node<T> b);
 
 }

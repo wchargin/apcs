@@ -19,7 +19,7 @@ import java.util.Map;
  * @param <E>
  *            the type of edge in this graph
  */
-public class AdjacencyGraph<T, N extends Node<? super T>, E extends Edge<T>>
+public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>>
 		implements MutableGraph<T, N, E> {
 
 	/**
@@ -30,7 +30,7 @@ public class AdjacencyGraph<T, N extends Node<? super T>, E extends Edge<T>>
 	/**
 	 * The edge generator for this graph.
 	 */
-	private final EdgeGenerator<T, ? extends E> generator;
+	private final EdgeGenerator<T, E> generator;
 
 	/**
 	 * Creates the graph with the given edge generator.
@@ -38,7 +38,7 @@ public class AdjacencyGraph<T, N extends Node<? super T>, E extends Edge<T>>
 	 * @param generator
 	 *            the edge generator for the graph
 	 */
-	public AdjacencyGraph(EdgeGenerator<T, ? extends E> generator) {
+	public AdjacencyGraph(EdgeGenerator<T, E> generator) {
 		super();
 		this.generator = generator;
 	}
