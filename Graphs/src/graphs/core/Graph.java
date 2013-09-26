@@ -1,5 +1,7 @@
 package graphs.core;
 
+import java.util.Set;
+
 /**
  * Any type of graph.
  * 
@@ -37,19 +39,33 @@ public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 	public boolean contains(N node);
 
 	/**
-	 * Performs the given operation on each node of the tree.
-	 * 
-	 * @param op
-	 *            the operation to perform
-	 */
-	public void foreachNode(Operation<? super N> op);
-	
-	/**
 	 * Performs the given operation on each edge of the tree.
 	 * 
 	 * @param op
 	 *            the operation to perform
 	 */
 	public void foreachEdge(Operation<? super E> op);
+
+	/**
+	 * Performs the given operation on each node of the tree.
+	 * 
+	 * @param op
+	 *            the operation to perform
+	 */
+	public void foreachNode(Operation<? super N> op);
+
+	/**
+	 * Gets a set of all the edges of the graph.
+	 * 
+	 * @return a set of edges
+	 */
+	public Set<E> getEdges();
+
+	/**
+	 * Gets a set of all the nodes of the graph.
+	 * 
+	 * @return the nodes in the graph
+	 */
+	public Set<N> getNodes();
 
 }

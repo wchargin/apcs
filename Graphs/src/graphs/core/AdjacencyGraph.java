@@ -105,22 +105,32 @@ public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>> implements
 
 	@Override
 	public void foreachEdge(Operation<? super E> op) {
-		Set<E> uniqueEdges = new HashSet<>();
-		for (Map.Entry<N, List<E>> entry : adjacencyList.entrySet()) {
-			for (E e : entry.getValue()) {
-				uniqueEdges.add(e);
-			}
-		}
-		for (E e : uniqueEdges) {
+		for (E e : getEdges()) {
 			op.invoke(e);
 		}
 	}
 
 	@Override
 	public void foreachNode(Operation<? super N> op) {
-		for (N n : adjacencyList.keySet()) {
+		for (N n : getNodes()) {
 			op.invoke(n);
 		}
+	}
+
+	@Override
+	public Set<E> getEdges() {
+		Set<E> edges = new HashSet<>();
+		for (Map.Entry<N, List<E>> entry : adjacencyList.entrySet()) {
+			for (E e : entry.getValue()) {
+				edges.add(e);
+			}
+		}
+		return edges;
+	}
+
+	@Override
+	public Set<N> getNodes() {
+		return new HashSet<>(adjacencyList.keySet());
 	}
 
 	@Override
