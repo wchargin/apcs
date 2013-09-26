@@ -1,4 +1,4 @@
-package graphs;
+package graphs.core;
 
 /**
  * An edge in a graph.

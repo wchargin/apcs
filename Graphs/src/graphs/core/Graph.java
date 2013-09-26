@@ -1,4 +1,4 @@
-package graphs;
+package graphs.core;
 
 /**
  * Any type of graph.

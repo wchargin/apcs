@@ -1,4 +1,4 @@
-package graphs;
+package graphs.core;
 
 import java.util.HashMap;
 import java.util.Iterator;

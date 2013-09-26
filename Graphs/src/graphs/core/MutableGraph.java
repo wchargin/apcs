@@ -1,4 +1,4 @@
-package graphs;
+package graphs.core;
 
 /**
  * A graph that can be modified. Mutable graphs support some basic graph

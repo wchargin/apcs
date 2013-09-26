@@ -1,4 +1,4 @@
-package graphs;
+package graphs.core;
 
 /**
  * A node in a graph.

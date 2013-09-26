@@ -1,4 +1,4 @@
-package graphs;
+package graphs.core;
 
 /**
  * A functional interface for generating a specific type of edge for given
