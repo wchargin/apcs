@@ -4,6 +4,7 @@ import graphs.core.Edge;
 import graphs.core.Graph;
 import graphs.core.Node;
 import graphs.core.Operation;
+import graphs.core.WeightedEdge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,11 @@ public abstract class MSTAlgorithm {
 	 *            the graph from which the tree is constructed
 	 * @return a safe edge that maintains the minimum spanning tree property
 	 */
-	protected abstract <T> Edge<T> findSafeEdge(List<Edge<T>> current,
-			Graph<T, Node<T>, Edge<T>> graph);
+	protected abstract <T, W extends Comparable<W>> Edge<T> findSafeEdge(
+			List<Edge<T>> current, Graph<T, Node<T>, WeightedEdge<T, W>> graph);
 
-	public <T> List<Edge<T>> findMST(Graph<T, Node<T>, Edge<T>> graph,
-			Node<T> source) {
+	public <T, W extends Comparable<W>> List<Edge<T>> findMST(
+			Graph<T, Node<T>, WeightedEdge<T, W>> graph, Node<T> source) {
 		final List<Edge<T>> mst = new ArrayList<Edge<T>>();
 
 		// use a final array instead of a boolean so that we can access it from
