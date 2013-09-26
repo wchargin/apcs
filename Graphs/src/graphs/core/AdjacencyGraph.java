@@ -1,10 +1,12 @@
 package graphs.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A graph implementation that uses an adjacency list for storage. This graph
@@ -99,6 +101,19 @@ public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>> implements
 	@Override
 	public boolean contains(N node) {
 		return adjacencyList.containsKey(node);
+	}
+
+	@Override
+	public void foreachEdge(Operation<E> op) {
+		Set<E> uniqueEdges = new HashSet<>();
+		for (Map.Entry<N, List<E>> entry : adjacencyList.entrySet()) {
+			for (E e : entry.getValue()) {
+				uniqueEdges.add(e);
+			}
+		}
+		for (E e : uniqueEdges) {
+			op.invoke(e);
+		}
 	}
 
 	@Override
