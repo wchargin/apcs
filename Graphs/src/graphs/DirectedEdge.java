@@ -12,16 +12,16 @@ package graphs;
  *            the type of value in the nodes connected by this edge
  */
 public class DirectedEdge<T> implements Edge<T> {
-	
+
 	/**
 	 * The head node of this edge.
 	 */
-	private final Node<T> head;
+	private final Node<? extends T> head;
 
 	/**
 	 * The tail node of this edge.
 	 */
-	private final Node<T> tail;
+	private final Node<? extends T> tail;
 
 	/**
 	 * Creates an edge connecting the given head node to the given tail node.
@@ -31,7 +31,7 @@ public class DirectedEdge<T> implements Edge<T> {
 	 * @param tail
 	 *            the tail node
 	 */
-	public DirectedEdge(Node<T> head, Node<T> tail) {
+	public DirectedEdge(Node<? extends T> head, Node<? extends T> tail) {
 		this.head = head;
 		this.tail = tail;
 	}
@@ -40,13 +40,20 @@ public class DirectedEdge<T> implements Edge<T> {
 	public final boolean connects(Node<T> n1, Node<T> n2) {
 		return n1 == head && n2 == tail;
 	}
-	
+
 	/**
 	 * Creates a generator of directed edges.
 	 * 
 	 * @return a new generator
 	 */
 	public static final <T> EdgeGenerator<T, DirectedEdge<T>> generator () {
-		return (n1, n2) -> new DirectedEdge<T>(n1, n2);
+		class DirectedEdgeGenerator implements EdgeGenerator<T, DirectedEdge<T>> {
+			@Override
+			public DirectedEdge<T> createEdge(Node<T> n1, Node<T> n2) {
+				return new DirectedEdge<T>(n1, n2);
+			}
+		}
+		return new DirectedEdgeGenerator();
 	}
+	
 }

@@ -31,7 +31,7 @@ public class UndirectedEdge<T> implements Edge<T> {
 	 * @param tail
 	 *            the tail node
 	 */
-	public DirectedEdge(Node<T> head, Node<T> tail) {
+	public UndirectedEdge(Node<T> head, Node<T> tail) {
 		this.head = head;
 		this.tail = tail;
 	}
@@ -43,11 +43,17 @@ public class UndirectedEdge<T> implements Edge<T> {
 	}
 	
 	/**
-	 * Creates a generator of directed edges.
+	 * Creates a generator of undirected edges.
 	 * 
 	 * @return a new generator
 	 */
 	public static final <T> EdgeGenerator<T, UndirectedEdge<T>> generator () {
-		return (n1, n2) -> new UndirectedEdge<T>(n1, n2);
+		class UndirectedEdgeGenerator implements EdgeGenerator<T, UndirectedEdge<T>> {
+			@Override
+			public UndirectedEdge<T> createEdge(Node<T> n1, Node<T> n2) {
+				return new UndirectedEdge<T>(n1, n2);
+			}
+		}
+		return new UndirectedEdgeGenerator();
 	}
 }
