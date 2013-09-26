@@ -42,7 +42,7 @@ public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 	 * @param op
 	 *            the operation to perform
 	 */
-	public void foreachNode(Operation<N> op);
+	public void foreachNode(Operation<? super N> op);
 	
 	/**
 	 * Performs the given operation on each edge of the tree.
@@ -50,6 +50,6 @@ public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 	 * @param op
 	 *            the operation to perform
 	 */
-	public void foreachEdge(Operation<E> op);
+	public void foreachEdge(Operation<? super E> op);
 
 }
