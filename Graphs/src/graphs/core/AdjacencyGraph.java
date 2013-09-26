@@ -19,8 +19,8 @@ import java.util.Map;
  * @param <E>
  *            the type of edge in this graph
  */
-public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>>
-		implements MutableGraph<T, N, E> {
+public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>> implements
+		MutableGraph<T, N, E> {
 
 	/**
 	 * The adjacency list for this graph.
@@ -99,6 +99,13 @@ public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>>
 	@Override
 	public boolean contains(N node) {
 		return adjacencyList.containsKey(node);
+	}
+
+	@Override
+	public void foreachNode(Operation<N> op) {
+		for (N n : adjacencyList.keySet()) {
+			op.invoke(n);
+		}
 	}
 
 	@Override

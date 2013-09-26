@@ -36,4 +36,12 @@ public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 	 */
 	public boolean contains(N node);
 
+	/**
+	 * Performs the given operation on each node of the tree.
+	 * 
+	 * @param op
+	 *            the operation to perform
+	 */
+	public void foreachNode(Operation<N> op);
+
 }
