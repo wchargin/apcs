@@ -7,7 +7,7 @@ import java.util.Set;
 public class TreeNode<T> implements Iterable<TreeNode<T>> {
 
 	private Set<TreeNode<T>> children;
-	
+
 	public final T value;
 
 	public TreeNode(T value) {
@@ -34,6 +34,14 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
 		} else if (!children.equals(other.children))
 			return false;
 		return true;
+	}
+
+	public int getSize() {
+		int size = 1;
+		for (TreeNode<T> child : children) {
+			size += child.getSize();
+		}
+		return size;
 	}
 
 	@Override
