@@ -7,9 +7,12 @@ import java.util.Set;
 public class TreeNode<T> implements Iterable<TreeNode<T>> {
 
 	private Set<TreeNode<T>> children;
+	
+	public final T value;
 
-	public TreeNode() {
+	public TreeNode(T value) {
 		children = new HashSet<TreeNode<T>>();
+		this.value = value;
 	}
 
 	public boolean addChild(TreeNode<T> n) {
