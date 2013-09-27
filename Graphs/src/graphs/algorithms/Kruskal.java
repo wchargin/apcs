@@ -1,6 +1,6 @@
 package graphs.algorithms;
 
-import graphs.core.Edge;
+import graphs.core.DisjointSet;
 import graphs.core.Graph;
 import graphs.core.Node;
 import graphs.core.WeightedEdge;
@@ -19,18 +19,29 @@ import java.util.List;
 public class Kruskal implements MSTAlgorithm {
 
 	@Override
-	public <T, W extends Comparable<W>> List<Edge<T>> findMST(
+	public <T, W extends Comparable<W>> List<WeightedEdge<T, W>> findMST(
 			Graph<T, Node<T>, WeightedEdge<T, W>> graph) {
 		// Create the final list of edges (the tree).
-		List<WeightedEdge<T, W>> edges = new ArrayList<>(); 
-		
+		List<WeightedEdge<T, W>> edges = new ArrayList<>();
+
+		DisjointSet<Node<T>> forest = new DisjointSet<>();
+		for (Node<T> node : graph.getNodes()) {
+			forest.makeSet(node);
+		}
+
 		List<WeightedEdge<T, W>> allEdges = new ArrayList<>(graph.getEdges());
 		Collections.sort(allEdges, new WeightedEdgeComparator<W>());
-		
 		for (WeightedEdge<T, W> edge : allEdges) {
-			
+			Node<T> u = edge.getHead(), v = edge.getTail();
+			u = forest.findSet(u);
+			v = forest.findSet(v);
+			if (u != v) {
+				edges.add(edge);
+				forest.union(u, v);
+			}
 		}
-		return null;
+
+		return edges;
 	}
 
 }

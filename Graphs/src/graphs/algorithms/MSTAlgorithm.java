@@ -23,7 +23,7 @@ public interface MSTAlgorithm {
 	 *            the graph
 	 * @return a minimum spanning tree
 	 */
-	public <T, W extends Comparable<W>> List<Edge<T>> findMST(
+	public <T, W extends Comparable<W>> List<WeightedEdge<T, W>> findMST(
 			Graph<T, Node<T>, WeightedEdge<T, W>> graph);
 
 }
