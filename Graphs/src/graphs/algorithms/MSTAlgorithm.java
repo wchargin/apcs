@@ -1,6 +1,5 @@
 package graphs.algorithms;
 
-import graphs.core.Edge;
 import graphs.core.Graph;
 import graphs.core.Node;
 import graphs.core.WeightedEdge;
