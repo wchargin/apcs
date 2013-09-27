@@ -14,14 +14,30 @@ package graphs.core;
 public class DirectedEdge<T> implements Edge<T> {
 
 	/**
+	 * Creates a generator of directed edges.
+	 * 
+	 * @return a new generator
+	 */
+	public static final <T> EdgeGenerator<T, DirectedEdge<T>> generator() {
+		class DirectedEdgeGenerator implements
+				EdgeGenerator<T, DirectedEdge<T>> {
+			@Override
+			public DirectedEdge<T> createEdge(Node<T> n1, Node<T> n2) {
+				return new DirectedEdge<T>(n1, n2);
+			}
+		}
+		return new DirectedEdgeGenerator();
+	}
+
+	/**
 	 * The head node of this edge.
 	 */
-	private final Node<? extends T> head;
+	private final Node<T> head;
 
 	/**
 	 * The tail node of this edge.
 	 */
-	private final Node<? extends T> tail;
+	private final Node<T> tail;
 
 	/**
 	 * Creates an edge connecting the given head node to the given tail node.
@@ -31,7 +47,7 @@ public class DirectedEdge<T> implements Edge<T> {
 	 * @param tail
 	 *            the tail node
 	 */
-	public DirectedEdge(Node<? extends T> head, Node<? extends T> tail) {
+	public DirectedEdge(Node<T> head, Node<T> tail) {
 		this.head = head;
 		this.tail = tail;
 	}
@@ -41,19 +57,14 @@ public class DirectedEdge<T> implements Edge<T> {
 		return n1 == head && n2 == tail;
 	}
 
-	/**
-	 * Creates a generator of directed edges.
-	 * 
-	 * @return a new generator
-	 */
-	public static final <T> EdgeGenerator<T, DirectedEdge<T>> generator () {
-		class DirectedEdgeGenerator implements EdgeGenerator<T, DirectedEdge<T>> {
-			@Override
-			public DirectedEdge<T> createEdge(Node<T> n1, Node<T> n2) {
-				return new DirectedEdge<T>(n1, n2);
-			}
-		}
-		return new DirectedEdgeGenerator();
+	@Override
+	public Node<T> getHead() {
+		return head;
 	}
-	
+
+	@Override
+	public Node<T> getTail() {
+		return tail;
+	}
+
 }

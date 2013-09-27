@@ -12,7 +12,23 @@ package graphs.core;
  *            the type of value in the nodes connected by this edge
  */
 public class UndirectedEdge<T> implements Edge<T> {
-	
+
+	/**
+	 * Creates a generator of undirected edges.
+	 * 
+	 * @return a new generator
+	 */
+	public static final <T> EdgeGenerator<T, UndirectedEdge<T>> generator() {
+		class UndirectedEdgeGenerator implements
+				EdgeGenerator<T, UndirectedEdge<T>> {
+			@Override
+			public UndirectedEdge<T> createEdge(Node<T> n1, Node<T> n2) {
+				return new UndirectedEdge<T>(n1, n2);
+			}
+		}
+		return new UndirectedEdgeGenerator();
+	}
+
 	/**
 	 * The head node of this edge.
 	 */
@@ -38,22 +54,16 @@ public class UndirectedEdge<T> implements Edge<T> {
 
 	@Override
 	public final boolean connects(Node<T> n1, Node<T> n2) {
-		return (n1 == head && n2 == tail)
-		    || (n1 == tail && n2 == head);
+		return (n1 == head && n2 == tail) || (n1 == tail && n2 == head);
 	}
-	
-	/**
-	 * Creates a generator of undirected edges.
-	 * 
-	 * @return a new generator
-	 */
-	public static final <T> EdgeGenerator<T, UndirectedEdge<T>> generator () {
-		class UndirectedEdgeGenerator implements EdgeGenerator<T, UndirectedEdge<T>> {
-			@Override
-			public UndirectedEdge<T> createEdge(Node<T> n1, Node<T> n2) {
-				return new UndirectedEdge<T>(n1, n2);
-			}
-		}
-		return new UndirectedEdgeGenerator();
+
+	@Override
+	public Node<T> getHead() {
+		return head;
+	}
+
+	@Override
+	public Node<T> getTail() {
+		return tail;
 	}
 }
