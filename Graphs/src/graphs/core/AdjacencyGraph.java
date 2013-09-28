@@ -129,6 +129,11 @@ public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>> implements
 	}
 
 	@Override
+	public Set<E> getNeighboringEdges(N node) {
+		return new HashSet<E>(adjacencyList.get(node));
+	}
+
+	@Override
 	public Set<Node<T>> getNeighbors(N node) {
 		Set<Node<T>> neighbors = new HashSet<>();
 		for (E edge : adjacencyList.get(node)) {

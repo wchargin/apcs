@@ -78,4 +78,13 @@ public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 	 */
 	public Set<Node<T>> getNeighbors(N node);
 
+	/**
+	 * Gets all edges originating at the given node.
+	 * 
+	 * @param node
+	 *            the source node
+	 * @return the neighboring edges
+	 */
+	public Set<E> getNeighboringEdges(N node);
+
 }
