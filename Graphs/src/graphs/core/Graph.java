@@ -68,4 +68,14 @@ public interface Graph<T, N extends Node<T>, E extends Edge<T>> {
 	 */
 	public Set<N> getNodes();
 
+	/**
+	 * Gets all the neighbors of the given node. A <em>neighbor</em> is a node
+	 * to which there is an edge from this node.
+	 * 
+	 * @param node
+	 *            the source node
+	 * @return the neighbors of the node
+	 */
+	public Set<Node<T>> getNeighbors(N node);
+
 }
