@@ -46,6 +46,10 @@ public class WordLadder {
 			System.out.println("Successfully created file dictionary.");
 		} else {
 			try {
+				if (args[0].equals("-")) {
+					// use default
+					args[0] = "http://www.andrew.cmu.edu/course/15-121/dictionary.txt";
+				}
 				URL u = new URL(args[0]);
 				dict = new WebDictionary(u);
 				System.out.println("Successfully created web dictionary.");
