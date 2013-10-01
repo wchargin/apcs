@@ -14,7 +14,7 @@ public abstract class AbstractDictionary implements DictionaryReader {
 	/**
 	 * The dictionary contents.
 	 */
-	private HashSet<String> dictionary;
+	private HashSet<String> dictionary = new HashSet<>();
 
 	@Override
 	public boolean contains(String word) {
