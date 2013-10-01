@@ -14,20 +14,22 @@ import java.util.List;
  * @author William Chargin
  * 
  */
-public abstract class InputStreamDictionary extends AbstractDictionary {
+public class InputStreamDictionary extends AbstractDictionary {
 
 	/**
-	 * Gets the input stream from which to read.
-	 * 
-	 * @return the input stream
+	 * The stream to read from.
 	 */
-	protected abstract InputStream getStream();
+	private InputStream stream;
+
+	public InputStreamDictionary(InputStream in) {
+		stream = in;
+	}
 
 	@Override
 	protected Collection<? extends String> loadDictionary() {
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					getStream()));
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(stream));
 			List<String> contents = new ArrayList<>();
 			String line;
 			while ((line = br.readLine()) != null) {
