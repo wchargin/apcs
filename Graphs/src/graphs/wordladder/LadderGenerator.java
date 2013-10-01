@@ -3,6 +3,7 @@ package graphs.wordladder;
 import graphs.wordladder.dictionary.DictionaryReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -58,7 +59,7 @@ public class LadderGenerator {
 	 */
 	public List<String> generateLadder(StringPair pair) {
 		if (pair.s1.equals(pair.s2)) {
-			return new ArrayList<String>();
+			return Arrays.<String>asList(pair.s1);
 		}
 
 		String start = pair.s1;
