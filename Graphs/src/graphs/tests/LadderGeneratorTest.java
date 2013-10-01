@@ -41,7 +41,7 @@ public class LadderGeneratorTest {
 				StringPair p = new StringPair(split[0], split[1]);
 				List<String> trace = gen.generateLadder(p);
 				String[] expectedSplit = expectline.split(", ");
-				if (expectedSplit[0] == "") {
+				if (expectedSplit[0].equals("")) {
 					// don't know why this happens
 					expectedSplit = new String[] {};
 				}
