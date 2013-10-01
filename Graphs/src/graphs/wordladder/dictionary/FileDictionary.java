@@ -14,23 +14,16 @@ import java.io.InputStream;
 public class FileDictionary extends InputStreamDictionary {
 
 	/**
-	 * The file from which to read.
-	 */
-	private File file;
-
-	/**
 	 * Creates the dictionary with the given file.
 	 * 
 	 * @param file
 	 *            the file containing the dictionary
 	 */
 	public FileDictionary(File file) {
-		super();
-		this.file = file;
+		super(getStream(file));
 	}
 
-	@Override
-	protected InputStream getStream() {
+	private static InputStream getStream(File file) {
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
