@@ -8,9 +8,8 @@ import graphs.wordladder.dictionary.WebDictionary;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The WordLadder driver class.
@@ -59,7 +58,7 @@ public class WordLadder {
 			}
 		}
 
-		Set<StringPair> pairs = new HashSet<>();
+		List<StringPair> pairs = new ArrayList<>();
 		for (int i = 1; i < args.length; i += 2) {
 			StringPair pair = new StringPair(args[i], args[i + 1]);
 			pairs.add(pair);
@@ -69,8 +68,9 @@ public class WordLadder {
 		LadderGenerator lg = new LadderGenerator();
 		lg.setDictionary(dict);
 
-		System.out
-				.println("Created ladder dictionary. Beginning generation...");
+		System.out.println("Created ladder dictionary.");
+		System.out.println();
+		System.out.println("Beginning generation...");
 
 		for (StringPair pair : pairs) {
 			System.out.println("Generating ladder for: " + pair);
@@ -82,6 +82,7 @@ public class WordLadder {
 				for (String trace : ladder) {
 					System.out.println(" * " + trace);
 				}
+				System.out.println("[done]");
 			}
 			System.out.println();
 		}

@@ -14,18 +14,17 @@ public abstract class AbstractDictionary implements DictionaryReader {
 	/**
 	 * The dictionary contents.
 	 */
-	private HashSet<String> dictionary;
+	private HashSet<String> dictionary = new HashSet<>();
 
 	@Override
 	public boolean contains(String word) {
+		preloadDictionary();
 		return dictionary.contains(word);
 	}
 
 	@Override
 	public Iterator<String> iterator() {
-		if (!initialized) {
-			preloadDictionary();
-		}
+		preloadDictionary();
 		return dictionary.iterator();
 	}
 
@@ -42,8 +41,12 @@ public abstract class AbstractDictionary implements DictionaryReader {
 			initialized = true;
 			dictionary = new HashSet<>();
 			for (String word : loadDictionary()) {
-				// trim pre/post whitespace, lowercase, remove non-word characters
-				dictionary.add(word.trim().toLowerCase().replaceAll("\\W", ""));
+				// trim pre/post whitespace, lowercase, remove non-word
+				// characters
+				word = word.trim().toLowerCase().replaceAll("\\W", "");
+				if (!word.isEmpty()) {
+					dictionary.add(word);
+				}
 			}
 		}
 	}
