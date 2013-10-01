@@ -18,14 +18,13 @@ public abstract class AbstractDictionary implements DictionaryReader {
 
 	@Override
 	public boolean contains(String word) {
+		preloadDictionary();
 		return dictionary.contains(word);
 	}
 
 	@Override
 	public Iterator<String> iterator() {
-		if (!initialized) {
-			preloadDictionary();
-		}
+		preloadDictionary();
 		return dictionary.iterator();
 	}
 
