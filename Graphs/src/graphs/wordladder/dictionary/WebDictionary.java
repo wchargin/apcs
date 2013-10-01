@@ -13,23 +13,16 @@ import java.net.URL;
 public class WebDictionary extends InputStreamDictionary {
 
 	/**
-	 * The URL for this dictionary.
-	 */
-	private final URL url;
-
-	/**
 	 * Creates the dictionary with the given URL.
 	 * 
 	 * @param url
 	 *            the URL containing the dictionary
 	 */
 	public WebDictionary(URL url) {
-		super();
-		this.url = url;
+		super(getStream(url));
 	}
 
-	@Override
-	protected InputStream getStream() {
+	private static InputStream getStream(URL url) {
 		try {
 			return url.openStream();
 		} catch (IOException e) {
