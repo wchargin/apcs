@@ -41,6 +41,10 @@ public class LadderGeneratorTest {
 				StringPair p = new StringPair(split[0], split[1]);
 				List<String> trace = gen.generateLadder(p);
 				String[] expectedSplit = expectline.split(", ");
+				if (expectedSplit[0] == "") {
+					// don't know why this happens
+					expectedSplit = new String[] {};
+				}
 				if (expectedSplit.length == 0) {
 					// should be no path
 					assertEquals("Should be \"no path\" but path found", null, trace);
