@@ -61,6 +61,9 @@ public class LadderGenerator {
 		if (pair.s1.equals(pair.s2)) {
 			return Arrays.<String>asList(pair.s1);
 		}
+		if (!dictionary.contains(pair.s1) || !dictionary.contains(pair.s2)) {
+			return null;
+		}
 
 		String start = pair.s1;
 		Set<String> alreadyUsedWords = new HashSet<>();
