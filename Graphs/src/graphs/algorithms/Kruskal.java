@@ -20,7 +20,7 @@ public class Kruskal implements MSTAlgorithm {
 
 	@Override
 	public <T, W extends Comparable<W>> List<WeightedEdge<T, W>> findMST(
-			Graph<T, Node<T>, WeightedEdge<T, W>> graph) {
+			Graph<T, Node<T>, ? extends WeightedEdge<T, W>> graph) {
 		// Create the final list of edges (the tree).
 		List<WeightedEdge<T, W>> edges = new ArrayList<>();
 
