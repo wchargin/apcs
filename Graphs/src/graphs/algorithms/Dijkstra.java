@@ -60,8 +60,12 @@ public class Dijkstra {
 			for (WeightedEdge<T, W> edge : graph.getNeighboringEdges(closest)) {
 				double totalDistance = distance
 						+ edge.getWeight().doubleValue();
-				if (totalDistance < distances.get(edge.getTail())) {
-					distances.put(edge.getTail(), totalDistance);
+				Node<T> tail = edge.getTail();
+				if (totalDistance < distances.get(tail)) {
+					distances.put(tail, totalDistance);
+					// remove and re-add to priority queue to force re-heapify
+					queue.remove(tail);
+					queue.add(tail);
 				}
 			}
 		}
