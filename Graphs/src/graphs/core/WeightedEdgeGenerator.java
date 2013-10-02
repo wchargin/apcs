@@ -9,13 +9,14 @@ package graphs.core;
  * @param <T>
  *            the type of values represented by the nodes of the edge
  */
-public abstract class WeightedEdgeGenerator<T, W extends Comparable<W>, E extends WeightedEdge<T, W>> {
+public abstract class WeightedEdgeGenerator<T, W extends Comparable<W>, E extends WeightedEdge<T, W>>
+		implements EdgeGenerator<T, E> {
 
 	/**
 	 * The next weight to be used by this weight generator.
 	 */
 	public W nextWeight;
-	
+
 	/**
 	 * Generates an edge {@code e} that "connects" the two given nodes,
 	 * according to the edge's definition of
