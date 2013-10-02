@@ -19,14 +19,18 @@ import java.util.PriorityQueue;
 public class Dijkstra {
 
 	/**
-	 * Finds a minimum spanning tree for the given graph.
+	 * Finds the single-source shortest path tree for the given graph and
+	 * source.
 	 * 
 	 * @param graph
 	 *            the graph
-	 * @return a minimum spanning tree
+	 * @param source
+	 *            the source node
+	 * @return
 	 */
-	public <T, W extends Number & Comparable<W>> Map<Node<T>, Double> findMST(
-			Graph<T, Node<T>, WeightedEdge<T, W>> graph, Node<T> source) {
+	public <T, W extends Number & Comparable<W>> Map<Node<T>, Double> findShortestPathTree(
+			Graph<T, Node<T>, ? extends WeightedEdge<T, W>> graph,
+			Node<T> source) {
 		final Map<Node<T>, Double> distances = new HashMap<>();
 
 		PriorityQueue<Node<T>> queue = new PriorityQueue<Node<T>>(graph
