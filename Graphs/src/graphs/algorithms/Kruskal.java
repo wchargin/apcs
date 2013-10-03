@@ -31,6 +31,7 @@ public class Kruskal implements MSTAlgorithm {
 
 		List<WeightedEdge<T, W>> allEdges = new ArrayList<>(graph.getEdges());
 		Collections.sort(allEdges, new WeightedEdgeComparator<W>());
+		
 		for (WeightedEdge<T, W> edge : allEdges) {
 			Node<T> u = edge.getHead(), v = edge.getTail();
 			u = forest.findSet(u);
