@@ -1,6 +1,7 @@
 package graphs.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import graphs.algorithms.Kruskal;
 import graphs.core.AdjacencyGraph;
 import graphs.core.BasicNode;
@@ -10,9 +11,9 @@ import graphs.core.UndirectedWeightedEdge;
 import graphs.core.WeightedEdge;
 import graphs.core.WeightedEdgeGenerator;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,18 +58,17 @@ public class KruskalTest {
 		link(ni, nc, 2);
 		link(ni, ng, 6);
 		link(nc, nf, 4);
-		link(nc, nd, 9);
+		link(nc, nd, 7);
 		link(ng, nf, 2);
 		link(nd, ne, 9);
 		link(nd, nf, 14);
 		link(ne, nf, 10);
-		
+
 		Kruskal k = new Kruskal();
 		List<WeightedEdge<Integer, Double>> mst = k.findMST(g);
 
-		System.out.println(mst);
 		assertEquals("Size incorrect.", 8, mst.size());
-		Set<UndirectedWeightedEdge<Integer, Double>> l = new HashSet<>();
+		List<UndirectedWeightedEdge<Integer, Double>> l = new ArrayList<>();
 		l.add(new UndirectedWeightedEdge<Integer, Double>(na, nb, 4d));
 		l.add(new UndirectedWeightedEdge<Integer, Double>(na, nh, 8d));
 		l.add(new UndirectedWeightedEdge<Integer, Double>(nh, ng, 1d));
@@ -77,13 +77,18 @@ public class KruskalTest {
 		l.add(new UndirectedWeightedEdge<Integer, Double>(nc, ni, 2d));
 		l.add(new UndirectedWeightedEdge<Integer, Double>(nc, nd, 7d));
 		l.add(new UndirectedWeightedEdge<Integer, Double>(nd, ne, 9d));
-		
-		assertEquals(l, new HashSet<>(mst));
+
+		Iterator<WeightedEdge<Integer, Double>> it = mst.iterator();
+		while (it.hasNext()) {
+			WeightedEdge<Integer, Double> e1 = it.next();
+			if (!l.contains(e1))
+				fail("Unmatched edge " + e1);
+		}
 	}
 
 	private void link(Node<Integer> n1, Node<Integer> n2, double weight) {
 		gen.nextWeight = weight;
 		g.link(n1, n2);
-		g.link(n2, n1);
+//		g.link(n2, n1);
 	}
 }
