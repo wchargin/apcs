@@ -1,6 +1,7 @@
 package graphs.gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
@@ -9,11 +10,12 @@ import java.awt.image.BufferedImage;
 import jgame.ButtonState;
 import jgame.GButton;
 import jgame.GContainer;
+import jgame.GMessage;
 import jgame.GObject;
 import jgame.GSprite;
 
-public final class GradientRoundRectangle {
-	private GradientRoundRectangle() {
+public final class ComponentGenerator {
+	private ComponentGenerator() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -119,6 +121,18 @@ public final class GradientRoundRectangle {
 	
 	public static final GButton createButton() {
 		return createButton(100);
+	}
+	
+	public static final GButton attachLabel(GButton button, String text) {
+		GMessage label = new GMessage(text);
+		label.setAlignmentX(0.5);
+		label.setFontSize(18f);
+		label.setFontStyle(Font.BOLD);
+		button.setSize(button.getWidth(), button.getHeight());
+		button.setAnchorWeight(0.5, 0.5);
+		label.setAlignmentY(0.5);
+		button.addAtCenter(label);
+		return button;
 	}
 
 }
