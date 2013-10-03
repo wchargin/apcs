@@ -13,16 +13,30 @@ public class GraphsView extends GContainer {
 	public GraphsView(GraphSettings gs) {
 		setSize(800, 600);
 		
+		GButton btnAddNode = createButton("Add Node");
+		addButton(btnAddNode, 0);
 		
+		GButton btnClear = createButton("Clear");
+		addButton(btnClear, 1);
 		
-		GButton btnSettings = ComponentGenerator.attachLabel(ComponentGenerator.createButton(), "Settings");
-		addButton(btnSettings, 5);
+		GButton btnDijkstra = createButton("Dijkstra");
+		addButton(btnDijkstra, 2);
+		
+		GButton btnKruskal = createButton("Kruskal");
+		addButton(btnKruskal, 3);
+		
+		GButton btnSettings = createButton("Settings");
+		addButton(btnSettings, 6);
 		btnSettings.addListener(new ButtonListener() {
 			@Override
 			public void mouseClicked(Context context) {
 				context.setCurrentGameView(Views.SETTINGS);
 			}
 		});
+	}
+	
+	private GButton createButton(String text) {
+		return ComponentGenerator.attachLabel(ComponentGenerator.createButton(), text);
 	}
 	
 	private void addButton(GObject button, int buttonIndex) {
