@@ -18,7 +18,7 @@ public class WeightedEdgeComparator<W extends Comparable<W>> implements
 
 	@Override
 	public int compare(WeightedEdge<?, W> o1, WeightedEdge<?, W> o2) {
-		return o1.getWeight().compareTo(o1.getWeight());
+		return o1.getWeight().compareTo(o2.getWeight());
 	}
 
 }
