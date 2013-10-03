@@ -15,10 +15,11 @@ public class GraphsGUI extends Game {
 
 		root.addView(Views.GRAPHS, new GraphsView(gs));
 		root.addView(Views.SETTINGS, new SettingsView(gs));
+		root.addView(Views.HELP, new HelpView());
 	}
 
 	public enum Views {
-		GRAPHS, SETTINGS;
+		GRAPHS, SETTINGS, HELP;
 	}
 
 	public class GraphSettings {
