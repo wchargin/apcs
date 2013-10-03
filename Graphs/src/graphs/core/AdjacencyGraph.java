@@ -32,7 +32,11 @@ public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>> implements
 	/**
 	 * The edge generator for this graph.
 	 */
-	private final EdgeGenerator<T, E> generator;
+	private EdgeGenerator<T, ? extends E> generator;
+
+	public void setGenerator(EdgeGenerator<T, ? extends E> generator) {
+		this.generator = generator;
+	}
 
 	/**
 	 * Creates the graph with the given edge generator.
@@ -40,7 +44,7 @@ public class AdjacencyGraph<T, N extends Node<T>, E extends Edge<T>> implements
 	 * @param generator
 	 *            the edge generator for the graph
 	 */
-	public AdjacencyGraph(EdgeGenerator<T, E> generator) {
+	public AdjacencyGraph(EdgeGenerator<T, ? extends E> generator) {
 		super();
 		this.generator = generator;
 	}
