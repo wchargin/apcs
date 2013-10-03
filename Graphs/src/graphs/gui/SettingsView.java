@@ -1,16 +1,22 @@
 package graphs.gui;
 
 import graphs.gui.GraphsGUI.GraphSettings;
+import graphs.gui.GraphsGUI.Views;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.Polygon;
+import java.awt.image.BufferedImage;
 
+import jgame.ButtonState;
+import jgame.Context;
+import jgame.GButton;
 import jgame.GContainer;
 import jgame.GMessage;
 import jgame.GObject;
+import jgame.GSprite;
+import jgame.listener.ButtonListener;
 
 public class SettingsView extends GContainer {
 
@@ -24,39 +30,103 @@ public class SettingsView extends GContainer {
 
 		settings = gs;
 
-		GObject cplTextSize = createControlPanel(200, 100);
+		GObject cplTextSize = GradientRoundRectangle.createContainer(200, 65);
 		GMessage lblTextSize = createLabel("Text size");
-		GMessage valTextSize = createValue(Integer
+		final GMessage valTextSize = createValue(Integer
 				.toString((int) settings.textSize));
-		lblTextSize.setSize(200, 75);
-		valTextSize.setSize(200, 25);
-//		cplTextSize.addAt(lblTextSize, 200, 50);
-//		cplTextSize.addAt(valTextSize, 0, 50);
-		cplTextSize.addAtCenter(valTextSize);
-		cplTextSize.addAtCenter(lblTextSize);
-		addAtCenter(cplTextSize);
-	}
+		GButton btrTextSize = createDirectionButton(true);
+		GButton btlTextSize = createDirectionButton(false);
+		class TextAdjustListener extends ButtonListener {
 
-	private GObject createControlPanel(double w, double h) {
-		class ControlPanel extends GContainer {
-			private RoundRectangle2D r2d;
+			public final boolean increase;
 
-			public ControlPanel(double w, double h) {
-				r2d = new RoundRectangle2D.Double(0, 0, w, h, 16, 16);
-				setSize(w, h);
+			public TextAdjustListener(boolean increase) {
+				super();
+				this.increase = increase;
 			}
 
 			@Override
-			public void paint(Graphics2D g) {
-				g.setPaint(new GradientPaint(0, 0, Color.WHITE, 0,
-						getIntHeight(), Color.LIGHT_GRAY));
-				g.fill(r2d);
-				g.setColor(Color.BLACK);
-				g.draw(r2d);
-				super.paint(g);
+			public void mouseClicked(Context context) {
+				settings.textSize = Math.max(4, settings.textSize
+						+ (increase ? 1 : -1));
+				valTextSize.setText(Integer.toString((int) settings.textSize));
 			}
+
 		}
-		return new ControlPanel(w, h);
+		btrTextSize.addListener(new TextAdjustListener(true));
+		btlTextSize.addListener(new TextAdjustListener(false));
+		lblTextSize.setSize(200, 50);
+		valTextSize.setSize(200, 25);
+		cplTextSize.addAt(lblTextSize, 100, 40);
+		cplTextSize.addAt(valTextSize, 100, 55);
+		cplTextSize.addAt(btrTextSize, 122, 45);
+		cplTextSize.addAt(btlTextSize, 72, 45);
+		addAtCenter(cplTextSize);
+
+		GButton btnReturn = GradientRoundRectangle.createButton();
+		GMessage lblReturn = createLabel("Return");
+		btnReturn.addAtCenter(lblReturn);
+		lblReturn.setY(lblReturn.getY() - 6);
+		btnReturn.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				context.setCurrentGameView(Views.GRAPHS);
+			}
+		});
+		addAt(btnReturn, 400, 500);
+	}
+
+	private GButton createDirectionButton(boolean right) {
+		BufferedImage iNone = new BufferedImage(24, 32,
+				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage iHover = new BufferedImage(24, 32,
+				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage iPress = new BufferedImage(24, 32,
+				BufferedImage.TYPE_INT_ARGB);
+
+		Graphics2D gNone = (Graphics2D) iNone.getGraphics();
+		Graphics2D gHover = (Graphics2D) iHover.getGraphics();
+		Graphics2D gPress = (Graphics2D) iPress.getGraphics();
+
+		Polygon p = new Polygon(right ? new int[] { 1, 23, 1 } : new int[] {
+				23, 1, 23 }, new int[] { 1, 16, 31 }, 3);
+
+		GObject.antialias(gNone);
+		GObject.antialias(gHover);
+		GObject.antialias(gPress);
+
+		gNone.setColor(new Color(0, 255, 0));
+		gHover.setColor(new Color(82, 255, 82));
+		gPress.setColor(new Color(0, 212, 0));
+
+		gNone.fill(p);
+		gHover.fill(p);
+		gPress.fill(p);
+
+		gNone.setColor(Color.BLACK);
+		gHover.setColor(Color.BLACK);
+		gPress.setColor(Color.BLACK);
+
+		gNone.draw(p);
+		gHover.draw(p);
+		gPress.draw(p);
+
+		GSprite sNone = new GSprite(iNone);
+		GSprite sHover = new GSprite(iHover);
+		GSprite sPress = new GSprite(iPress);
+
+		sNone.setPrimitive(sNone.new ShapePrimitive(p));
+		sHover.setPrimitive(sHover.new ShapePrimitive(p));
+		sPress.setPrimitive(sPress.new ShapePrimitive(p));
+
+		GButton b = new GButton();
+		b.setStateSprite(ButtonState.NONE, sNone);
+		b.setStateSprite(ButtonState.HOVERED, sHover);
+		b.setStateSprite(ButtonState.PRESSED, sPress);
+
+		b.setSize(16, 32);
+
+		return b;
 	}
 
 	private GMessage createLabel(String string) {

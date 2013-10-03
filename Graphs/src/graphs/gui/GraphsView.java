@@ -14,9 +14,10 @@ public class GraphsView extends GContainer {
 		setSize(800, 600);
 		
 		GMessage msgSettings = new GMessage("Settings");
-		GButton btnSettings = new GButton();
+		GButton btnSettings = GradientRoundRectangle.createButton();
 		btnSettings.setSize(100, 30);
 		btnSettings.addAtCenter(msgSettings);
+		msgSettings.setAlignmentX(0.5);
 		addAtCenter(btnSettings);
 		btnSettings.addListener(new ButtonListener() {
 			@Override
