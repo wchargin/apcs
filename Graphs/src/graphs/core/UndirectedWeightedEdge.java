@@ -31,18 +31,17 @@ public class UndirectedWeightedEdge<T, W extends Comparable<W>> extends
 		return new DirectedEdgeGenerator();
 	}
 
-
 	@Override
 	public String toString() {
 		return "UndirectedWeightedEdge [weight=" + weight + ", getHead()="
-				+ getHead().getValue() + ", getTail()=" + getTail().getValue() + "]";
+				+ getHead().getValue() + ", getTail()=" + getTail().getValue()
+				+ "]";
 	}
-
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + ((weight == null) ? 0 : weight.hashCode());
 		return result;
 	}
@@ -51,8 +50,6 @@ public class UndirectedWeightedEdge<T, W extends Comparable<W>> extends
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		UndirectedWeightedEdge other = (UndirectedWeightedEdge) obj;
@@ -61,7 +58,14 @@ public class UndirectedWeightedEdge<T, W extends Comparable<W>> extends
 				return false;
 		} else if (!weight.equals(other.weight))
 			return false;
-		return true;
+		
+		Node<?> th = getHead(), tt = getTail();
+		Node<?> oh = other.getHead(), ot = other.getTail();
+		
+		boolean equal = (th.equals(oh) && tt.equals(ot));
+		boolean oppos = (th.equals(ot) && tt.equals(oh));
+		
+		return equal || oppos;
 	}
 
 	/**
