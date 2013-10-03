@@ -30,7 +30,7 @@ public class SettingsView extends GContainer {
 
 		settings = gs;
 
-		GObject cplTextSize = GradientRoundRectangle.createContainer(200, 65);
+		GObject cplTextSize = ComponentGenerator.createContainer(200, 65);
 		GMessage lblTextSize = createLabel("Text size");
 		final GMessage valTextSize = createValue(Integer
 				.toString((int) settings.textSize));
@@ -63,10 +63,8 @@ public class SettingsView extends GContainer {
 		cplTextSize.addAt(btlTextSize, 72, 45);
 		addAtCenter(cplTextSize);
 
-		GButton btnReturn = GradientRoundRectangle.createButton();
-		GMessage lblReturn = createLabel("Return");
-		btnReturn.addAtCenter(lblReturn);
-		lblReturn.setY(lblReturn.getY() - 6);
+		GButton btnReturn = ComponentGenerator.attachLabel(
+				ComponentGenerator.createButton(), "Return");
 		btnReturn.addListener(new ButtonListener() {
 			@Override
 			public void mouseClicked(Context context) {
