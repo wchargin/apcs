@@ -160,7 +160,13 @@ public class GraphsView extends GContainer {
 
 	public void link(NodeView nodeView) {
 		if (linkBegin != null) {
-			graph.link(linkBegin.getNode(), nodeView.getNode());
+			Node<Integer> head = linkBegin.getNode();
+			Node<Integer> tail = nodeView.getNode();
+			if (graph.connected(head, tail)) {
+				graph.unlink(head, tail);
+			} else {
+				graph.link(head, tail);
+			}
 			nodeView.setLinking(false);
 			linkBegin.setLinking(false);
 			linkBegin = null;
