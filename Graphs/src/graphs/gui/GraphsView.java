@@ -1,5 +1,6 @@
 package graphs.gui;
 
+import graphs.algorithms.Kruskal;
 import graphs.core.AdjacencyGraph;
 import graphs.core.BasicNode;
 import graphs.core.Edge;
@@ -19,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -33,11 +35,6 @@ import jgame.listener.FrameListener;
 public class GraphsView extends GContainer {
 
 	public class EdgeView extends GObject {
-
-		private WeightedEdge<Integer, Integer> dirtyEdge;
-		private Point2D initialPoint;
-		private int initialWeight;
-		private WeightBubble weightMessage;
 
 		private class WeightBubble extends GMessage {
 			public WeightBubble() {
@@ -60,40 +57,13 @@ public class GraphsView extends GContainer {
 			}
 		}
 
-		@Override
-		public void paint(Graphics2D g) {
+		private WeightedEdge<Integer, Integer> dirtyEdge;
+		private Point2D initialPoint;
+		private int initialWeight;
 
-			g.setColor(Color.BLACK);
-			for (NodeView view : nodes) {
-				Node<Integer> node = view.getNode();
-				for (NodeView other : nodes) {
-					Node<Integer> otherNode = other.getNode();
-					if (graph.connected(node, otherNode)) {
-						Line2D l2d = new Line2D.Double(view.getX(),
-								view.getY(), other.getX(), other.getY());
-						// stroke width asymptotically approaches 10
-						// 10 (1 - r^(w/k))
-						// w = weight
-						// r = convergence time
-						// k = scalar for weight
+		private Collection<? extends Edge<Integer>> mst;
 
-						// find edge
-						Set<? extends WeightedEdge<Integer, Integer>> neighboringEdges = graph
-								.getNeighboringEdges(node);
-						for (WeightedEdge<Integer, Integer> edge : neighboringEdges) {
-							if (edge.getTail() == otherNode) {
-								g.setStroke(new BasicStroke(
-										(float) (10 * (1f - Math.pow(0.8f,
-												Math.abs(edge.getWeight()) / 3f)))));
-							}
-						}
-						g.draw(l2d);
-					}
-				}
-				super.paint(g);
-			}
-
-		}
+		private WeightBubble weightMessage;
 
 		{
 			addListener(new FrameListener() {
@@ -167,6 +137,43 @@ public class GraphsView extends GContainer {
 		}
 
 		@Override
+		public void paint(Graphics2D g) {
+
+			g.setColor(Color.BLACK);
+			for (NodeView view : nodes) {
+				Node<Integer> node = view.getNode();
+				for (NodeView other : nodes) {
+					Node<Integer> otherNode = other.getNode();
+					if (graph.connected(node, otherNode)) {
+						Line2D l2d = new Line2D.Double(view.getX(),
+								view.getY(), other.getX(), other.getY());
+						// stroke width asymptotically approaches 10
+						// 10 (1 - r^(w/k))
+						// w = weight
+						// r = convergence time
+						// k = scalar for weight
+
+						// find edge
+						Set<? extends WeightedEdge<Integer, Integer>> neighboringEdges = graph
+								.getNeighboringEdges(node);
+						for (WeightedEdge<Integer, Integer> edge : neighboringEdges) {
+							if (edge.getTail() == otherNode) {
+								g.setColor(mst != null && mst.contains(edge) ? Color.RED
+										: Color.BLACK);
+								g.setStroke(new BasicStroke(
+										(float) (10 * (1f - Math.pow(0.8f,
+												Math.abs(edge.getWeight()) / 3f)))));
+							}
+						}
+						g.draw(l2d);
+					}
+				}
+				super.paint(g);
+			}
+
+		}
+
+		@Override
 		public void preparePaint(Graphics2D g) {
 			super.preparePaint(g);
 			GObject.antialias(g);
@@ -232,6 +239,12 @@ public class GraphsView extends GContainer {
 
 		GButton btnKruskal = createButton("Kruskal");
 		addButton(btnKruskal, 4);
+		btnKruskal.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				doKruskal();
+			}
+		});
 
 		GButton btnSettings = createButton("Settings");
 		addButton(btnSettings, 5);
@@ -272,6 +285,16 @@ public class GraphsView extends GContainer {
 	private GButton createButton(String text) {
 		return ComponentGenerator.attachLabel(
 				ComponentGenerator.createButton(), text);
+	}
+
+	protected void doKruskal() {
+		if (edges.mst == null) {
+			Kruskal k = new Kruskal();
+			List<WeightedEdge<Integer, Integer>> findMST = k.findMST(graph);
+			edges.mst = findMST;
+		} else {
+			edges.mst = null;
+		}
 	}
 
 	public void link(NodeView nodeView) {
