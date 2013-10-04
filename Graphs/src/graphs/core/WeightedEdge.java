@@ -20,4 +20,12 @@ public interface WeightedEdge<T, W extends Comparable<W>> extends Edge<T> {
 	 */
 	public W getWeight();
 
+	/**
+	 * Sets the weight of this edge.
+	 * 
+	 * @param weight
+	 *            the new weight
+	 */
+	void setWeight(W weight);
+
 }
