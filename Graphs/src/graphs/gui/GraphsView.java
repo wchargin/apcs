@@ -82,12 +82,16 @@ public class GraphsView extends GContainer {
 					if ((context.getMouseButtonMask() & MouseEvent.BUTTON1_MASK) != 0) {
 						if (dirtyEdge == null) {
 							Point2D mouse = context.getMouseRelative();
-							// find edge within 5px
 
+							// find edge within 5px
 							Set<? extends WeightedEdge<Integer, Integer>> graphEdges = graph
 									.getEdges();
 							Line2D line = null;
 							outer: for (NodeView view : nodes) {
+								if (view.getAbsoluteBoundingShape().contains(
+										context.getMouseAbsolute())) {
+									continue;
+								}
 								Node<Integer> node = view.getNode();
 								for (NodeView other : nodes) {
 									Node<Integer> otherNode = other.getNode();
