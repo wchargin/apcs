@@ -31,47 +31,10 @@ public class UndirectedWeightedEdge<T, W extends Comparable<W>> extends
 		return new DirectedEdgeGenerator();
 	}
 
-	@Override
-	public String toString() {
-		return "UndirectedWeightedEdge [weight=" + weight + ", getHead()="
-				+ getHead().getValue() + ", getTail()=" + getTail().getValue()
-				+ "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((weight == null) ? 0 : weight.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (getClass() != obj.getClass())
-			return false;
-		UndirectedWeightedEdge other = (UndirectedWeightedEdge) obj;
-		if (weight == null) {
-			if (other.weight != null)
-				return false;
-		} else if (!weight.equals(other.weight))
-			return false;
-		
-		Node<?> th = getHead(), tt = getTail();
-		Node<?> oh = other.getHead(), ot = other.getTail();
-		
-		boolean equal = (th.equals(oh) && tt.equals(ot));
-		boolean oppos = (th.equals(ot) && tt.equals(oh));
-		
-		return equal || oppos;
-	}
-
 	/**
 	 * The weight of this edge.
 	 */
-	private final W weight;
+	private W weight;
 
 	/**
 	 * Creates an edge with the given weight connecting the given head node to
@@ -90,8 +53,50 @@ public class UndirectedWeightedEdge<T, W extends Comparable<W>> extends
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (getClass() != obj.getClass())
+			return false;
+		UndirectedWeightedEdge other = (UndirectedWeightedEdge) obj;
+		if (weight == null) {
+			if (other.weight != null)
+				return false;
+		} else if (!weight.equals(other.weight))
+			return false;
+
+		Node<?> th = getHead(), tt = getTail();
+		Node<?> oh = other.getHead(), ot = other.getTail();
+
+		boolean equal = (th.equals(oh) && tt.equals(ot));
+		boolean oppos = (th.equals(ot) && tt.equals(oh));
+
+		return equal || oppos;
+	}
+
+	@Override
 	public W getWeight() {
 		return weight;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((weight == null) ? 0 : weight.hashCode());
+		return result;
+	}
+
+	@Override
+	public void setWeight(W weight) {
+		this.weight = weight;
+	}
+
+	@Override
+	public String toString() {
+		return "UndirectedWeightedEdge [weight=" + weight + ", getHead()="
+				+ getHead().getValue() + ", getTail()=" + getTail().getValue()
+				+ "]";
 	}
 
 }

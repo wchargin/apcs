@@ -33,7 +33,7 @@ public class DirectedWeightedEdge<T, W extends Comparable<W>> extends
 	/**
 	 * The weight of this edge.
 	 */
-	private final W weight;
+	private W weight;
 
 	/**
 	 * Creates an edge with the given weight connecting the given head node to
@@ -54,6 +54,11 @@ public class DirectedWeightedEdge<T, W extends Comparable<W>> extends
 	@Override
 	public W getWeight() {
 		return weight;
+	}
+
+	@Override
+	public void setWeight(W weight) {
+		this.weight = weight;
 	}
 
 }
