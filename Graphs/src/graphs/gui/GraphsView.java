@@ -160,9 +160,14 @@ public class GraphsView extends GContainer {
 							if (edge.getTail() == otherNode) {
 								g.setColor(mst != null && mst.contains(edge) ? Color.RED
 										: Color.BLACK);
-								g.setStroke(new BasicStroke(
-										(float) (10 * (1f - Math.pow(0.8f,
-												Math.abs(edge.getWeight()) / 3f)))));
+								
+								float width = (float) (10 * (1f - Math.pow(0.8f,
+										Math.abs(edge.getWeight()) / 3f)));
+								if (edge.getWeight() >= 0) {
+									g.setStroke(new BasicStroke(width));
+								} else {
+									g.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, new float[] { 10 }, 0));
+								}
 							}
 						}
 						g.draw(l2d);
