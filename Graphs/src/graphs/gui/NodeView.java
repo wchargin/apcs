@@ -3,9 +3,9 @@ package graphs.gui;
 import graphs.core.Node;
 import graphs.gui.GraphsGUI.GraphSettings;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -18,7 +18,7 @@ import jgame.GObject;
 import jgame.controller.MouseLocationController;
 import jgame.controller.PulsateController;
 import jgame.listener.ButtonListener;
-import jgame.listener.FrameListener;
+import jgame.listener.GlobalKeyListener;
 import jgame.listener.LocalKeyListener;
 
 public class NodeView extends GObject {
@@ -29,6 +29,9 @@ public class NodeView extends GObject {
 	private GMessage message = new GMessage();
 	private RectangularShape bounds = new Ellipse2D.Double();
 
+	private boolean pressed = false;
+	private boolean linking = false;
+
 	public NodeView(GraphSettings gs, Node<Integer> node) {
 		setSize(100, 50);
 		settings = gs;
@@ -36,22 +39,20 @@ public class NodeView extends GObject {
 
 		class ShapeComponent extends GObject {
 
-			private final Shape shape;
-			private final Paint stroke, fill;
+			private Shape shape;
 
-			public ShapeComponent(Shape shape, Paint stroke, Paint fill) {
+			public ShapeComponent(Shape shape) {
 				super();
 				this.shape = shape;
-				this.stroke = stroke;
-				this.fill = fill;
 			}
 
 			@Override
 			public void paint(Graphics2D g) {
 				super.paint(g);
-				g.setPaint(fill);
+				g.setPaint(pressed ? new Color(0.9f, 0.9f, 0.9f) : Color.WHITE);
 				g.fill(shape);
-				g.setPaint(stroke);
+				g.setColor(Color.BLACK);
+				g.setStroke(new BasicStroke(getBorderWidth()));
 				g.draw(shape);
 			}
 
@@ -59,14 +60,19 @@ public class NodeView extends GObject {
 			public void preparePaint(Graphics2D g) {
 				super.preparePaint(g);
 				setSize(NodeView.this.getWidth(), NodeView.this.getHeight());
-				bounds.setFrame(0, 0, getWidth() - 2, getHeight() - 2);
+				bounds.setFrame(getBorderWidth(), getBorderWidth(), getWidth()
+						- 1 - getBorderWidth(), getHeight() - 1
+						- getBorderWidth());
 				GObject.antialias(g);
+			}
+
+			private float getBorderWidth() {
+				return linking ? 2 : 1;
 			}
 
 		}
 
-		final ShapeComponent sc = new ShapeComponent(bounds, Color.BLACK,
-				Color.WHITE);
+		final ShapeComponent sc = new ShapeComponent(bounds);
 		sc.setAnchorTopLeft();
 		add(sc);
 
@@ -75,25 +81,18 @@ public class NodeView extends GObject {
 		message.setAlignmentX(0.5);
 		message.setAlignmentY(0.5);
 
-		addListener(new FrameListener() {
-			@Override
-			public void invoke(GObject target, Context context) {
-				message.setFontSize(settings.textSize);
-				message.setSize(getWidth(), getHeight());
-			}
-		});
-
 		final MouseLocationController mouse = new MouseLocationController();
 		final PulsateController dragging = new PulsateController(0.95, 0.05, 15);
 		addListener(new ButtonListener() {
 			{
-				setValidButtonMask(MouseEvent.BUTTON2_MASK);
+				setValidButtonMask(MouseEvent.BUTTON3_MASK);
 			}
 
 			@Override
 			public void mouseClicked(Context context) {
 				removeController(mouse);
 				removeController(dragging);
+				pressed = false;
 				setScale(1);
 			}
 
@@ -101,6 +100,7 @@ public class NodeView extends GObject {
 			public void mouseDown(Context context) {
 				addController(mouse);
 				addController(dragging);
+				pressed = true;
 			}
 		});
 
@@ -128,9 +128,40 @@ public class NodeView extends GObject {
 				setWidth(Math.max(20, getWidth() - 5));
 			}
 		});
+		addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				linking = true;
+				getFirstAncestorOf(GraphsView.class)
+						.link(NodeView.this);
+			}
+		});
+		addListener(new GlobalKeyListener(KeyEvent.VK_ESCAPE) {
+			@Override
+			public void invoke(GObject target, Context context) {
+				linking = false;
+				getFirstAncestorOf(GraphsView.class).cancelLink(NodeView.this);
+			}
+		});
 	}
 
-	public Node<?> getNode() {
+	public void setLinking(boolean linking) {
+		this.linking = linking;
+	}
+
+	@Override
+	public Shape getBoundingShape() {
+		return new Ellipse2D.Double(-1, -1, getWidth() + 2, getHeight() + 2);
+	}
+
+	@Override
+	public void preparePaint(Graphics2D g) {
+		super.preparePaint(g);
+		message.setFontSize(settings.textSize);
+		message.setSize(getWidth(), getHeight());
+	}
+
+	public Node<Integer> getNode() {
 		return node;
 	}
 
