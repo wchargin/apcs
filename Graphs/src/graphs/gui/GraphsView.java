@@ -105,6 +105,7 @@ public class GraphsView extends GContainer {
 								}
 							} // end outer
 							if (dirtyEdge != null) {
+								mst = null;
 								initialPoint = mouse;
 								initialWeight = dirtyEdge.getWeight();
 								weightMessage = new WeightBubble();
@@ -276,6 +277,7 @@ public class GraphsView extends GContainer {
 	}
 
 	protected void addNode() {
+		edges.mst = null;
 		final NodeView n = new NodeView(settings, new BasicNode<Integer>(
 				nodes.size() + 1));
 		nodes.add(n);
@@ -304,6 +306,7 @@ public class GraphsView extends GContainer {
 
 	public void link(NodeView nodeView) {
 		if (linkBegin != null) {
+			edges.mst = null;
 			Node<Integer> head = linkBegin.getNode();
 			Node<Integer> tail = nodeView.getNode();
 			if (graph.connected(head, tail)) {
@@ -320,10 +323,12 @@ public class GraphsView extends GContainer {
 	}
 
 	protected void wipeEdges() {
+		edges.mst = null;
 		graph.unlinkAll();
 	}
 
 	protected void wipeNodes() {
+		edges.mst = null;
 		for (NodeView n : nodes) {
 			remove(n);
 			graph.remove(n.getNode());
