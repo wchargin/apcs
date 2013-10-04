@@ -76,6 +76,9 @@ public class GraphsView extends GContainer {
 				super.paint(g);
 			}
 
+		}
+
+		{
 			addListener(new FrameListener() {
 				@Override
 				public void invoke(GObject target, Context context) {
