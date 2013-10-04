@@ -16,7 +16,6 @@ import jgame.Context;
 import jgame.GMessage;
 import jgame.GObject;
 import jgame.controller.MouseLocationController;
-import jgame.controller.PulsateController;
 import jgame.listener.ButtonListener;
 import jgame.listener.GlobalKeyListener;
 import jgame.listener.LocalKeyListener;
@@ -82,7 +81,6 @@ public class NodeView extends GObject {
 		message.setAlignmentY(0.5);
 
 		final MouseLocationController mouse = new MouseLocationController();
-		final PulsateController dragging = new PulsateController(0.95, 0.05, 15);
 		addListener(new ButtonListener() {
 			{
 				setValidButtonMask(MouseEvent.BUTTON3_MASK);
@@ -91,7 +89,6 @@ public class NodeView extends GObject {
 			@Override
 			public void mouseClicked(Context context) {
 				removeController(mouse);
-				removeController(dragging);
 				pressed = false;
 				setScale(1);
 			}
@@ -99,7 +96,6 @@ public class NodeView extends GObject {
 			@Override
 			public void mouseDown(Context context) {
 				addController(mouse);
-				addController(dragging);
 				pressed = true;
 			}
 		});
