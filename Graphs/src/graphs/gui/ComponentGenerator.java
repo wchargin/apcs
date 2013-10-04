@@ -126,7 +126,7 @@ public final class ComponentGenerator {
 	public static final GButton attachLabel(GButton button, String text) {
 		GMessage label = new GMessage(text);
 		label.setAlignmentX(0.5);
-		label.setFontSize(18f);
+		label.setFontSize(16f);
 		label.setFontStyle(Font.BOLD);
 		button.setSize(button.getWidth(), button.getHeight());
 		button.setAnchorWeight(0.5, 0.5);
