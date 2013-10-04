@@ -85,20 +85,29 @@ public class GraphsView extends GContainer {
 			}
 		});
 
-		GButton btnClear = createButton("Clear");
-		addButton(btnClear, 1);
-		btnClear.addListener(new ButtonListener() {
+		GButton btnWipeNodes = createButton("Wipe Nodes");
+		addButton(btnWipeNodes, 1);
+		btnWipeNodes.addListener(new ButtonListener() {
 			@Override
 			public void mouseClicked(Context context) {
-				clear();
+				wipeNodes();
+			}
+		});
+
+		GButton btnWipeEdges = createButton("Wipe Edges");
+		addButton(btnWipeEdges, 2);
+		btnWipeEdges.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				wipeEdges();
 			}
 		});
 
 		GButton btnDijkstra = createButton("Dijkstra");
-		addButton(btnDijkstra, 2);
+		addButton(btnDijkstra, 3);
 
 		GButton btnKruskal = createButton("Kruskal");
-		addButton(btnKruskal, 3);
+		addButton(btnKruskal, 4);
 
 		GButton btnSettings = createButton("Settings");
 		addButton(btnSettings, 5);
@@ -128,11 +137,16 @@ public class GraphsView extends GContainer {
 		addAt(n, Math.random() * 700 + 50, Math.random() * 400 + 50);
 	}
 
-	protected void clear() {
+	protected void wipeNodes() {
 		for (NodeView n : nodes) {
 			remove(n);
+			graph.remove(n.getNode());
 		}
 		nodes.clear();
+	}
+
+	protected void wipeEdges() {
+		graph.unlinkAll();
 	}
 
 	private GButton createButton(String text) {
