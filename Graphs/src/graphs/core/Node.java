@@ -17,4 +17,12 @@ public interface Node<T> {
 	 */
 	public T getValue();
 
+	/**
+	 * Sets the value of this node.
+	 * 
+	 * @param value
+	 *            the new value
+	 */
+	public void setValue(T value);
+
 }
