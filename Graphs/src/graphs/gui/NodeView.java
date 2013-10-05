@@ -12,18 +12,21 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RectangularShape;
 
+import javax.swing.JOptionPane;
+
 import jgame.Context;
 import jgame.GMessage;
 import jgame.GObject;
 import jgame.controller.MouseLocationController;
 import jgame.listener.ButtonListener;
+import jgame.listener.FrameListener;
 import jgame.listener.GlobalKeyListener;
 import jgame.listener.LocalKeyListener;
 
 public class NodeView extends GObject {
 
 	private final GraphSettings settings;
-	private Node<Integer> node;
+	private Node<String> node;
 
 	private GMessage message = new GMessage();
 	private RectangularShape bounds = new Ellipse2D.Double();
@@ -31,7 +34,7 @@ public class NodeView extends GObject {
 	private boolean pressed = false;
 	private boolean linking = false;
 
-	public NodeView(GraphSettings gs, Node<Integer> node) {
+	public NodeView(GraphSettings gs, final Node<String> node) {
 		setSize(100, 50);
 		settings = gs;
 		setNode(node);
@@ -128,8 +131,7 @@ public class NodeView extends GObject {
 			@Override
 			public void mouseClicked(Context context) {
 				linking = true;
-				getFirstAncestorOf(GraphsView.class)
-						.link(NodeView.this);
+				getFirstAncestorOf(GraphsView.class).link(NodeView.this);
 			}
 		});
 		addListener(new GlobalKeyListener(KeyEvent.VK_ESCAPE) {
@@ -137,6 +139,34 @@ public class NodeView extends GObject {
 			public void invoke(GObject target, Context context) {
 				linking = false;
 				getFirstAncestorOf(GraphsView.class).cancelLink(NodeView.this);
+			}
+		});
+
+		addListener(new FrameListener() {
+			private boolean pressed;
+			private LocalKeyListener lkl = new LocalKeyListener(
+					KeyEvent.VK_SPACE) {
+				@Override
+				public void invoke(GObject target, Context context) {
+					pressed = true;
+				}
+			};
+			{
+				addListener(lkl);
+			}
+
+			@Override
+			public void invoke(GObject target, Context context) {
+				if (pressed && !lkl.isValid(target, context)) {
+					String in = JOptionPane.showInputDialog(
+							"Enter the new value for the node:",
+							node.getValue());
+					if (in != null) {
+						node.setValue(in);
+						message.setText(in);
+					}
+					pressed = false;
+				}
 			}
 		});
 	}
@@ -157,11 +187,11 @@ public class NodeView extends GObject {
 		message.setSize(getWidth(), getHeight());
 	}
 
-	public Node<Integer> getNode() {
+	public Node<String> getNode() {
 		return node;
 	}
 
-	public void setNode(Node<Integer> node) {
+	public void setNode(Node<String> node) {
 		this.node = node;
 		message.setText(this.node == null ? "" : this.node.getValue()
 				.toString());
