@@ -1,11 +1,15 @@
 package graphs.core;
 
+import java.util.Random;
+
 public class BasicNode<T> implements Node<T> {
 
 	/**
 	 * The value of this node.
 	 */
 	private T value;
+	
+	private long random = new Random(0).nextLong();
 
 	public BasicNode(T value) {
 		super();
@@ -36,15 +40,13 @@ public class BasicNode<T> implements Node<T> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
+		return (int) random;
 	}
 
 	@Override
 	public void setValue(T value) {
 		this.value = value;
+		System.out.println(this);
 	}
 
 }
