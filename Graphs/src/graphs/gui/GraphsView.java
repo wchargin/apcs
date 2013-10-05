@@ -6,7 +6,7 @@ import graphs.core.BasicNode;
 import graphs.core.Edge;
 import graphs.core.MutableGraph;
 import graphs.core.Node;
-import graphs.core.UndirectedWeightedEdge;
+import graphs.core.DirectedWeightedEdge;
 import graphs.core.WeightedEdge;
 import graphs.core.WeightedEdgeGenerator;
 import graphs.gui.GraphsGUI.GraphSettings;
@@ -15,6 +15,7 @@ import graphs.gui.GraphsGUI.Views;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
@@ -57,11 +58,11 @@ public class GraphsView extends GContainer {
 			}
 		}
 
-		private WeightedEdge<Integer, Integer> dirtyEdge;
+		private WeightedEdge<String, Integer> dirtyEdge;
 		private Point2D initialPoint;
 		private int initialWeight;
 
-		private Collection<? extends Edge<Integer>> mst;
+		private Collection<? extends Edge<String>> mst;
 
 		private WeightBubble weightMessage;
 
@@ -74,7 +75,7 @@ public class GraphsView extends GContainer {
 							Point2D mouse = context.getMouseRelative();
 
 							// find edge within 5px
-							Set<? extends WeightedEdge<Integer, Integer>> graphEdges = graph
+							Set<? extends WeightedEdge<String, Integer>> graphEdges = graph
 									.getEdges();
 							Line2D line = null;
 							outer: for (NodeView view : nodes) {
@@ -82,9 +83,9 @@ public class GraphsView extends GContainer {
 										context.getMouseAbsolute())) {
 									continue;
 								}
-								Node<Integer> node = view.getNode();
+								Node<String> node = view.getNode();
 								for (NodeView other : nodes) {
-									Node<Integer> otherNode = other.getNode();
+									Node<String> otherNode = other.getNode();
 									if (graph.connected(node, otherNode)) {
 										Line2D l2d = new Line2D.Double(
 												view.getX(), view.getY(),
@@ -92,7 +93,7 @@ public class GraphsView extends GContainer {
 										if (l2d.ptSegDist(mouse) < 5) {
 											// this is the edge
 											// find it in the list of edges
-											for (WeightedEdge<Integer, Integer> edge : graphEdges) {
+											for (WeightedEdge<String, Integer> edge : graphEdges) {
 												if (edge.getHead() == node
 														&& edge.getTail() == otherNode) {
 													line = l2d;
@@ -142,9 +143,9 @@ public class GraphsView extends GContainer {
 
 			g.setColor(Color.BLACK);
 			for (NodeView view : nodes) {
-				Node<Integer> node = view.getNode();
+				Node<String> node = view.getNode();
 				for (NodeView other : nodes) {
-					Node<Integer> otherNode = other.getNode();
+					Node<String> otherNode = other.getNode();
 					if (graph.connected(node, otherNode)) {
 						Line2D l2d = new Line2D.Double(view.getX(),
 								view.getY(), other.getX(), other.getY());
@@ -155,19 +156,30 @@ public class GraphsView extends GContainer {
 						// k = scalar for weight
 
 						// find edge
-						Set<? extends WeightedEdge<Integer, Integer>> neighboringEdges = graph
+						Set<? extends WeightedEdge<String, Integer>> neighboringEdges = graph
 								.getNeighboringEdges(node);
-						for (WeightedEdge<Integer, Integer> edge : neighboringEdges) {
+						for (WeightedEdge<String, Integer> edge : neighboringEdges) {
 							if (edge.getTail() == otherNode) {
-								g.setColor(mst != null && mst.contains(edge) ? Color.RED
-										: Color.BLACK);
-								
-								float width = (float) (10 * (1f - Math.pow(0.8f,
-										Math.abs(edge.getWeight()) / 3f)));
+								Color color = mst != null && mst.contains(edge) ? Color.RED
+										: Color.BLACK;
+
+								Color transparent = new Color(
+										color.getRGB() & 0x1FFFFFFF, true);
+								g.setPaint(new GradientPaint(
+										new Point2D.Double(view.getX(), view
+												.getY()), color,
+										new Point2D.Double(other.getX(), other
+												.getY()), transparent));
+
+								float width = (float) (10 * (1f - Math.pow(
+										0.8f, Math.abs(edge.getWeight()) / 3f)));
 								if (edge.getWeight() >= 0) {
 									g.setStroke(new BasicStroke(width));
 								} else {
-									g.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, new float[] { 10 }, 0));
+									g.setStroke(new BasicStroke(width,
+											BasicStroke.CAP_BUTT,
+											BasicStroke.JOIN_ROUND, 10.0f,
+											new float[] { width * 4 }, 0));
 								}
 							}
 						}
@@ -190,15 +202,15 @@ public class GraphsView extends GContainer {
 	private GraphSettings settings;
 
 	private List<NodeView> nodes = new ArrayList<>();
-	private MutableGraph<Integer, Node<Integer>, ? extends WeightedEdge<Integer, Integer>> graph;
+	private MutableGraph<String, Node<String>, ? extends WeightedEdge<String, Integer>> graph;
 
 	private NodeView linkBegin;
 
 	{
-		WeightedEdgeGenerator<Integer, Integer, ? extends Edge<Integer>> gen = UndirectedWeightedEdge
+		WeightedEdgeGenerator<String, Integer, ? extends Edge<String>> gen = DirectedWeightedEdge
 				.weightedGenerator();
 		gen.nextWeight = 1;
-		graph = new AdjacencyGraph<Integer, Node<Integer>, WeightedEdge<Integer, Integer>>(
+		graph = new AdjacencyGraph<String, Node<String>, WeightedEdge<String, Integer>>(
 				gen);
 	}
 
@@ -278,8 +290,8 @@ public class GraphsView extends GContainer {
 
 	protected void addNode() {
 		edges.mst = null;
-		final NodeView n = new NodeView(settings, new BasicNode<Integer>(
-				nodes.size() + 1));
+		final NodeView n = new NodeView(settings, new BasicNode<String>(
+				Integer.toString(nodes.size() + 1)));
 		nodes.add(n);
 		graph.add(n.getNode());
 		addAt(n, Math.random() * 700 + 50, Math.random() * 400 + 50);
@@ -297,7 +309,7 @@ public class GraphsView extends GContainer {
 	protected void doKruskal() {
 		if (edges.mst == null) {
 			Kruskal k = new Kruskal();
-			List<WeightedEdge<Integer, Integer>> findMST = k.findMST(graph);
+			List<WeightedEdge<String, Integer>> findMST = k.findMST(graph);
 			edges.mst = findMST;
 		} else {
 			edges.mst = null;
@@ -307,8 +319,8 @@ public class GraphsView extends GContainer {
 	public void link(NodeView nodeView) {
 		if (linkBegin != null) {
 			edges.mst = null;
-			Node<Integer> head = linkBegin.getNode();
-			Node<Integer> tail = nodeView.getNode();
+			Node<String> head = linkBegin.getNode();
+			Node<String> tail = nodeView.getNode();
 			if (graph.connected(head, tail)) {
 				graph.unlink(head, tail);
 			} else {
