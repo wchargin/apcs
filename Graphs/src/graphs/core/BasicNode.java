@@ -46,7 +46,6 @@ public class BasicNode<T> implements Node<T> {
 	@Override
 	public void setValue(T value) {
 		this.value = value;
-		System.out.println(this);
 	}
 
 }
