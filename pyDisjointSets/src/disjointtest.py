@@ -15,6 +15,10 @@ class DisjointSetTest(unittest.TestCase):
     def tearDown(self):
         pass
     
+    def test_linked(self):
+        self.set= LinkedDisjointSet()
+        self.do_test()
+        
     def do_test(self):
         class Element:
             def __init__(self, val):
