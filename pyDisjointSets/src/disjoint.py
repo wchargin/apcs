@@ -64,3 +64,58 @@ class LinkedDisjointSet(object):
         while y.next[self]:
             y = y.next[self]
         y.next = x
+
+class DisjointSetForest(object):
+    '''
+    A disjoint-set forest implementation of a disjoint set.
+    '''
+    
+    def init_node(self, x):
+        '''
+        Initializes the given value for use in this disjoint set forest.
+        '''
+        if not hasattr(x, "parent"):
+            x.parent = {}
+        if not hasattr(x, "rank"):
+            x.rank = {}
+    
+    def make_set(self, x):
+        '''
+        Creates a new set whose only member (and thus representative) is x.
+        '''
+        self.init_node(x)
+        x.parent[self] = x
+        x.rank[self] = 0
+    
+    def find_set(self, x):
+        '''
+        Returns the representative of the set containing x.
+        '''
+        self.init_node(x)
+        traversed = []
+        while x is not x.parent[self]:
+            traversed.append(x)
+            x = x.parent[self]
+        for t in traversed:
+            # path compression step
+            t.parent[self] = x
+        return x
+    
+    def union(self, x, y):
+        '''
+        Unites the dynamic sets that contain x and y into a new set that is
+        the union of these two sets.
+        '''
+        self.link(self.find_set(x), self.find_set(y))
+        
+    def link(self, x, y):
+        '''
+        Modifies the parents and ranks for a union operation, assuming that
+        the two parameters are root nodes.
+        '''
+        if x.rank[self] > y.rank[self]:
+            y.parent[self] = x
+        else:
+            x.parent[self] = y
+            if x.rank[self] is y.rank[self]:
+                y.rank[self] += 1
