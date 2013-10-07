@@ -113,6 +113,17 @@ class DisjointSetForest(object):
         Modifies the parents and ranks for a union operation, assuming that
         the two parameters are root nodes.
         '''
+        
+        # Make sure both are root nodes
+        xin = x is x.parent[self]
+        yin = y is y.parent[self]
+        if not xin or not yin:
+            if not xin and not yin:
+                raise ValueError('Neither key is a root')
+            else:
+                raise ValueError('{0!s} is not a root'
+                                 .format('y' if xin else 'x'))
+        
         if x.rank[self] > y.rank[self]:
             y.parent[self] = x
         else:
