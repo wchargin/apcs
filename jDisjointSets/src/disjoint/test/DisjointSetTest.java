@@ -80,6 +80,18 @@ public abstract class DisjointSetTest<S extends DisjointSet<T>, T> {
 			assertTrue("Item's representative not in set",
 					sub.contains(set.findSet(item)));
 		}
+	}
 
+	@Test
+	public void testRedundantUnion() {
+		T x = items.get(0), y = items.get(1), z = items.get(2);
+		set.union(x, y);
+		set.union(x, z);
+		set.union(y, z);
+		set.union(z, y);
+		set.union(z, x);
+		assertEquals("xy parent different", set.findSet(x), set.findSet(y));
+		assertEquals("yz parent different", set.findSet(y), set.findSet(z));
+		assertEquals("zx parent different", set.findSet(z), set.findSet(x));
 	}
 }
