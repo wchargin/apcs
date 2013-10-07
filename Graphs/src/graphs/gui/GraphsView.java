@@ -30,6 +30,8 @@ import jgame.GButton;
 import jgame.GContainer;
 import jgame.GMessage;
 import jgame.GObject;
+import jgame.controller.AlphaTween;
+import jgame.controller.ScaleTween;
 import jgame.listener.ButtonListener;
 import jgame.listener.FrameListener;
 
@@ -294,6 +296,16 @@ public class GraphsView extends GContainer {
 				Integer.toString(nodes.size() + 1)));
 		nodes.add(n);
 		graph.add(n.getNode());
+
+		AlphaTween fadein = new AlphaTween(9, 0, 1);
+		ScaleTween scalein = new ScaleTween(9, 0, 1.1);
+		ScaleTween bounce = new ScaleTween(3, 1.1, 1.0);
+		fadein.with(scalein);
+		fadein.chain(bounce);
+		n.addController(fadein);
+		
+		n.setAlpha(0);
+		n.setScale(0);
 		addAt(n, Math.random() * 700 + 50, Math.random() * 400 + 50);
 	}
 
