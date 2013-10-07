@@ -16,7 +16,11 @@ class DisjointSetTest(unittest.TestCase):
         pass
     
     def test_linked(self):
-        self.set= LinkedDisjointSet()
+        self.set = LinkedDisjointSet()
+        self.do_test()
+    
+    def test_forest(self):
+        self.set = DisjointSetForest()
         self.do_test()
         
     def do_test(self):
