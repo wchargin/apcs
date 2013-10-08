@@ -3,10 +3,11 @@ package graphs.gui;
 import graphs.algorithms.Kruskal;
 import graphs.core.AdjacencyGraph;
 import graphs.core.BasicNode;
-import graphs.core.DirectedWeightedEdge;
+import graphs.core.DirectedEdge;
 import graphs.core.Edge;
 import graphs.core.MutableGraph;
 import graphs.core.Node;
+import graphs.core.UndirectedWeightedEdge;
 import graphs.core.WeightedEdge;
 import graphs.core.WeightedEdgeGenerator;
 import graphs.gui.GraphsGUI.GraphSettings;
@@ -185,16 +186,18 @@ public class GraphsView extends GContainer {
 								.getNeighboringEdges(node);
 						for (WeightedEdge<String, Double> edge : neighboringEdges) {
 							if (edge.getTail() == otherNode) {
-								Color color = mst != null && mst.contains(edge) ? Color.RED
+								Color headColor = mst != null
+										&& mst.contains(edge) ? Color.RED
 										: Color.BLACK;
 
-								Color transparent = new Color(
-										color.getRGB() & 0x1FFFFFFF, true);
+								Color tailColor = (edge instanceof DirectedEdge) ? new Color(
+										headColor.getRGB() & 0x1FFFFFFF, true)
+										: headColor;
 								g.setPaint(new GradientPaint(
 										new Point2D.Double(view.getX(), view
-												.getY()), color,
+												.getY()), headColor,
 										new Point2D.Double(other.getX(), other
-												.getY()), transparent));
+												.getY()), tailColor));
 
 								float width = (float) (10 * (1f - Math
 										.pow(0.8f,
@@ -233,7 +236,7 @@ public class GraphsView extends GContainer {
 	private MutableGraph<String, Node<String>, ? extends WeightedEdge<String, Double>> graph;
 
 	private NodeView linkBegin;
-	private WeightedEdgeGenerator<String, Double, ? extends Edge<String>> gen = DirectedWeightedEdge
+	private WeightedEdgeGenerator<String, Double, ? extends Edge<String>> gen = UndirectedWeightedEdge
 			.weightedGenerator();
 
 	{
