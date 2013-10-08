@@ -44,4 +44,16 @@ public interface DisjointSet<T> {
 	 */
 	public T findSet(T t);
 
+	/**
+	 * Tests if the two nodes are in the same set.
+	 * 
+	 * @param x
+	 *            the first node
+	 * @param y
+	 *            the second node
+	 * @return {@code true} if both nodes have the same representative, or
+	 *         {@code false} if they do not
+	 */
+	public boolean isConnected(T x, T y);
+
 }
