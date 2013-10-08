@@ -24,7 +24,8 @@ public class GraphsGUI extends Game {
 
 	public class GraphSettings {
 		public float textSize = 12;
-		public boolean useDistanceWeight = false;
+		public boolean useDistanceWeight = true;
+		public boolean realtime = true;
 	}
 
 	public static void main(String[] args) {

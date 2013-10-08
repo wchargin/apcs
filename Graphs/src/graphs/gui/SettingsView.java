@@ -87,6 +87,21 @@ public class SettingsView extends GContainer {
 				settings.useDistanceWeight = !settings.useDistanceWeight;
 			}
 		});
+		
+		GObject cplRealtime = ComponentGenerator.createContainer(200, 65);
+		addAt(cplRealtime, 575, 58);
+		GMessage lblRealtime = createLabel("Realtime");
+		lblRealtime.setSize(200, 50);
+		cplRealtime.addAt(lblRealtime, 100, 40);
+		GButton btnRealtime = ComponentGenerator.attachLabel(
+				ComponentGenerator.createButton(100, 30), "Toggle");
+		cplRealtime.addAt(btnRealtime, 100, 48);
+		btnRealtime.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				settings.realtime = !settings.realtime;
+			}
+		});
 	}
 
 	private GButton createDirectionButton(boolean right) {
