@@ -176,6 +176,17 @@ public enum Direction {
 	}
 
 	/**
+	 * Performs a signed vector subtraction with the two components.
+	 * 
+	 * @param other
+	 *            the direction to subtract
+	 * @return the subtracted direction
+	 */
+	public Direction subtract(Direction other) {
+		return fromComponents(x.subtract(other.x), y.subtract(other.y));
+	}
+
+	/**
 	 * Takes the opposite of this direction in each component.
 	 * 
 	 * @return the opposite direction
