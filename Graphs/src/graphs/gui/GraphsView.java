@@ -196,8 +196,11 @@ public class GraphsView extends GContainer {
 										new Point2D.Double(other.getX(), other
 												.getY()), transparent));
 
-								float width = (float) (10 * (1f - Math.pow(
-										0.8f, Math.abs(edge.getWeight()) / 3f)));
+								float width = (float) (10 * (1f - Math
+										.pow(0.8f,
+												Math.abs(edge.getWeight())
+														/ (settings.useDistanceWeight ? 6f
+																: 3f))));
 								if (edge.getWeight() >= 0) {
 									g.setStroke(new BasicStroke(width));
 								} else {
