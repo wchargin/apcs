@@ -67,4 +67,16 @@ public class Edge {
 		return y;
 	}
 
+	/**
+	 * Gets a new edge with the same location as this one and the specified
+	 * direction.
+	 * 
+	 * @param newDirection
+	 *            the direction for the new edge
+	 * @return the new edge
+	 */
+	public Edge cloneWithDirection(Direction newDirection) {
+		return new Edge(x, y, newDirection);
+	}
+
 }
