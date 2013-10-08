@@ -65,4 +65,87 @@ public class Grid<T> {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((grid == null) ? 0 : grid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Grid<?> other = (Grid<?>) obj;
+		if (grid == null) {
+			if (other.grid != null)
+				return false;
+		} else if (!grid.equals(other.grid))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Grid [grid=" + grid + "]";
+	}
+
+	public String toFormattedString() {
+		StringBuilder sb = new StringBuilder();
+		if (grid.isEmpty() || grid.get(0).isEmpty()) {
+			return new String();
+		}
+		String[][] strings = new String[grid.size()][grid.get(0).size()];
+		int[] maxColumnWidth = new int[grid.get(0).size()];
+		for (int i = 0; i < grid.size(); i++) {
+			List<T> outer = grid.get(i);
+			for (int j = 0; j < outer.size(); j++) {
+				strings[i][j] = String.valueOf(outer.get(j));
+				int length = strings[i][j].length();
+				if (length > maxColumnWidth[j]) {
+					maxColumnWidth[j] = length;
+				}
+			}
+		}
+
+		int totalWidth = 0;
+		for (int i : maxColumnWidth) {
+			totalWidth += i;
+		}
+		totalWidth += strings[0].length * 3 + 1; // pipes and spaces
+
+		sb.append('+');
+		for (int i = 0; i < totalWidth - 2; i++) {
+			sb.append('-');
+		}
+		sb.append('+');
+		sb.append('\n');
+
+		for (int i = 0; i < strings.length; i++) {
+			sb.append('|');
+			String[] thisRow = strings[i];
+			for (int j = 0; j < thisRow.length; j++) {
+				sb.append(' ');
+				sb.append(thisRow[j]);
+				for (int k = thisRow[j].length(); k < maxColumnWidth[j]; k++) {
+					sb.append(' ');
+				}
+				sb.append(" |");
+			}
+			sb.append('\n');
+		}
+
+		sb.append('+');
+		for (int i = 0; i < totalWidth - 2; i++) {
+			sb.append('-');
+		}
+		sb.append('+');
+
+		return sb.toString();
+	}
 }
