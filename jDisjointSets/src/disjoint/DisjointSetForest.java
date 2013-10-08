@@ -146,4 +146,9 @@ public class DisjointSetForest<T> implements
 		return root;
 	}
 
+	@Override
+	public boolean isConnected(Node x, Node y) {
+		return findSet(x) == findSet(y);
+	}
+
 }
