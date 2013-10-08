@@ -56,9 +56,9 @@ public class Grid<T> {
 	 */
 	public Grid(int rows, int columns) {
 		grid = new ArrayList<>();
-		for (int i = 0; i <= rows; i++) {
+		for (int i = 0; i < rows; i++) {
 			List<T> outer = new ArrayList<>();
-			for (int j = 0; j <= columns; j++) {
+			for (int j = 0; j < columns; j++) {
 				outer.add(null);
 			}
 			grid.add(outer);
