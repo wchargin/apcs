@@ -94,12 +94,14 @@ public class NodeView extends GObject {
 				removeController(mouse);
 				pressed = false;
 				setScale(1);
+				getFirstAncestorOf(GraphsView.class).endDrag(NodeView.this);
 			}
 
 			@Override
 			public void mouseDown(Context context) {
 				addController(mouse);
 				pressed = true;
+				getFirstAncestorOf(GraphsView.class).beginDrag(NodeView.this);
 			}
 		});
 
