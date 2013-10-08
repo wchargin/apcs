@@ -61,7 +61,7 @@ public class SettingsView extends GContainer {
 		cplTextSize.addAt(valTextSize, 100, 55);
 		cplTextSize.addAt(btrTextSize, 122, 45);
 		cplTextSize.addAt(btlTextSize, 72, 45);
-		addAtCenter(cplTextSize);
+		addAt(cplTextSize, 125, 58);
 
 		GButton btnReturn = ComponentGenerator.attachLabel(
 				ComponentGenerator.createButton(), "Return");
@@ -72,6 +72,21 @@ public class SettingsView extends GContainer {
 			}
 		});
 		addAt(btnReturn, 400, 500);
+
+		GObject cplDistanceWeight = ComponentGenerator.createContainer(200, 65);
+		addAt(cplDistanceWeight, 350, 58);
+		GMessage lblDistanceWeight = createLabel("Distance weight");
+		lblDistanceWeight.setSize(200, 50);
+		cplDistanceWeight.addAt(lblDistanceWeight, 100, 40);
+		GButton btnDistanceWeight = ComponentGenerator.attachLabel(
+				ComponentGenerator.createButton(100, 30), "Toggle");
+		cplDistanceWeight.addAt(btnDistanceWeight, 100, 48);
+		btnDistanceWeight.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				settings.useDistanceWeight = !settings.useDistanceWeight;
+			}
+		});
 	}
 
 	private GButton createDirectionButton(boolean right) {

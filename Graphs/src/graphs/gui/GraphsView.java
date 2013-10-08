@@ -3,10 +3,10 @@ package graphs.gui;
 import graphs.algorithms.Kruskal;
 import graphs.core.AdjacencyGraph;
 import graphs.core.BasicNode;
+import graphs.core.DirectedWeightedEdge;
 import graphs.core.Edge;
 import graphs.core.MutableGraph;
 import graphs.core.Node;
-import graphs.core.DirectedWeightedEdge;
 import graphs.core.WeightedEdge;
 import graphs.core.WeightedEdgeGenerator;
 import graphs.gui.GraphsGUI.GraphSettings;
@@ -22,7 +22,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jgame.Context;
@@ -34,8 +36,26 @@ import jgame.controller.AlphaTween;
 import jgame.controller.ScaleTween;
 import jgame.listener.ButtonListener;
 import jgame.listener.FrameListener;
+import jgame.listener.Listener;
 
 public class GraphsView extends GContainer {
+
+	@Override
+	public void viewShown() {
+		if (settings.useDistanceWeight) {
+			// temporary map
+			Map<Node<String>, NodeView> map = new HashMap<>();
+			for (NodeView nv : nodes) {
+				map.put(nv.getNode(), nv);
+			}
+			Set<? extends WeightedEdge<String, Double>> edges = graph
+					.getEdges();
+			for (WeightedEdge<String, Double> edge : edges) {
+				edge.setWeight(calculateWeightByDistance(
+						map.get(edge.getHead()), map.get(edge.getTail())));
+			}
+		}
+	}
 
 	public class EdgeView extends GObject {
 
@@ -55,14 +75,14 @@ public class GraphsView extends GContainer {
 				super.paint(g);
 			}
 
-			public void setWeight(int weight) {
-				setText(Integer.toString(weight));
+			public void setWeight(double weight) {
+				setText(Double.toString(weight));
 			}
 		}
 
-		private WeightedEdge<String, Integer> dirtyEdge;
+		private WeightedEdge<String, Double> dirtyEdge;
 		private Point2D initialPoint;
-		private int initialWeight;
+		private double initialWeight;
 
 		private Collection<? extends Edge<String>> mst;
 
@@ -72,12 +92,15 @@ public class GraphsView extends GContainer {
 			addListener(new FrameListener() {
 				@Override
 				public void invoke(GObject target, Context context) {
+					if (settings.useDistanceWeight) {
+						return;
+					}
 					if ((context.getMouseButtonMask() & MouseEvent.BUTTON1_MASK) != 0) {
 						if (dirtyEdge == null) {
 							Point2D mouse = context.getMouseRelative();
 
 							// find edge within 5px
-							Set<? extends WeightedEdge<String, Integer>> graphEdges = graph
+							Set<? extends WeightedEdge<String, Double>> graphEdges = graph
 									.getEdges();
 							Line2D line = null;
 							outer: for (NodeView view : nodes) {
@@ -95,7 +118,7 @@ public class GraphsView extends GContainer {
 										if (l2d.ptSegDist(mouse) < 5) {
 											// this is the edge
 											// find it in the list of edges
-											for (WeightedEdge<String, Integer> edge : graphEdges) {
+											for (WeightedEdge<String, Double> edge : graphEdges) {
 												if (edge.getHead() == node
 														&& edge.getTail() == otherNode) {
 													line = l2d;
@@ -158,9 +181,9 @@ public class GraphsView extends GContainer {
 						// k = scalar for weight
 
 						// find edge
-						Set<? extends WeightedEdge<String, Integer>> neighboringEdges = graph
+						Set<? extends WeightedEdge<String, Double>> neighboringEdges = graph
 								.getNeighboringEdges(node);
-						for (WeightedEdge<String, Integer> edge : neighboringEdges) {
+						for (WeightedEdge<String, Double> edge : neighboringEdges) {
 							if (edge.getTail() == otherNode) {
 								Color color = mst != null && mst.contains(edge) ? Color.RED
 										: Color.BLACK;
@@ -204,15 +227,15 @@ public class GraphsView extends GContainer {
 	private GraphSettings settings;
 
 	private List<NodeView> nodes = new ArrayList<>();
-	private MutableGraph<String, Node<String>, ? extends WeightedEdge<String, Integer>> graph;
+	private MutableGraph<String, Node<String>, ? extends WeightedEdge<String, Double>> graph;
 
 	private NodeView linkBegin;
+	private WeightedEdgeGenerator<String, Double, ? extends Edge<String>> gen = DirectedWeightedEdge
+			.weightedGenerator();
 
 	{
-		WeightedEdgeGenerator<String, Integer, ? extends Edge<String>> gen = DirectedWeightedEdge
-				.weightedGenerator();
-		gen.nextWeight = 1;
-		graph = new AdjacencyGraph<String, Node<String>, WeightedEdge<String, Integer>>(
+		gen.nextWeight = 1d;
+		graph = new AdjacencyGraph<String, Node<String>, WeightedEdge<String, Double>>(
 				gen);
 	}
 
@@ -303,7 +326,7 @@ public class GraphsView extends GContainer {
 		fadein.with(scalein);
 		fadein.chain(bounce);
 		n.addController(fadein);
-		
+
 		n.setAlpha(0);
 		n.setScale(0);
 		addAt(n, Math.random() * 700 + 50, Math.random() * 400 + 50);
@@ -321,7 +344,7 @@ public class GraphsView extends GContainer {
 	protected void doKruskal() {
 		if (edges.mst == null) {
 			Kruskal k = new Kruskal();
-			List<WeightedEdge<String, Integer>> findMST = k.findMST(graph);
+			List<WeightedEdge<String, Double>> findMST = k.findMST(graph);
 			edges.mst = findMST;
 		} else {
 			edges.mst = null;
@@ -333,6 +356,8 @@ public class GraphsView extends GContainer {
 			edges.mst = null;
 			Node<String> head = linkBegin.getNode();
 			Node<String> tail = nodeView.getNode();
+			gen.nextWeight = settings.useDistanceWeight ? calculateWeightByDistance(
+					linkBegin, nodeView) : 1;
 			if (graph.connected(head, tail)) {
 				graph.unlink(head, tail);
 			} else {
@@ -358,6 +383,52 @@ public class GraphsView extends GContainer {
 			graph.remove(n.getNode());
 		}
 		nodes.clear();
+	}
+
+	private final Listener distanceWeightListener = new FrameListener() {
+		@Override
+		public void invoke(GObject target, Context context) {
+			NodeView view = (NodeView) target;
+			Node<String> node = view.getNode();
+			for (WeightedEdge<String, Double> edge : graph.getEdges()) {
+				if (!(edge.getTail() == node) && !(edge.getHead() == node)) {
+					continue;
+				}
+				Node<String> otherNode = (node == edge.getTail() ? edge
+						.getHead() : edge.getTail());
+				NodeView otherView = null;
+				for (NodeView couldBeOther : nodes) {
+					if (couldBeOther.getNode().equals(otherNode)) {
+						otherView = couldBeOther;
+						break;
+					}
+				}
+				if (otherView != null) {
+					edge.setWeight(calculateWeightByDistance(view, otherView));
+				}
+			}
+		}
+
+	};
+
+	private static double calculateWeightByDistance(NodeView view,
+			NodeView otherView) {
+		return (view.distanceTo(otherView) - Math.min(
+				view.getWidth(),
+				Math.min(view.getHeight(),
+						Math.min(otherView.getWidth(), otherView.getHeight()))) / 4) / 10;
+	}
+
+	public void beginDrag(NodeView nodeView) {
+		if (settings.useDistanceWeight) {
+			nodeView.addListener(distanceWeightListener);
+		}
+	}
+
+	public void endDrag(NodeView nodeView) {
+		if (settings.useDistanceWeight) {
+			nodeView.removeListener(distanceWeightListener);
+		}
 	}
 
 }
