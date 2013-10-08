@@ -320,8 +320,11 @@ public class GraphsView extends GContainer {
 	}
 
 	protected void addNode() {
-		if (!settings.realtime) {
+		if (edges.mst != null) {
 			edges.mst = null;
+			if (settings.realtime) {
+				doKruskal();
+			}
 		}
 		final NodeView n = new NodeView(settings, new BasicNode<String>(
 				Integer.toString(nodes.size() + 1)));
@@ -361,9 +364,6 @@ public class GraphsView extends GContainer {
 
 	public void link(NodeView nodeView) {
 		if (linkBegin != null) {
-			if (!settings.realtime) {
-				edges.mst = null;
-			}
 			Node<String> head = linkBegin.getNode();
 			Node<String> tail = nodeView.getNode();
 			gen.nextWeight = settings.useDistanceWeight ? calculateWeightByDistance(
@@ -376,6 +376,12 @@ public class GraphsView extends GContainer {
 			nodeView.setLinking(false);
 			linkBegin.setLinking(false);
 			linkBegin = null;
+			if (edges.mst != null) {
+				edges.mst = null;
+				if (settings.realtime) {
+					doKruskal();
+				}
+			}
 		} else {
 			linkBegin = nodeView;
 		}
