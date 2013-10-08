@@ -1,7 +1,6 @@
 package disjoint.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,5 +92,29 @@ public abstract class DisjointSetTest<S extends DisjointSet<T>, T> {
 		assertEquals("xy parent different", set.findSet(x), set.findSet(y));
 		assertEquals("yz parent different", set.findSet(y), set.findSet(z));
 		assertEquals("zx parent different", set.findSet(z), set.findSet(x));
+	}
+
+	@Test
+	public void testIsConnected() {
+		List<T> united = new ArrayList<T>();
+		final double max = Math.random() / 2 * items.size() + 1;
+		for (int i = 1; i < max; i++) {
+			T random = items.get((int) Math.random() * items.size());
+			united.add(random);
+			items.remove(random);
+			set.union(united.get(0), random);
+		}
+		
+		// make sure each AA pair is connected
+		for (T t1 : united) for (T t2 : united) {
+			assertTrue("False negative", set.isConnected(t1, t2));
+		}
+		
+		items.removeAll(united);
+		// make sure AB, BA pairs are nonconnected
+		for (T t1 : united) for (T t2 : items){
+			assertFalse("False positive", set.isConnected(t1, t2));
+			assertFalse("False positive", set.isConnected(t2, t1));
+		}
 	}
 }

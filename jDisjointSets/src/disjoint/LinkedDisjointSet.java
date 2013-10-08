@@ -1,5 +1,6 @@
 package disjoint;
 
+
 /**
  * A linked-list implementation of a disjoint set.
  * 
@@ -106,7 +107,7 @@ public class LinkedDisjointSet<T> implements
 		if (xHead == yHead) {
 			return;
 		}
-		
+
 		for (Node i = yHead; i != null; i = i.next) {
 			i.representative = xHead;
 		}
@@ -116,4 +117,10 @@ public class LinkedDisjointSet<T> implements
 		}
 		x.next = yHead;
 	}
+
+	@Override
+	public boolean isConnected(Node x, Node y) {
+		return findSet(x) == findSet(y);
+	}
+
 }
