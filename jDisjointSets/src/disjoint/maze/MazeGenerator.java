@@ -18,9 +18,9 @@ import disjoint.DisjointSetForest;
 
 public class MazeGenerator {
 
-	private class MazeNode {
-		private MazeNode e, n, w, s;
-		private boolean E = false, N = false, W = false, S = false;
+	public class MazeNode {
+		public MazeNode e, n, w, s;
+		public boolean E = false, N = false, W = false, S = false;
 
 		@Override
 		public String toString() {
@@ -30,14 +30,14 @@ public class MazeGenerator {
 
 	}
 
-	private class MazeEdge {
+	public class MazeEdge {
 		private DisjointSetForest<MazeNode>.Node a, b;
 	}
 
-	private Map<MazeNode, DisjointSetForest<MazeNode>.Node> lookup = new HashMap<>();
-	private Grid<DisjointSetForest<MazeNode>.Node> nodeGrid;
-	private DisjointSetForest<MazeNode> forest = new DisjointSetForest<>();
-	private List<MazeEdge> edges = new ArrayList<>();
+	public Map<MazeNode, DisjointSetForest<MazeNode>.Node> lookup = new HashMap<>();
+	public Grid<DisjointSetForest<MazeNode>.Node> nodeGrid;
+	public DisjointSetForest<MazeNode> forest = new DisjointSetForest<>();
+	public List<MazeEdge> edges = new ArrayList<>();
 
 	public MazeGenerator(int width, int height) {
 		nodeGrid = new Grid<>(height, width);
@@ -81,7 +81,7 @@ public class MazeGenerator {
 	}
 
 	public void step() {
-		if (!edges.isEmpty()) {
+		if (!isFinished()) {
 			MazeEdge e = edges.get(0);
 			edges.remove(0);
 
@@ -110,11 +110,15 @@ public class MazeGenerator {
 	}
 
 	public void finish() {
-		while (!edges.isEmpty()) {
+		while (!isFinished()) {
 			step();
 		}
 	}
 
+	public boolean isFinished() {
+		return edges.isEmpty();
+	}
+	
 	public static void main(String[] args) throws IOException {
 		final int height = 50;
 		final int width = 50;
