@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -118,13 +116,13 @@ public class MazeGenerator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		final int height = 20;
-		final int width = 20;
+		final int height = 50;
+		final int width = 50;
 		MazeGenerator gen = new MazeGenerator(width, height);
 		gen.finish();
 
-		final int scale = 20;
-		final int stroke = 3;
+		final int scale = 10;
+		final int stroke = 2;
 		BufferedImage bg = new BufferedImage(width * scale + stroke, height
 				* scale + stroke, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bg.getGraphics();
@@ -166,7 +164,6 @@ public class MazeGenerator {
 			}
 		}
 
-		ImageIO.write(bg, "PNG", new File("H:\\maze.png"));
 		JOptionPane.showMessageDialog(null, new ImageIcon(bg));
 	}
 }
