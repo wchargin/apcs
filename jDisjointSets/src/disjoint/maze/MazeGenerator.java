@@ -15,10 +15,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import disjoint.DisjointSetForest;
-import disjoint.DisjointSetForest.Node;
 
 public class MazeGenerator {
 
@@ -120,13 +118,13 @@ public class MazeGenerator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		final int height = 8;
-		final int width = 10;
+		final int height = 20;
+		final int width = 20;
 		MazeGenerator gen = new MazeGenerator(width, height);
 		gen.finish();
 
-		final int scale = 50;
-		final int stroke = 5;
+		final int scale = 20;
+		final int stroke = 3;
 		BufferedImage bg = new BufferedImage(width * scale + stroke, height
 				* scale + stroke, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bg.getGraphics();
@@ -141,9 +139,9 @@ public class MazeGenerator {
 			}
 		}
 
-		final double gateWidth = 0.6d;
+		final double gateWidth = 1 - ((double) stroke / (double) scale);
 		final double gateOffset = (1 - gateWidth) / 2;
-		final int iwidth = (int) (gateWidth * scale); 
+		final int iwidth = (int) (gateWidth * scale);
 		final int ioff = (int) (gateOffset * scale);
 		g2d.setColor(Color.WHITE);
 		for (int i = 0; i < width; i++) {
@@ -152,18 +150,18 @@ public class MazeGenerator {
 				int x = stroke / 2 + scale * i;
 				int y = stroke / 2 + scale * j;
 				if (at.E) {
-					g2d.fillRect(x + scale - stroke / 2, y + ioff, stroke,
+					g2d.fillRect(x + scale - stroke / 2, y + ioff + 1, stroke,
 							iwidth);
 				}
 				if (at.W) {
-					g2d.fillRect(x - stroke / 2, y + ioff, stroke, iwidth);
+					g2d.fillRect(x - stroke / 2, y + ioff + 1, stroke, iwidth);
 				}
 				if (at.N) {
-					g2d.fillRect(x + ioff, y + scale - stroke / 2, iwidth,
+					g2d.fillRect(x + ioff + 1, y + scale - stroke / 2, iwidth,
 							stroke);
 				}
 				if (at.S) {
-					g2d.fillRect(x + ioff, y - stroke / 2, iwidth, stroke);
+					g2d.fillRect(x + ioff + 1, y - stroke / 2, iwidth, stroke);
 				}
 			}
 		}
