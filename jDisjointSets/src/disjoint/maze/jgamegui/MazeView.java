@@ -1,6 +1,7 @@
 package disjoint.maze.jgamegui;
 
 import java.awt.Color;
+import java.util.List;
 
 import jgame.Context;
 import jgame.GButton;
@@ -9,11 +10,14 @@ import jgame.GObject;
 import jgame.listener.ButtonListener;
 import jgame.listener.FrameListener;
 import disjoint.maze.MazeGenerator;
+import disjoint.maze.MazeSolver;
+import disjoint.maze.MazeGenerator.MazeNode;
 
 public class MazeView extends GContainer {
 
 	private MazeGenerator gen;
 	private MazePanel mazePanel;
+	private List<MazeNode> solved;
 	private FrameListener stepper = new FrameListener() {
 		@Override
 		public void invoke(GObject target, Context context) {
@@ -26,11 +30,20 @@ public class MazeView extends GContainer {
 			}
 		}
 	};
+	private FrameListener solver = new FrameListener() {
+		@Override
+		public void invoke(GObject target, Context context) {
+			if (!gen.isFinished() || solved == null || solved.isEmpty()) {
+				target.removeListener(this);
+			} else {
+				mazePanel.getHighlighted().add(solved.remove(0));
+			}
+		}
+	};
 
 	public MazeView() {
 		setBackgroundColor(Color.WHITE);
 		setSize(701, 601);
-		gen = null;
 
 		mazePanel = new MazePanel();
 		mazePanel.setSize(600, 600);
@@ -93,6 +106,25 @@ public class MazeView extends GContainer {
 		GButton btnStep50 = createStepButton(50);
 		addAt(btnStep50, 670, 340);
 
+		GButton btnSolve = createButton("Solve");
+		addAt(btnSolve, 647, 385);
+		btnSolve.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				startSolve();
+			}
+		});
+	}
+
+	private void startSolve() {
+		if (gen != null && gen.getMaze() != null && gen.isFinished()) {
+			if (solved == null || solved.isEmpty()) {
+				solved = MazeSolver.solve(gen.getMaze());
+				addListener(solver);
+			}
+		} else {
+			removeListener(solver);
+		}
 	}
 
 	private void initializeMaze(int s) {
