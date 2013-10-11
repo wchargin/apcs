@@ -19,7 +19,7 @@ public class MazeView extends GContainer {
 		public void invoke(GObject target, Context context) {
 			if (gen != null && !gen.isFinished()) {
 				for (int i = 0; i <= gen.getWidth() * gen.getHeight() / 300; i++) {
-					gen.step();
+					mazePanel.step();
 				}
 			} else {
 				target.removeListener(this);
@@ -105,7 +105,7 @@ public class MazeView extends GContainer {
 			public void mouseClicked(Context context) {
 				if (gen != null) {
 					for (int i = 0; i < count; i++) {
-						gen.step();
+						mazePanel.step();
 					}
 				}
 			}

@@ -141,33 +141,35 @@ public class MazeGenerator {
 		Collections.shuffle(edges);
 	}
 
-	public void step() {
+	public boolean step() {
 		if (!isFinished()) {
 			MazeEdge e = edges.get(0);
 			edges.remove(0);
 
 			final MazeNode va = e.a.getValue();
 			final MazeNode vb = e.b.getValue();
-			if (!forest.isConnected(e.a, e.b)) {
-				forest.union(e.a, e.b);
-				if (va.e == vb) {
-					va.E = true;
-					vb.W = true;
-				}
-				if (va.n == vb) {
-					va.N = true;
-					vb.S = true;
-				}
-				if (va.w == vb) {
-					va.W = true;
-					vb.E = true;
-				}
-				if (va.s == vb) {
-					va.S = true;
-					vb.N = true;
-				}
+			if (forest.isConnected(e.a, e.b)) {
+				return false;
+			}
+			forest.union(e.a, e.b);
+			if (va.e == vb) {
+				va.E = true;
+				vb.W = true;
+			}
+			if (va.n == vb) {
+				va.N = true;
+				vb.S = true;
+			}
+			if (va.w == vb) {
+				va.W = true;
+				vb.E = true;
+			}
+			if (va.s == vb) {
+				va.S = true;
+				vb.N = true;
 			}
 		}
+		return true;
 	}
 
 	public void finish() {
