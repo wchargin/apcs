@@ -18,6 +18,7 @@ import jgame.controller.Controller;
 import jgame.listener.DelayListener;
 import disjoint.maze.MazeGenerator;
 import disjoint.maze.MazeGenerator.MazeNode;
+import disjoint.maze.jgamegui.MazeGUI.Views;
 
 public class MazePanel extends GObject {
 
@@ -65,6 +66,9 @@ public class MazePanel extends GObject {
 								target2.addController(PlayerController.this);
 							}
 						});
+						if (currentNode == gen.getMaze().getEnd()) {
+							context.setCurrentGameView(Views.WIN);
+						}
 					}
 				}
 
