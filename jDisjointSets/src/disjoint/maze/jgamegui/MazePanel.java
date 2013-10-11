@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Transparency;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import jgame.GObject;
 import disjoint.maze.MazeGenerator;
@@ -21,6 +23,11 @@ public class MazePanel extends GObject {
 
 	private int stroke = 1;
 
+	/**
+	 * The list of highlighted nodes.
+	 */
+	private List<MazeNode> highlighted = new ArrayList<>();
+
 	public MazePanel() {
 		super();
 	}
@@ -34,6 +41,10 @@ public class MazePanel extends GObject {
 
 	public MazeGenerator getGenerator() {
 		return gen;
+	}
+
+	public List<MazeNode> getHighlighted() {
+		return highlighted;
 	}
 
 	@Override
@@ -113,6 +124,23 @@ public class MazePanel extends GObject {
 			gt.setColor(Color.BLACK);
 			gt.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 		}
+
+		gt.setComposite(AlphaComposite.Src);
+		{
+			// Draw boxes
+			gt.setColor(Color.YELLOW);
+			for (int i = 0; i < gen.getMaze().getWidth(); i++) {
+				for (int j = 0; j < gen.getMaze().getHeight(); j++) {
+					final MazeNode at = gen.nodeAt(j, i);
+					int x = stroke / 2 + mazeCol * i;
+					int y = stroke / 2 + mazeRow * j;
+					if (highlighted.contains(at)) {
+						gt.fillRect(x + 1, y + 1, mazeCol - stroke, mazeRow
+								- stroke);
+					}
+				}
+			}
+		}
 		gt.dispose();
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, getIntWidth() - 1, getIntHeight() - 1);
@@ -127,6 +155,10 @@ public class MazePanel extends GObject {
 
 	public void setGenerator(MazeGenerator gen) {
 		this.gen = gen;
+	}
+
+	public void setHighlighted(List<MazeNode> highlighted) {
+		this.highlighted = highlighted;
 	}
 
 	/**
