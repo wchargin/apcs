@@ -61,9 +61,9 @@ public class MazeView extends GContainer {
 		addAt(btn30, 625, 70);
 		addAt(btn40, 670, 70);
 
-		GButton btnPlay = createButton("Play");
-		addAt(btnPlay, 647, 115);
-		btnPlay.addListener(new ButtonListener() {
+		GButton btnStart = createButton("Start");
+		addAt(btnStart, 647, 115);
+		btnStart.addListener(new ButtonListener() {
 			@Override
 			public void mouseClicked(Context context) {
 				addListener(stepper);
@@ -106,8 +106,17 @@ public class MazeView extends GContainer {
 		GButton btnStep50 = createStepButton(50);
 		addAt(btnStep50, 670, 340);
 
+		GButton btnPlay = createButton("Play");
+		addAt(btnPlay, 647, 385);
+		btnPlay.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				mazePanel.startPlay();
+			}
+		});
+
 		GButton btnSolve = createButton("Solve");
-		addAt(btnSolve, 647, 385);
+		addAt(btnSolve, 647, 430);
 		btnSolve.addListener(new ButtonListener() {
 			@Override
 			public void mouseClicked(Context context) {

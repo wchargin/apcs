@@ -9,12 +9,83 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import jgame.Context;
 import jgame.GObject;
+import jgame.controller.ControlScheme;
+import jgame.controller.Controller;
+import jgame.listener.DelayListener;
 import disjoint.maze.MazeGenerator;
 import disjoint.maze.MazeGenerator.MazeNode;
 
 public class MazePanel extends GObject {
+
+	public class Player extends GObject {
+
+		private MazeNode currentNode;
+
+		public Player() {
+			class PlayerController implements Controller {
+				private ControlScheme cs;
+
+				public PlayerController(ControlScheme cs) {
+					this.cs = cs;
+				}
+
+				@Override
+				public void controlObject(GObject target, Context context) {
+					final Set<Integer> pressed = context.getKeyCodesPressed();
+					boolean moved = false;
+					if (currentNode.hasEast() && pressed.contains(cs.rt)) {
+						moved = true;
+						currentNode = currentNode.getEast();
+						setX(getX() + calculateMazeCol());
+					} else if (currentNode.hasWest() && pressed.contains(cs.lt)) {
+						moved = true;
+						currentNode = currentNode.getWest();
+						setX(getX() - calculateMazeCol());
+					} else if (currentNode.hasSouth()
+							&& pressed.contains(cs.up)) {
+						currentNode = currentNode.getSouth();
+						moved = true;
+						setY(getY() - calculateMazeRow());
+					} else if (currentNode.hasNorth()
+							&& pressed.contains(cs.dn)) {
+						currentNode = currentNode.getNorth();
+						moved = true;
+						setY(getY() + calculateMazeRow());
+					}
+					if (moved) {
+						target.removeController(this);
+						target.addListener(new DelayListener(5) {
+							@Override
+							public void invoke(GObject target2, Context context) {
+								target2.removeListener(this);
+								target2.addController(PlayerController.this);
+							}
+						});
+					}
+				}
+
+			}
+			addController(new PlayerController(ControlScheme.WASD));
+		}
+
+		@Override
+		public void paint(Graphics2D g) {
+			super.paint(g);
+			g.setColor(Color.BLACK);
+			g.fillOval(0, 0, getIntWidth() - 1, getIntHeight() - 1);
+		}
+
+		@Override
+		public void preparePaint(Graphics2D g) {
+			super.preparePaint(g);
+			antialias(g);
+		}
+
+	}
 
 	/**
 	 * The maze generator used for this panel.
@@ -27,6 +98,8 @@ public class MazePanel extends GObject {
 	 * The list of highlighted nodes.
 	 */
 	private List<MazeNode> highlighted = new ArrayList<>();
+
+	private Player player;
 
 	public MazePanel() {
 		super();
@@ -49,7 +122,6 @@ public class MazePanel extends GObject {
 
 	@Override
 	public void paint(Graphics2D g) {
-		super.paint(g);
 		if (gen == null) {
 			return;
 		}
@@ -65,8 +137,8 @@ public class MazePanel extends GObject {
 		final int mazeWidth = gen.getWidth();
 		final int mazeHeight = gen.getHeight();
 
-		final int mazeRow = (int) (panelHeight / mazeHeight);
-		final int mazeCol = (int) (panelWidth / mazeWidth);
+		final int mazeCol = calculateMazeCol();
+		final int mazeRow = calculateMazeRow();
 		gt.setComposite(AlphaComposite.Clear);
 		gt.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 
@@ -146,6 +218,15 @@ public class MazePanel extends GObject {
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, getIntWidth() - 1, getIntHeight() - 1);
 		g.drawImage(tempImage, 0, 0, null);
+		super.paint(g);
+	}
+
+	private int calculateMazeRow() {
+		return (int) (getHeight() / gen.getHeight());
+	}
+
+	private int calculateMazeCol() {
+		return (int) (getWidth() / gen.getWidth());
 	}
 
 	@Override
@@ -156,10 +237,21 @@ public class MazePanel extends GObject {
 
 	public void setGenerator(MazeGenerator gen) {
 		this.gen = gen;
+		setHighlighted(new ArrayList<MazeNode>());
+		player = null;
 	}
 
 	public void setHighlighted(List<MazeNode> highlighted) {
 		this.highlighted = highlighted;
+	}
+
+	public void startPlay() {
+		player = new Player();
+		player.currentNode = gen.getMaze().getStart();
+		final double mazeCol = getWidth() / gen.getWidth();
+		final double mazeRow = getHeight() / gen.getHeight();
+		player.setSize(mazeCol * 0.8, mazeRow * 0.8);
+		addAt(player, mazeCol / 2, mazeRow / 2);
 	}
 
 	/**
