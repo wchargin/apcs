@@ -18,25 +18,21 @@ import disjoint.DisjointSetForest;
 
 public class MazeGenerator {
 
-	private final int width;
-	private final int height;
-
 	/**
-	 * Gets the width of the maze.
-	 * 
-	 * @return the width, in cells
+	 * The maze being generated.
 	 */
-	public int getWidth() {
-		return width;
+	private final Maze maze;
+
+	public class MazeEdge {
+		private DisjointSetForest<MazeNode>.Node a, b;
 	}
 
-	/**
-	 * Gets the height of the maze.
-	 * 
-	 * @return the height, in cells
-	 */
+	public int getWidth() {
+		return maze.getWidth();
+	}
+
 	public int getHeight() {
-		return height;
+		return maze.getHeight();
 	}
 
 	public class MazeNode {
@@ -89,10 +85,22 @@ public class MazeGenerator {
 			return S ? s : null;
 		}
 
-	}
+		public boolean hasEast() {
+			return E;
+		}
 
-	public class MazeEdge {
-		private DisjointSetForest<MazeNode>.Node a, b;
+		public boolean hasNorth() {
+			return N;
+		}
+
+		public boolean hasWest() {
+			return W;
+		}
+
+		public boolean hasSouth() {
+			return S;
+		}
+
 	}
 
 	private Map<MazeNode, DisjointSetForest<MazeNode>.Node> lookup = new HashMap<>();
@@ -101,7 +109,8 @@ public class MazeGenerator {
 	private List<MazeEdge> edges = new ArrayList<>();
 
 	public MazeGenerator(int width, int height) {
-		nodeGrid = new Grid<>(this.height = height, this.width = width);
+		maze = new Maze(width, height);
+		nodeGrid = new Grid<>(width, height);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				final DisjointSetForest<MazeNode>.Node madeSet = forest
@@ -110,6 +119,8 @@ public class MazeGenerator {
 				nodeGrid.set(y, x, madeSet);
 			}
 		}
+		maze.setStart(nodeGrid.at(0, 0).getValue());
+		maze.setEnd(nodeGrid.at(width - 1, height - 1).getValue());
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				DisjointSetForest<MazeNode>.Node mnn = nodeGrid.at(y, x);
@@ -196,12 +207,12 @@ public class MazeGenerator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		final int height = 50;
-		final int width = 50;
+		final int height = 20;
+		final int width = 20;
 		MazeGenerator gen = new MazeGenerator(width, height);
 		gen.finish();
 
-		final int scale = 10;
+		final int scale = 20;
 		final int stroke = 2;
 		BufferedImage bg = new BufferedImage(width * scale + stroke, height
 				* scale + stroke, BufferedImage.TYPE_INT_ARGB);
