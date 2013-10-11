@@ -18,14 +18,75 @@ import disjoint.DisjointSetForest;
 
 public class MazeGenerator {
 
+	private final int width;
+	private final int height;
+
+	/**
+	 * Gets the width of the maze.
+	 * 
+	 * @return the width, in cells
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * Gets the height of the maze.
+	 * 
+	 * @return the height, in cells
+	 */
+	public int getHeight() {
+		return height;
+	}
+
 	public class MazeNode {
-		public MazeNode e, n, w, s;
-		public boolean E = false, N = false, W = false, S = false;
+		private MazeNode e, n, w, s;
+		private boolean E = false, N = false, W = false, S = false;
 
 		@Override
 		public String toString() {
 			return "MazeNode [E=" + E + ", N=" + N + ", W=" + W + ", S=" + S
 					+ "]";
+		}
+
+		/**
+		 * Gets the open node to the east, or {@code null} if there is no such
+		 * node.
+		 * 
+		 * @return the node
+		 */
+		public MazeNode getEast() {
+			return E ? e : null;
+		}
+
+		/**
+		 * Gets the open node to the north, or {@code null} if there is no such
+		 * node.
+		 * 
+		 * @return the node
+		 */
+		public MazeNode getNorth() {
+			return N ? n : null;
+		}
+
+		/**
+		 * Gets the open node to the west, or {@code null} if there is no such
+		 * node.
+		 * 
+		 * @return the node
+		 */
+		public MazeNode getWest() {
+			return W ? w : null;
+		}
+
+		/**
+		 * Gets the open node to the south, or {@code null} if there is no such
+		 * node.
+		 * 
+		 * @return the node
+		 */
+		public MazeNode getSouth() {
+			return S ? s : null;
 		}
 
 	}
@@ -34,13 +95,13 @@ public class MazeGenerator {
 		private DisjointSetForest<MazeNode>.Node a, b;
 	}
 
-	public Map<MazeNode, DisjointSetForest<MazeNode>.Node> lookup = new HashMap<>();
-	public Grid<DisjointSetForest<MazeNode>.Node> nodeGrid;
-	public DisjointSetForest<MazeNode> forest = new DisjointSetForest<>();
-	public List<MazeEdge> edges = new ArrayList<>();
+	private Map<MazeNode, DisjointSetForest<MazeNode>.Node> lookup = new HashMap<>();
+	private Grid<DisjointSetForest<MazeNode>.Node> nodeGrid;
+	private DisjointSetForest<MazeNode> forest = new DisjointSetForest<>();
+	private List<MazeEdge> edges = new ArrayList<>();
 
 	public MazeGenerator(int width, int height) {
-		nodeGrid = new Grid<>(height, width);
+		nodeGrid = new Grid<>(this.height = height, this.width = width);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				final DisjointSetForest<MazeNode>.Node madeSet = forest
@@ -118,7 +179,20 @@ public class MazeGenerator {
 	public boolean isFinished() {
 		return edges.isEmpty();
 	}
-	
+
+	/**
+	 * Gets the maze node at the given row and column.
+	 * 
+	 * @param row
+	 *            the row (y-coordinate)
+	 * @param col
+	 *            the column (x-coordinate)
+	 * @return the relevant node
+	 */
+	public MazeNode nodeAt(int row, int col) {
+		return nodeGrid.at(row, col).getValue();
+	}
+
 	public static void main(String[] args) throws IOException {
 		final int height = 50;
 		final int width = 50;
