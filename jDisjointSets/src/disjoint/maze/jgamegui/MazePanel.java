@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
 import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import jgame.GObject;
@@ -26,12 +25,15 @@ public class MazePanel extends GObject {
 		super();
 	}
 
-	public MazeGenerator getGen() {
-		return gen;
+	/**
+	 * Completely finishes the maze generation.
+	 */
+	public void finish() {
+		gen.finish();
 	}
 
-	public void setGen(MazeGenerator gen) {
-		this.gen = gen;
+	public MazeGenerator getGenerator() {
+		return gen;
 	}
 
 	@Override
@@ -41,20 +43,19 @@ public class MazePanel extends GObject {
 			return;
 		}
 
-		g.setStroke(new BasicStroke(stroke));
-
 		final BufferedImage tempImage = g.getDeviceConfiguration()
 				.createCompatibleImage((int) Math.ceil(getWidth()),
 						(int) Math.ceil(getHeight()), Transparency.TRANSLUCENT);
 		Graphics2D gt = (Graphics2D) tempImage.getGraphics();
+		gt.setStroke(new BasicStroke(stroke));
 
 		final double panelWidth = getWidth();
 		final double panelHeight = getHeight();
 		final int mazeWidth = gen.getWidth();
 		final int mazeHeight = gen.getHeight();
 
-		final double mazeRow = (int) (panelHeight / mazeHeight);
-		final double mazeCol = (int) (panelWidth / mazeWidth);
+		final int mazeRow = (int) (panelHeight / mazeHeight);
+		final int mazeCol = (int) (panelWidth / mazeWidth);
 		gt.setComposite(AlphaComposite.Clear);
 		gt.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 
@@ -81,26 +82,25 @@ public class MazePanel extends GObject {
 			for (int i = 0; i < mazeWidth; i++) {
 				for (int j = 0; j < mazeHeight; j++) {
 					final MazeNode at = gen.nodeAt(j, i);
-					double x = mazeCol * i;
-					double y = mazeRow * j;
+					int x = (int) (stroke / 2 + mazeCol * i);
+					int y = (int) (stroke / 2 + mazeRow * j);
 					if (at.getEast() != null) {
-						gt.fill(new Rectangle2D.Double(
-								x + mazeCol - stroke / 2, y - stroke / 2 + 1,
-								stroke, mazeRow - stroke));
+						gt.fillRect(x + mazeCol - stroke / 2, y + (int) stroke
+								+ 1, stroke, mazeRow);
 					}
 					if (at.getWest() != null) {
-						gt.fill(new Rectangle2D.Double(x - stroke / 2, y
-								- stroke / 2 + 1, stroke, mazeRow - stroke));
+						gt.fillRect(x - stroke / 2, y + (int) stroke + 1,
+								stroke, mazeRow);
 					}
 					if (at.getNorth() != null) {
-						gt.fill(new Rectangle2D.Double(x + stroke / 2 + 1, y
-								- stroke / 2, mazeCol - stroke, stroke));
+						gt.fillRect(x + (int) stroke + 1, y + mazeRow - stroke
+								/ 2, mazeCol, stroke);
 					}
 					if (at.getSouth() != null) {
-						gt.fill(new Rectangle2D.Double(x + stroke / 2 + 1, y
-								+ mazeRow - stroke / 2, mazeCol - stroke,
-								stroke));
+						gt.fillRect(x + (int) stroke + 1, y - stroke / 2,
+								mazeCol, stroke);
 					}
+
 				}
 			}
 
@@ -112,6 +112,7 @@ public class MazePanel extends GObject {
 			gt.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 		}
 		gt.dispose();
+		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, getIntWidth() - 1, getIntHeight() - 1);
 		g.drawImage(tempImage, 0, 0, null);
 	}
@@ -122,18 +123,15 @@ public class MazePanel extends GObject {
 		antialias(g);
 	}
 
+	public void setGenerator(MazeGenerator gen) {
+		this.gen = gen;
+	}
+
 	/**
 	 * Steps through one iteration of the maze generation.
 	 */
 	public void step() {
 		gen.step();
-	}
-
-	/**
-	 * Completely finishes the maze generation.
-	 */
-	public void finish() {
-		gen.finish();
 	}
 
 }
