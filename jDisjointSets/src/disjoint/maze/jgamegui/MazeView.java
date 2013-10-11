@@ -58,21 +58,21 @@ public class MazeView extends GContainer {
 		g.setColor(getBackgroundColor());
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				final MazeNode at = gen.nodeGrid.at(j, i).getValue();
+				final MazeNode at = gen.nodeAt(j, i);
 				int x = stroke / 2 + scale * i;
 				int y = stroke / 2 + scale * j;
-				if (at.E) {
+				if (at.getEast() != null) {
 					g.fillRect(x + scale - stroke / 2, y + ioff + 1, stroke,
 							iwidth);
 				}
-				if (at.W) {
+				if (at.getWest() != null) {
 					g.fillRect(x - stroke / 2, y + ioff + 1, stroke, iwidth);
 				}
-				if (at.N) {
+				if (at.getNorth() != null) {
 					g.fillRect(x + ioff + 1, y + scale - stroke / 2, iwidth,
 							stroke);
 				}
-				if (at.S) {
+				if (at.getNorth() != null) {
 					g.fillRect(x + ioff + 1, y - stroke / 2, iwidth, stroke);
 				}
 			}
