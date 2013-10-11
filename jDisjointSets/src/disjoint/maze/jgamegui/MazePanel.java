@@ -96,27 +96,27 @@ public class MazePanel extends GObject {
 					int x = (int) (stroke / 2 + mazeCol * i);
 					int y = (int) (stroke / 2 + mazeRow * j);
 					if (at.getEast() != null) {
-						gt.fillRect(x + mazeCol - stroke / 2, y + (int) stroke
-								+ 1, stroke, mazeRow);
+						gt.fillRect(x + mazeCol - stroke / 2, y + (int) stroke,
+								stroke, mazeRow - 1);
 					}
 					if (at.getWest() != null) {
-						gt.fillRect(x - stroke / 2, y + (int) stroke + 1,
-								stroke, mazeRow);
+						gt.fillRect(x - stroke / 2, y + (int) stroke, stroke,
+								mazeRow - 1);
 					}
 					if (at.getNorth() != null) {
-						gt.fillRect(x + (int) stroke + 1, y + mazeRow - stroke
-								/ 2, mazeCol, stroke);
+						gt.fillRect(x + (int) stroke, y + mazeRow - stroke / 2,
+								mazeCol - 1, stroke);
 					}
 					if (at.getSouth() != null) {
-						gt.fillRect(x + (int) stroke + 1, y - stroke / 2,
-								mazeCol, stroke);
+						gt.fillRect(x + (int) stroke, y - stroke / 2,
+								mazeCol - 1, stroke);
 					}
 
 				}
 			}
 
 		}
-		g.setColor(gen.isFinished() ? Color.GREEN : Color.WHITE);
+		g.setColor(gen.isFinished() ? new Color(128, 255, 128) : Color.WHITE);
 		g.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 
 		gt.setComposite(AlphaComposite.SrcIn);
@@ -125,18 +125,19 @@ public class MazePanel extends GObject {
 			gt.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 		}
 
+		antialias(gt);
 		gt.setComposite(AlphaComposite.Src);
 		{
 			// Draw boxes
-			gt.setColor(Color.YELLOW);
+			gt.setColor(Color.BLUE);
 			for (int i = 0; i < gen.getMaze().getWidth(); i++) {
 				for (int j = 0; j < gen.getMaze().getHeight(); j++) {
 					final MazeNode at = gen.nodeAt(j, i);
 					int x = stroke / 2 + mazeCol * i;
 					int y = stroke / 2 + mazeRow * j;
 					if (highlighted.contains(at)) {
-						gt.fillRect(x + 1, y + 1, mazeCol - stroke, mazeRow
-								- stroke);
+						gt.fillOval(x + mazeCol / 4, y + mazeRow / 4,
+								mazeCol / 2, mazeRow / 2);
 					}
 				}
 			}
