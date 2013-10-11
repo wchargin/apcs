@@ -1,82 +1,144 @@
 package disjoint.maze.jgamegui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 import jgame.Context;
+import jgame.GButton;
 import jgame.GContainer;
 import jgame.GObject;
-import jgame.listener.TimerListener;
+import jgame.listener.ButtonListener;
+import jgame.listener.FrameListener;
 import disjoint.maze.MazeGenerator;
-import disjoint.maze.MazeGenerator.MazeNode;
 
 public class MazeView extends GContainer {
 
 	private MazeGenerator gen;
+	private MazePanel mazePanel;
+	private FrameListener stepper = new FrameListener() {
+		@Override
+		public void invoke(GObject target, Context context) {
+			if (gen != null && !gen.isFinished()) {
+				for (int i = 0; i <= gen.getWidth() * gen.getHeight() / 300; i++) {
+					gen.step();
+				}
+			} else {
+				target.removeListener(this);
+			}
+		}
+	};
 
 	public MazeView() {
 		setBackgroundColor(Color.WHITE);
-		setSize(401, 401);
-		gen = new MazeGenerator(20, 20);
-		addListener(new TimerListener(2) {
+		setSize(701, 601);
+		gen = null;
+
+		mazePanel = new MazePanel();
+		mazePanel.setSize(600, 600);
+		mazePanel.setGenerator(gen);
+		mazePanel.setAnchorTopLeft();
+		addAt(mazePanel, 0, 0);
+
+		GButton btn10 = createGenerateButton(10);
+		GButton btn20 = createGenerateButton(20);
+		GButton btn30 = createGenerateButton(30);
+		GButton btn40 = createGenerateButton(40);
+
+		addAt(btn10, 625, 25);
+		addAt(btn20, 670, 25);
+		addAt(btn30, 625, 70);
+		addAt(btn40, 670, 70);
+
+		GButton btnPlay = createButton("Play");
+		addAt(btnPlay, 647, 115);
+		btnPlay.addListener(new ButtonListener() {
 			@Override
-			public void invoke(GObject target, Context context) {
-				gen.step();
-				gen.step();
-				gen.step();
-				gen.step();
-				if (gen.isFinished()) {
-					target.removeListener(this);
-					setBackgroundColor(Color.YELLOW);
+			public void mouseClicked(Context context) {
+				addListener(stepper);
+			}
+		});
+
+		GButton btnStop = createButton("Stop");
+		addAt(btnStop, 647, 160);
+		btnStop.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				removeListener(stepper);
+			}
+		});
+
+		GButton btnFinish = createButton("Finish");
+		addAt(btnFinish, 647, 205);
+		btnFinish.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				if (gen != null) {
+					gen.finish();
+				}
+			}
+		});
+
+		GButton btnStep1 = createButton("Step");
+		addAt(btnStep1, 647, 250);
+		stepX(btnStep1, 1);
+
+		GButton btnStep5 = createStepButton(5);
+		addAt(btnStep5, 625, 295);
+
+		GButton btnStep10 = createStepButton(10);
+		addAt(btnStep10, 670, 295);
+
+		GButton btnStep20 = createStepButton(20);
+		addAt(btnStep20, 625, 340);
+
+		GButton btnStep50 = createStepButton(50);
+		addAt(btnStep50, 670, 340);
+
+	}
+
+	private void initializeMaze(int s) {
+		mazePanel.setGenerator(gen = (s > 0 ? new MazeGenerator(s, s) : null));
+	}
+
+	private void stepX(GObject o, final int count) {
+		o.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				if (gen != null) {
+					for (int i = 0; i < count; i++) {
+						gen.step();
+					}
 				}
 			}
 		});
 	}
 
-	@Override
-	public void paint(Graphics2D g) {
-		super.paint(g);
-		final int height = 20;
-		final int width = 20;
-
-		final int scale = getIntWidth() / width;
-		final int stroke = 2;
-		g.setColor(Color.BLACK);
-		g.setStroke(new BasicStroke(stroke));
-
-		for (int x = stroke / 2; x < getWidth(); x += scale) {
-			for (int y = stroke / 2; y < getHeight(); y += scale) {
-				g.drawRect(x, y, scale, scale);
+	private GButton createGenerateButton(final int s) {
+		GButton btn = createSmallButton(Integer.toString(s));
+		btn.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				initializeMaze(s);
 			}
-		}
+		});
+		return btn;
+	}
 
-		final double gateWidth = 1 - ((double) stroke / (double) scale);
-		final double gateOffset = (1 - gateWidth) / 2;
-		final int iwidth = (int) (gateWidth * scale);
-		final int ioff = (int) (gateOffset * scale);
-		g.setColor(getBackgroundColor());
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				final MazeNode at = gen.nodeAt(j, i);
-				int x = stroke / 2 + scale * i;
-				int y = stroke / 2 + scale * j;
-				if (at.getEast() != null) {
-					g.fillRect(x + scale - stroke / 2, y + ioff + 1, stroke,
-							iwidth);
-				}
-				if (at.getWest() != null) {
-					g.fillRect(x - stroke / 2, y + ioff + 1, stroke, iwidth);
-				}
-				if (at.getNorth() != null) {
-					g.fillRect(x + ioff + 1, y + scale - stroke / 2, iwidth,
-							stroke);
-				}
-				if (at.getNorth() != null) {
-					g.fillRect(x + ioff + 1, y - stroke / 2, iwidth, stroke);
-				}
-			}
-		}
+	private GButton createStepButton(int num) {
+		GButton btn = createSmallButton("\u00d7" + num); // times sign
+		stepX(btn, num);
+		return btn;
+	}
+
+	private GButton createSmallButton(String text) {
+		GButton btn = ComponentGenerator.createButton(40, 40);
+		ComponentGenerator.attachLabel(btn, text);
+		return btn;
+	}
+
+	private GButton createButton(String text) {
+		GButton btn = ComponentGenerator.createButton(85, 40);
+		ComponentGenerator.attachLabel(btn, text);
+		return btn;
 	}
 
 }
