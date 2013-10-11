@@ -270,4 +270,8 @@ public class MazeGenerator {
 
 		JOptionPane.showMessageDialog(null, new ImageIcon(bg));
 	}
+
+	public Maze getMaze() {
+		return maze;
+	}
 }
