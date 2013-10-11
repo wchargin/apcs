@@ -255,6 +255,19 @@ public class MazeGenerator {
 			}
 		}
 
+		final List<MazeNode> solved = MazeSolver.solve(gen.maze);
+		g2d.setColor(Color.GREEN);
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				final MazeNode at = gen.nodeGrid.at(j, i).getValue();
+				int x = stroke / 2 + scale * i;
+				int y = stroke / 2 + scale * j;
+				if (solved.contains(at)) {
+					g2d.fillRect(x + 1, y + 1, scale - stroke, scale - stroke);
+				}
+			}
+		}
+
 		JOptionPane.showMessageDialog(null, new ImageIcon(bg));
 	}
 }
