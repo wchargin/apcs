@@ -105,6 +105,8 @@ public class MazePanel extends GObject {
 			}
 
 		}
+		g.setColor(gen.isFinished() ? Color.GREEN : Color.WHITE);
+		g.fillRect(0, 0, getIntWidth() + 1, getIntHeight() + 1);
 
 		gt.setComposite(AlphaComposite.SrcIn);
 		{ // Draw content
@@ -131,7 +133,8 @@ public class MazePanel extends GObject {
 	 * Steps through one iteration of the maze generation.
 	 */
 	public void step() {
-		gen.step();
+		while (!gen.step())
+			;
 	}
 
 }
