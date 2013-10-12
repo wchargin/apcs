@@ -251,7 +251,10 @@ public class MazePanel extends GObject {
 	public void setGenerator(MazeGenerator gen) {
 		this.gen = gen;
 		setHighlighted(new ArrayList<MazeNode>());
-		player = null;
+		if (player != null) {
+			player.removeSelf();
+			player = null;
+		}
 	}
 
 	public void setHighlighted(List<MazeNode> highlighted) {
@@ -259,7 +262,7 @@ public class MazePanel extends GObject {
 	}
 
 	public void startPlay() {
-		if (player != null) {
+		if (player != null || gen == null) {
 			return;
 		}
 		player = new Player();
@@ -277,8 +280,10 @@ public class MazePanel extends GObject {
 	 * Steps through one iteration of the maze generation.
 	 */
 	public void step() {
-		while (!gen.step())
-			;
+		if (gen != null) {
+			while (!gen.step())
+				/* pass */;
+		}
 	}
 
 }
