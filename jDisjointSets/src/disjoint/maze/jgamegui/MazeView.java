@@ -52,13 +52,22 @@ public class MazeView extends GContainer {
 		addAt(mazePanel, 0, 0);
 
 		double currentY = 25;
-		
+
+		GButton btnReset = createButton("Reset");
+		addAt(btnReset, 647, currentY);
+		btnReset.addListener(new ButtonListener() {
+			@Override
+			public void mouseClicked(Context context) {
+				reset();
+			}
+		});
+
 		GButton btn10 = createGenerateButton(10);
 		GButton btn20 = createGenerateButton(20);
 		GButton btn30 = createGenerateButton(30);
 		GButton btn40 = createGenerateButton(40);
 
-		addAt(btn10, 625, currentY);
+		addAt(btn10, 625, currentY += 45);
 		addAt(btn20, 670, currentY);
 		addAt(btn30, 625, currentY += 45);
 		addAt(btn40, 670, currentY);
