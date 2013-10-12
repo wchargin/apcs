@@ -22,6 +22,10 @@ public class WinView extends GContainer {
 
 	public WinView() {
 		setSize(701, 601);
+
+		// cache
+		ImageCache.getImage("circle.png");
+		ImageCache.getImage("cookie.png");
 	}
 
 	@Override

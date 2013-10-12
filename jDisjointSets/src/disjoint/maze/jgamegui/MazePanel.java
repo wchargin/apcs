@@ -15,6 +15,8 @@ import jgame.Context;
 import jgame.GObject;
 import jgame.controller.ControlScheme;
 import jgame.controller.Controller;
+import jgame.controller.EntranceExitController;
+import jgame.controller.MovementTween;
 import jgame.listener.DelayListener;
 import disjoint.maze.MazeGenerator;
 import disjoint.maze.MazeGenerator.MazeNode;
@@ -28,6 +30,7 @@ public class MazePanel extends GObject {
 
 		public Player() {
 			class PlayerController implements Controller {
+				private static final int DELAY = 4;
 				private ControlScheme cs;
 
 				public PlayerController(ControlScheme cs) {
@@ -36,39 +39,45 @@ public class MazePanel extends GObject {
 
 				@Override
 				public void controlObject(GObject target, Context context) {
+					if (currentNode == gen.getMaze().getEnd()) {
+						context.setCurrentGameView(Views.WIN);
+						target.removeSelf();
+						player = null;
+						return;
+					}
 					final Set<Integer> pressed = context.getKeyCodesPressed();
 					boolean moved = false;
+					double moveX = 0, moveY = 0;
 					if (currentNode.hasEast() && pressed.contains(cs.rt)) {
 						moved = true;
 						currentNode = currentNode.getEast();
-						setX(getX() + calculateMazeCol());
+						moveX = calculateMazeCol();
 					} else if (currentNode.hasWest() && pressed.contains(cs.lt)) {
 						moved = true;
 						currentNode = currentNode.getWest();
-						setX(getX() - calculateMazeCol());
+						moveX = -calculateMazeCol();
 					} else if (currentNode.hasSouth()
 							&& pressed.contains(cs.up)) {
 						currentNode = currentNode.getSouth();
 						moved = true;
-						setY(getY() - calculateMazeRow());
+						moveY = -calculateMazeRow();
 					} else if (currentNode.hasNorth()
 							&& pressed.contains(cs.dn)) {
 						currentNode = currentNode.getNorth();
 						moved = true;
-						setY(getY() + calculateMazeRow());
+						moveY = calculateMazeRow();
 					}
 					if (moved) {
 						target.removeController(this);
-						target.addListener(new DelayListener(5) {
+						target.addListener(new DelayListener(DELAY) {
 							@Override
 							public void invoke(GObject target2, Context context) {
 								target2.removeListener(this);
 								target2.addController(PlayerController.this);
 							}
 						});
-						if (currentNode == gen.getMaze().getEnd()) {
-							context.setCurrentGameView(Views.WIN);
-						}
+						target.addController(new MovementTween(DELAY, moveX,
+								moveY));
 					}
 				}
 
@@ -250,7 +259,13 @@ public class MazePanel extends GObject {
 	}
 
 	public void startPlay() {
+		if (player != null) {
+			return;
+		}
 		player = new Player();
+		player.addController(EntranceExitController
+				.createEntranceController(0.1));
+		player.setAlpha(0);
 		player.currentNode = gen.getMaze().getStart();
 		final double mazeCol = getWidth() / gen.getWidth();
 		final double mazeRow = getHeight() / gen.getHeight();
