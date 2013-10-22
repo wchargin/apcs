@@ -25,17 +25,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	 * @author William Chargin
 	 * 
 	 */
-	private class Entry implements Map.Entry<K, V> {
-
-		/**
-		 * The key for this entry.
-		 */
-		private K key;
-
-		/**
-		 * The value for this entry.
-		 */
-		private V value;
+	private class Entry extends SimpleEntry<K, V> {
 
 		/**
 		 * The next entry in this chain, or {@code null} if this is the end of
@@ -52,31 +42,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 		 *            the value
 		 */
 		public Entry(K key, V value) {
-			super();
-			this.key = key;
-			this.value = value;
-		}
-
-		@Override
-		public K getKey() {
-			return key;
-		}
-
-		@Override
-		public V getValue() {
-			return value;
-		}
-
-		@Override
-		public V setValue(V value) {
-			V old = this.value;
-			this.value = value;
-			return old;
-		}
-
-		@Override
-		public String toString() {
-			return "Entry [key=" + key + ", value=" + value + "]";
+			super(key, value);
 		}
 
 	}
@@ -129,7 +95,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 		int pos = calculatePosition(key);
 		Entry t = list[pos];
 		while (t != null) {
-			if (equals(key, t.key)) {
+			if (equals(key, t.getKey())) {
 				return true;
 			}
 			t = t.next;
@@ -141,7 +107,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	public boolean containsValue(V value) {
 		for (Entry e : list) {
 			while (e != null) {
-				if (equals(value, e.value)) {
+				if (equals(value, e.getValue())) {
 					return true;
 				}
 				e = e.next;
@@ -168,10 +134,10 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	public V get(K key) {
 		int pos = calculatePosition(key);
 		Entry t = list[pos];
-		while (t != null && t.key != key) {
+		while (t != null && t.getKey() != key) {
 			t = t.next;
 		}
-		return t == null ? null : t.value;
+		return t == null ? null : t.getValue();
 	}
 
 	@Override
@@ -185,14 +151,14 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 			return null;
 		}
 
-		if (equals(key, t.key)) {
+		if (equals(key, t.getKey())) {
 			// found at the first link in the chain
 			return t.setValue(value);
 		}
 
 		// find the end of the list, or check for replacement
 		while (t.next != null) {
-			if (equals(key, t.key)) {
+			if (equals(key, t.getKey())) {
 				// found an existing key; replace value
 				return t.setValue(value);
 			}
@@ -212,14 +178,14 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 			// nothing at this hash position
 			return null;
 		}
-		if (equals(key, t.key)) {
+		if (equals(key, t.getKey())) {
 			// found at the first link in the chain
 			list[pos] = t.next;
-			return t.value;
+			return t.getValue();
 		}
 
 		Entry previous = null;
-		while (t != null && t.key != key) {
+		while (t != null && t.getKey() != key) {
 			previous = t;
 			t = t.next;
 		}
@@ -228,7 +194,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 			return null;
 		} else {
 			previous.next = t.next;
-			return t.value;
+			return t.getValue();
 		}
 	}
 
