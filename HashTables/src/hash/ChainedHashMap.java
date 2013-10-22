@@ -58,6 +58,11 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	private static final int DEFAULT_SIZE = 7;
 
 	/**
+	 * The size of this table, maintained for easy computations.
+	 */
+	private int size = 0;
+
+	/**
 	 * Creates the map with the given hash function.
 	 * 
 	 * @param hasher
@@ -88,6 +93,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	@Override
 	public void clear() {
 		Arrays.fill(list, null);
+		size = 0;
 	}
 
 	@Override
@@ -148,6 +154,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 		if (t == null) {
 			// first in chain; set up list
 			list[pos] = new Entry(key, value);
+			size++;
 			return null;
 		}
 
@@ -167,6 +174,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 
 		// reached the end of the chain; append
 		t.next = new Entry(key, value);
+		size++;
 		return null;
 	}
 
@@ -181,6 +189,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 		if (equals(key, t.getKey())) {
 			// found at the first link in the chain
 			list[pos] = t.next;
+			size--;
 			return t.getValue();
 		}
 
@@ -194,19 +203,13 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 			return null;
 		} else {
 			previous.next = t.next;
+			size--;
 			return t.getValue();
 		}
 	}
 
 	@Override
 	public int size() {
-		int size = 0;
-		for (Entry e : list) {
-			while (e != null) {
-				size++;
-				e = e.next;
-			}
-		}
 		return size;
 	}
 
