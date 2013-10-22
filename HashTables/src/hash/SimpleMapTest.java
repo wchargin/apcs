@@ -26,18 +26,6 @@ public abstract class SimpleMapTest<M extends SimpleMap<Integer, Integer>> {
 	private M map;
 
 	/**
-	 * Creates an empty map to use in this test.
-	 * 
-	 * @return the map to use
-	 */
-	protected abstract M createMap();
-
-	@Before
-	public void setUp() throws Exception {
-		map = createMap();
-	}
-
-	/**
 	 * Adds the first {@code n} powers of two to the map, with entries of the
 	 * form <em>i</em> &rarr; 2<sup><em>i</em></sup>.
 	 * 
@@ -48,6 +36,18 @@ public abstract class SimpleMapTest<M extends SimpleMap<Integer, Integer>> {
 		for (int i = 0; i < n; i++) {
 			map.put(i, 1 << i);
 		}
+	}
+
+	/**
+	 * Creates an empty map to use in this test.
+	 * 
+	 * @return the map to use
+	 */
+	protected abstract M createMap();
+
+	@Before
+	public void setUp() throws Exception {
+		map = createMap();
 	}
 
 	@Test
