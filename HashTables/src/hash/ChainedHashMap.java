@@ -16,7 +16,8 @@ import java.util.Set;
  * @param <V>
  *            the type of values stored in this map
  */
-public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
+public class ChainedHashMap<K, V> extends
+		ArrayHashMap<K, V, ChainedHashMap<K, V>.Entry> {
 
 	/**
 	 * The entries stored in a chained map. In addition to keys and values,
@@ -25,7 +26,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	 * @author William Chargin
 	 * 
 	 */
-	private class Entry extends SimpleEntry<K, V> {
+	class Entry extends SimpleEntry<K, V> {
 
 		/**
 		 * The next entry in this chain, or {@code null} if this is the end of
@@ -48,38 +49,18 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	}
 
 	/**
-	 * The list of entries.
-	 */
-	private Entry[] list;
-
-	/**
-	 * The default size of the list.
-	 */
-	private static final int DEFAULT_SIZE = 7;
-
-	/**
-	 * The default load factor for a map.
-	 */
-	private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-
-	/**
-	 * The load factor for this hash map.
-	 */
-	private final float loadFactor;
-
-	/**
 	 * The size of this table, maintained for easy computations.
 	 */
-	private int size = 0;
+	int size = 0;
 
 	/**
-	 * Creates the map with the given hash function.
+	 * Creates the map with the given hash function and default load factor.
 	 * 
 	 * @param hasher
 	 *            the hash function to use
 	 */
 	public ChainedHashMap(HashFunction<? super K> hasher) {
-		this(hasher, DEFAULT_LOAD_FACTOR);
+		super(hasher);
 	}
 
 	/**
@@ -91,19 +72,7 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 	 *            the {@linkplain #loadFactor load factor} for the map
 	 */
 	public ChainedHashMap(HashFunction<? super K> hasher, float loadFactor) {
-		super(hasher);
-
-		initializeList(DEFAULT_SIZE);
-		this.loadFactor = loadFactor;
-	}
-
-	/**
-	 * Calculates the current actual load factor of the map.
-	 * 
-	 * @return the current load factor
-	 */
-	private float calculateLoadFactor() {
-		return (float) size / list.length;
+		super(hasher, loadFactor);
 	}
 
 	/**
@@ -175,16 +144,9 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 		return t == null ? null : t.getValue();
 	}
 
-	/**
-	 * Initializes the internal list to be a new list of the given size. This
-	 * method uses unchecked generics with the
-	 * {@link Array#newInstance(Class, int)} method.
-	 * 
-	 * @param size
-	 *            the size of this list
-	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	private void initializeList(int size) {
+	protected void initializeList(int size) {
 		list = (Entry[]) Array.newInstance(Entry.class, size);
 		clear();
 	}
@@ -221,34 +183,6 @@ public class ChainedHashMap<K, V> extends AbstractHashMap<K, V> {
 		size++;
 		remapIfNecessary();
 		return null;
-	}
-
-	/**
-	 * Reinitializes this map with a new size to remove collisions. This method
-	 * should be run when the {@linkplain #calculateLoadFactor() current load
-	 * factor} exceeds the {@linkplain #loadFactor specified load factor}.
-	 * 
-	 * @param newSize
-	 *            the new size for the internal list
-	 */
-	private void remap(int newSize) {
-		final Set<? extends Map.Entry<K, V>> oldList = entrySet();
-
-		initializeList(newSize);
-		for (Map.Entry<K, V> entry : oldList) {
-			put(entry.getKey(), entry.getValue());
-		}
-	}
-
-	/**
-	 * Remaps this map's internal list, doubling the current size, if the
-	 * {@linkplain #calculateLoadFactor() current load factor} exceeds the
-	 * {@linkplain #loadFactor specified load factor}.
-	 */
-	private void remapIfNecessary() {
-		if (calculateLoadFactor() > loadFactor) {
-			remap(list.length * 2);
-		}
 	}
 
 	@Override
