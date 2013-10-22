@@ -73,6 +73,19 @@ public abstract class ArrayHashMap<K, V, E> extends AbstractHashMap<K, V> {
 	}
 
 	/**
+	 * Calculates the array position for a given key. This takes the modulus of
+	 * the hash function with the list length.
+	 * 
+	 * @param key
+	 *            the key
+	 * @return the array position
+	 */
+	protected int calculatePosition(K key) {
+		return (int) ((key != null ? ((long) hasher.hash(key) + Integer.MAX_VALUE)
+				: 0) % list.length);
+	}
+
+	/**
 	 * Initializes the internal list to be a new list of the given size.
 	 * 
 	 * @param size
@@ -88,7 +101,7 @@ public abstract class ArrayHashMap<K, V, E> extends AbstractHashMap<K, V> {
 	 * @param newSize
 	 *            the new size for the internal list
 	 */
-	private void remap(int newSize) {
+	protected void remap(int newSize) {
 		final Set<? extends Map.Entry<K, V>> oldList = entrySet();
 
 		initializeList(newSize);
@@ -98,13 +111,22 @@ public abstract class ArrayHashMap<K, V, E> extends AbstractHashMap<K, V> {
 	}
 
 	/**
+	 * Remaps this list, doubling the current size.
+	 * 
+	 * @see #remap(int)
+	 */
+	protected void remapDouble() {
+		remap(list.length * 2);
+	}
+
+	/**
 	 * Remaps this map's internal list, doubling the current size, if the
 	 * {@linkplain #calculateLoadFactor() current load factor} exceeds the
 	 * {@linkplain #loadFactor specified load factor}.
 	 */
 	protected void remapIfNecessary() {
 		if (calculateLoadFactor() > loadFactor) {
-			remap(list.length * 2);
+			remapDouble();
 		}
 	}
 

@@ -75,19 +75,6 @@ public class ChainedHashMap<K, V> extends
 		super(hasher, loadFactor);
 	}
 
-	/**
-	 * Calculates the array position for a given key. This takes the modulus of
-	 * the hash function with the list length.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return the array position
-	 */
-	private int calculatePosition(K key) {
-		return (int) ((key != null ? ((long) hasher.hash(key) + Integer.MAX_VALUE)
-				: 0) % list.length);
-	}
-
 	@Override
 	public void clear() {
 		Arrays.fill(list, null);
