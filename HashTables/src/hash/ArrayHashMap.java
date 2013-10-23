@@ -26,7 +26,7 @@ public abstract class ArrayHashMap<K, V, E> extends AbstractHashMap<K, V> {
 	/**
 	 * The default size of the list.
 	 */
-	protected static final int DEFAULT_SIZE = 7;
+	protected static final int DEFAULT_SIZE = 16;
 
 	/**
 	 * The load factor for this hash map.
