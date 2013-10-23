@@ -2,7 +2,7 @@ package hash;
 
 /**
  * 
- * A test for the {@link LinaerProbedHashMap} class.
+ * A test for the {@link LinearProbedHashMap} class.
  * 
  * @author William Chargin
  * 
