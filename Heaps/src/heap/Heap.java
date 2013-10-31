@@ -62,13 +62,6 @@ public class Heap<E> extends AbstractQueue<E> {
 		return index * 2;
 	}
 
-	@Override
-	public boolean contains(Object o) {
-		System.out.println(Thread.currentThread().getStackTrace()[2]
-				+ "\tContains " + o + "? " + super.contains(o));
-		return super.contains(o);
-	}
-
 	/**
 	 * Finds the index of the parent element of the element with the given
 	 * index.
