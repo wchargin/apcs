@@ -113,9 +113,10 @@ public class ChainedHashMap<K, V> extends
 		// HashMap) in my HashMap implementation?
 		Set<Entry> entries = new HashSet<Entry>();
 		for (Entry e : list) {
-			while (e != null) {
-				entries.add(e);
-				e = e.next;
+			Entry t = e;
+			while (t != null) {
+				entries.add(t);
+				t = t.next;
 			}
 		}
 		return entries;
@@ -125,7 +126,7 @@ public class ChainedHashMap<K, V> extends
 	public V get(K key) {
 		int pos = calculatePosition(key);
 		Entry t = list[pos];
-		while (t != null && t.getKey() != key) {
+		while (t != null && !equals(t.getKey(), key)) {
 			t = t.next;
 		}
 		return t == null ? null : t.getValue();
@@ -188,7 +189,7 @@ public class ChainedHashMap<K, V> extends
 		}
 
 		Entry previous = null;
-		while (t != null && t.getKey() != key) {
+		while (t != null && !equals(t.getKey(), key)) {
 			previous = t;
 			t = t.next;
 		}
