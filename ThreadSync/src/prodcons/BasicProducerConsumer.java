@@ -2,10 +2,7 @@ package prodcons;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -15,57 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
  * 
  */
 public class BasicProducerConsumer {
-
-	/**
-	 * A buffer, the shared memory accessed by producers and consumers.
-	 * 
-	 * @author William Chargin
-	 * 
-	 * @param <T>
-	 *            the type of object stored in this buffer
-	 */
-	private static class Buffer<T> {
-		Queue<T> buffer;
-		Semaphore mutex;
-		Semaphore slots;
-		Semaphore items;
-
-		public Buffer(int size) {
-			buffer = new LinkedList<T>();
-			mutex = new Semaphore(1);
-			slots = new Semaphore(size);
-			items = new Semaphore(0);
-		}
-
-		public void insert(T item) throws InterruptedException {
-			slots.acquire();
-			mutex.acquire();
-			buffer.add(item);
-			mutex.release();
-			items.release();
-		}
-
-		public T remove() throws InterruptedException {
-			items.acquire();
-			mutex.acquire();
-			T t = buffer.poll();
-			mutex.release();
-			slots.release();
-			return t;
-		}
-
-		public int size() {
-			return buffer.size();
-		}
-	}
-
-	private interface Consumer<T> {
-		public void consume(T t);
-	}
-
-	private interface Producer<T> {
-		public T produce();
-	}
 
 	/**
 	 * Starts the producer-consumer demo with the given parameters, and prints
@@ -104,7 +50,6 @@ public class BasicProducerConsumer {
 					.println("    <consumers> ]\n\tnon-negative integer; number of consumer threads to use");
 			System.exit(1);
 		}
-		final Buffer<Long> buf = new Buffer<>(Integer.parseInt(args[0]));
 		final Random r = new Random();
 
 		final int min = Integer.parseInt(args[2]), range = Integer
@@ -124,34 +69,36 @@ public class BasicProducerConsumer {
 		NumberFormat nfProducer = new DecimalFormat();
 		nfProducer.setMinimumIntegerDigits((int) (producers > 0 ? Math
 				.ceil(Math.log10(producers)) : 0));
+		final ApplicationServer<Long> serv = new ApplicationServer<>(
+				Integer.parseInt(args[0]));
 		for (int i = 0; i < producers; i++) {
 			final String name = "Produce" + nfProducer.format(i);
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					Producer<Long> p = new Producer<Long>() {
+					ApplicationServer.Producer<Long> p = new ApplicationServer.Producer<Long>() {
 						@Override
 						public Long produce() {
 							final long num = value.getAndIncrement();
 							System.out.println(System.currentTimeMillis()
-									- start + "\tx" + name + "\t" + buf.size()
+									- start + "\tx" + name + "\t" + serv.size()
 									+ "\t" + num);
+							try {
+								int sleepMillis = (int) ((r.nextInt(range) + min) * Math.exp(-bias));
+								System.out.println(System.currentTimeMillis()
+										- start + "\ts" + name + "\t"
+										+ serv.size() + "\t" + sleepMillis);
+								Thread.sleep(sleepMillis);
+							} catch (InterruptedException e) {
+								System.out.println(System.currentTimeMillis()
+										- start + "\ti" + name + "\t"
+										+ serv.size() + "\t-1");
+
+							}
 							return num;
 						}
 					};
-					try {
-						while (true) {
-							buf.insert(p.produce());
-							int sleepMillis = (int) ((r.nextInt(range) + min) * Math.exp(-bias));
-							System.out.println(System.currentTimeMillis()
-									- start + "\ts" + name + "\t" + buf.size()
-									+ "\t" + sleepMillis);
-							Thread.sleep(sleepMillis);
-						}
-					} catch (InterruptedException e) {
-						System.out.println(System.currentTimeMillis() - start
-								+ "\ti" + name + "\t" + buf.size() + "\t-1");
-					}
+					serv.registerProducer(p);
 				}
 			}, name).start();
 		}
@@ -165,28 +112,26 @@ public class BasicProducerConsumer {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					Consumer<Long> c = new Consumer<Long>() {
+					ApplicationServer.Consumer<Long> c = new ApplicationServer.Consumer<Long>() {
 						@Override
 						public void consume(Long l) {
 							System.out.println(System.currentTimeMillis()
-									- start + "\tx" + name + "\t" + buf.size()
+									- start + "\tx" + name + "\t" + serv.size()
 									+ "\t" + l);
+							try {
+								int sleepMillis = (int) ((r.nextInt(range) + min) * Math.exp(bias));
+								System.out.println(System.currentTimeMillis()
+										- start + "\ts" + name + "\t"
+										+ serv.size() + "\t" + sleepMillis);
+								Thread.sleep(sleepMillis);
+							} catch (InterruptedException e) {
+								System.out.println(System.currentTimeMillis()
+										+ "\ti" + name + "\t" + serv.size()
+										+ "\t-1");
+							}
 						}
-
 					};
-					try {
-						while (true) {
-							c.consume(buf.remove());
-							int sleepMillis = (int) ((r.nextInt(range) + min) * Math.exp(bias));
-							System.out.println(System.currentTimeMillis()
-									- start + "\ts" + name + "\t" + buf.size()
-									+ "\t" + sleepMillis);
-							Thread.sleep(sleepMillis);
-						}
-					} catch (InterruptedException e) {
-						System.out.println(System.currentTimeMillis() + "\ti"
-								+ name + "\t" + buf.size() + "\t-1");
-					}
+					serv.registerConsumer(c);
 				}
 			}, name).start();
 		}
