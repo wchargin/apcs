@@ -73,34 +73,28 @@ public class BasicProducerConsumer {
 				Integer.parseInt(args[0]));
 		for (int i = 0; i < producers; i++) {
 			final String name = "Produce" + nfProducer.format(i);
-			new Thread(new Runnable() {
+			ApplicationServer.Producer<Long> p = new ApplicationServer.Producer<Long>() {
 				@Override
-				public void run() {
-					ApplicationServer.Producer<Long> p = new ApplicationServer.Producer<Long>() {
-						@Override
-						public Long produce() {
-							final long num = value.getAndIncrement();
-							System.out.println(System.currentTimeMillis()
-									- start + "\tx" + name + "\t" + serv.size()
-									+ "\t" + num);
-							try {
-								int sleepMillis = (int) ((r.nextInt(range) + min) * Math.exp(-bias));
-								System.out.println(System.currentTimeMillis()
-										- start + "\ts" + name + "\t"
-										+ serv.size() + "\t" + sleepMillis);
-								Thread.sleep(sleepMillis);
-							} catch (InterruptedException e) {
-								System.out.println(System.currentTimeMillis()
-										- start + "\ti" + name + "\t"
-										+ serv.size() + "\t-1");
+				public Long produce() {
+					final long num = value.getAndIncrement();
+					System.out.println(System.currentTimeMillis() - start
+							+ "\tx" + name + "\t" + serv.size() + "\t" + num);
+					try {
+						int sleepMillis = (int) ((r.nextInt(range) + min) * Math
+								.exp(-bias));
+						System.out.println(System.currentTimeMillis() - start
+								+ "\ts" + name + "\t" + serv.size() + "\t"
+								+ sleepMillis);
+						Thread.sleep(sleepMillis);
+					} catch (InterruptedException e) {
+						System.out.println(System.currentTimeMillis() - start
+								+ "\ti" + name + "\t" + serv.size() + "\t-1");
 
-							}
-							return num;
-						}
-					};
-					serv.registerProducer(p);
+					}
+					return num;
 				}
-			}, name).start();
+			};
+			serv.registerProducer(p);
 		}
 
 		// Consumer Thread //
@@ -109,31 +103,25 @@ public class BasicProducerConsumer {
 				.ceil(Math.log10(consumers)) : 0));
 		for (int i = 0; i < consumers; i++) {
 			final String name = "Consume" + nfConsumer.format(i);
-			new Thread(new Runnable() {
+			ApplicationServer.Consumer<Long> c = new ApplicationServer.Consumer<Long>() {
 				@Override
-				public void run() {
-					ApplicationServer.Consumer<Long> c = new ApplicationServer.Consumer<Long>() {
-						@Override
-						public void consume(Long l) {
-							System.out.println(System.currentTimeMillis()
-									- start + "\tx" + name + "\t" + serv.size()
-									+ "\t" + l);
-							try {
-								int sleepMillis = (int) ((r.nextInt(range) + min) * Math.exp(bias));
-								System.out.println(System.currentTimeMillis()
-										- start + "\ts" + name + "\t"
-										+ serv.size() + "\t" + sleepMillis);
-								Thread.sleep(sleepMillis);
-							} catch (InterruptedException e) {
-								System.out.println(System.currentTimeMillis()
-										+ "\ti" + name + "\t" + serv.size()
-										+ "\t-1");
-							}
-						}
-					};
-					serv.registerConsumer(c);
+				public void consume(Long l) {
+					System.out.println(System.currentTimeMillis() - start
+							+ "\tx" + name + "\t" + serv.size() + "\t" + l);
+					try {
+						int sleepMillis = (int) ((r.nextInt(range) + min) * Math
+								.exp(bias));
+						System.out.println(System.currentTimeMillis() - start
+								+ "\ts" + name + "\t" + serv.size() + "\t"
+								+ sleepMillis);
+						Thread.sleep(sleepMillis);
+					} catch (InterruptedException e) {
+						System.out.println(System.currentTimeMillis() + "\ti"
+								+ name + "\t" + serv.size() + "\t-1");
+					}
 				}
-			}, name).start();
+			};
+			serv.registerConsumer(c);
 		}
 	}
 }
