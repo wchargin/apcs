@@ -37,7 +37,8 @@ public class FileTreeApplication {
 					}
 				}
 				System.out.println(matches == null ? "0" : (matches.size()
-						+ " : " + matches.toString().substring(0, 1000)));
+						+ " : " + matches.toString().substring(0,
+						Math.min(matches.toString().length(), 1000))));
 			}
 		}
 	}
