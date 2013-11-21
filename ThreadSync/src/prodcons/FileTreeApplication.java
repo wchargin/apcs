@@ -2,8 +2,10 @@ package prodcons;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class FileTreeApplication {
 
@@ -17,11 +19,26 @@ public class FileTreeApplication {
 			while (true) {
 				System.out.print("Enter search string: ");
 				String in = sc.nextLine();
-				final List<Path> result = index.get(in.toLowerCase());
-				System.out.println(result == null ? "0" : (result.size()
-						+ " : " + result));
+				String[] words = in.split("\\W");
+				if (words.length == 0) {
+					continue;
+				}
+				List<Path> result = index.get(words[0].toLowerCase());
+				Set<Path> matches = null;
+				if (result != null) {
+					matches = new HashSet<>(result);
+					for (int i = 1; i < words.length; i++) {
+						result = index.get(words[i].toLowerCase());
+						if (result == null) {
+							matches.clear();
+							break;
+						}
+						matches.retainAll(result);
+					}
+				}
+				System.out.println(matches == null ? "0" : (matches.size()
+						+ " : " + matches.toString().substring(0, 1000)));
 			}
 		}
 	}
-
 }
