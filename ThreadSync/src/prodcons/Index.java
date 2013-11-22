@@ -24,7 +24,8 @@ public class Index<K, V> {
 	/**
 	 * The map used for storage.
 	 */
-	private Map<K, List<V>> map = new HashMap<>();
+	private Map<K, List<V>> map = Collections
+			.synchronizedMap(new HashMap<K, List<V>>());
 
 	/**
 	 * Registers the given value onto the given key, not overwriting any
@@ -35,7 +36,7 @@ public class Index<K, V> {
 	 * @param value
 	 *            the new/additional value
 	 */
-	public void store(K key, V value) {
+	public synchronized void store(K key, V value) {
 		List<V> vs = map.get(key);
 		if (vs == null) {
 			map.put(key, vs = new ArrayList<>());
@@ -51,7 +52,7 @@ public class Index<K, V> {
 	 *            the key to query
 	 * @return all matching values
 	 */
-	public List<V> get(K key) {
+	public synchronized List<V> get(K key) {
 		List<V> vs = map.get(key);
 		return vs == null ? null : Collections.unmodifiableList(vs);
 	}
