@@ -1,10 +1,10 @@
 package prodcons;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This is an implementation of an <a
@@ -24,8 +24,8 @@ public class Index<K, V> {
 	/**
 	 * The map used for storage.
 	 */
-	private Map<K, List<V>> map = Collections
-			.synchronizedMap(new HashMap<K, List<V>>());
+	private Map<K, Set<V>> map = Collections
+			.synchronizedMap(new HashMap<K, Set<V>>());
 
 	/**
 	 * Registers the given value onto the given key, not overwriting any
@@ -37,9 +37,9 @@ public class Index<K, V> {
 	 *            the new/additional value
 	 */
 	public synchronized void store(K key, V value) {
-		List<V> vs = map.get(key);
+		Set<V> vs = map.get(key);
 		if (vs == null) {
-			map.put(key, vs = new ArrayList<>());
+			map.put(key, vs = new HashSet<>());
 		}
 		vs.add(value);
 	}
@@ -52,9 +52,9 @@ public class Index<K, V> {
 	 *            the key to query
 	 * @return all matching values
 	 */
-	public synchronized List<V> get(K key) {
-		List<V> vs = map.get(key);
-		return vs == null ? null : Collections.unmodifiableList(vs);
+	public synchronized Set<V> get(K key) {
+		Set<V> vs = map.get(key);
+		return vs == null ? null : Collections.unmodifiableSet(vs);
 	}
 
 }
