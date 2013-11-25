@@ -28,6 +28,11 @@ public class Index<K, V> {
 			.synchronizedMap(new HashMap<K, Set<V>>());
 
 	/**
+	 * The set of all values used for counting.
+	 */
+	private Set<V> allValues = Collections.synchronizedSet(new HashSet<V>());
+
+	/**
 	 * Registers the given value onto the given key, not overwriting any
 	 * previous values.
 	 * 
@@ -41,6 +46,7 @@ public class Index<K, V> {
 		if (vs == null) {
 			map.put(key, vs = new HashSet<>());
 		}
+		allValues.add(value);
 		vs.add(value);
 	}
 
@@ -61,6 +67,15 @@ public class Index<K, V> {
 		synchronized (syncedSet) {
 			return new HashSet<>(syncedSet);
 		}
+	}
+
+	/**
+	 * Gets the number of unique values in this index.
+	 * 
+	 * @return the number of unique values
+	 */
+	public int getValueSize() {
+		return allValues.size();
 	}
 
 }
