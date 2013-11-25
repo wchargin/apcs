@@ -3,7 +3,6 @@ package prodcons;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -13,7 +12,9 @@ public class FileTreeApplication {
 		try (Scanner sc = new Scanner(System.in)) {
 			ApplicationServer<Path> s = new ApplicationServer<>(1000);
 			final Index<String, Path> index = new Index<>();
-			s.registerConsumer(new FileIndexingConsumer(index));
+			for (int i = 0; i < 100; i++) {
+				s.registerConsumer(new FileIndexingConsumer(index));
+			}
 			System.out.print("Enter root path: ");
 			s.registerProducer(new FileTreeProducer(Paths.get(sc.nextLine())));
 			while (true) {
@@ -23,7 +24,7 @@ public class FileTreeApplication {
 				if (words.length == 0) {
 					continue;
 				}
-				List<Path> result = index.get(words[0].toLowerCase());
+				Set<Path> result = index.get(words[0].toLowerCase());
 				Set<Path> matches = null;
 				if (result != null) {
 					matches = new HashSet<>(result);

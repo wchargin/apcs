@@ -54,7 +54,13 @@ public class Index<K, V> {
 	 */
 	public synchronized Set<V> get(K key) {
 		Set<V> vs = map.get(key);
-		return vs == null ? null : Collections.unmodifiableSet(vs);
+		if (vs == null) {
+			return null;
+		}
+		Set<V> syncedSet = Collections.synchronizedSet(vs);
+		synchronized (syncedSet) {
+			return new HashSet<>(syncedSet);
+		}
 	}
 
 }
