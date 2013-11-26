@@ -136,6 +136,9 @@ public class ApplicationServer<T> {
 			public void run() {
 				try {
 					while (true) {
+						if (Thread.interrupted()) {
+							return;
+						}
 						consumer.consume(buf.remove());
 					}
 				} catch (InterruptedException e) {

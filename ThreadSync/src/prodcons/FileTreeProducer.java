@@ -30,24 +30,28 @@ public class FileTreeProducer implements Producer<Path> {
 	 * @param root
 	 *            the root of the subtree to walk
 	 */
-	public FileTreeProducer(Path root) {
-		try {
-			Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file,
-						BasicFileAttributes attrs) throws IOException {
-					try {
-						queue.put(file);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					return super.visitFile(file, attrs);
+	public FileTreeProducer(final Path root) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+						@Override
+						public FileVisitResult visitFile(Path file,
+								BasicFileAttributes attrs) throws IOException {
+							try {
+								queue.put(file);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							return super.visitFile(file, attrs);
+						}
+					});
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+			}
+		}).start();
 	}
 
 	@Override
