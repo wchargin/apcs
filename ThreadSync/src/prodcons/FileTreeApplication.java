@@ -1,5 +1,6 @@
 package prodcons;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -13,7 +14,7 @@ public class FileTreeApplication {
 			ApplicationServer<Path> s = new ApplicationServer<>(1000);
 			final Index<String, Path> index = new Index<>();
 			for (int i = 0; i < 100; i++) {
-				s.registerConsumer(new FileIndexingConsumer(index));
+				s.registerConsumer(new FileIndexingConsumer(index,Charset.forName("UTF-8"),"html"));
 			}
 			System.out.print("Enter root path: ");
 			s.registerProducer(new FileTreeProducer(Paths.get(sc.nextLine())));

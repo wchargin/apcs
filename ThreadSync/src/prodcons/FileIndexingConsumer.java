@@ -5,7 +5,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,14 +19,14 @@ import prodcons.ApplicationServer.Consumer;
  */
 public class FileIndexingConsumer implements Consumer<Path> {
 
-	// find txt, py, cpp, c, h, hpp
-	private static final List<String> validEndings = Collections
-			.unmodifiableList(Arrays
-					.asList("txt", "py", "cpp", "c", "h", "hpp"));
+	private final List<String> validEndings;
 	private Index<? super String, ? super Path> index;
+	private Charset charset;
 
-	public FileIndexingConsumer(Index<? super String, ? super Path> i) {
+	public FileIndexingConsumer(Index<? super String, ? super Path> i, Charset charset, String...validEndings) {
 		index = i;
+		this.validEndings=Arrays.asList(validEndings);
+		this.charset = charset;
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class FileIndexingConsumer implements Consumer<Path> {
 			words.add(word.toLowerCase());
 		}
 		try {
-			for (String line : Files.readAllLines(t, Charset.forName("UTF-8"))) {
+			for (String line : Files.readAllLines(t, charset)) {
 				for (String word : line.split("\\W")) {
 					words.add(word.toLowerCase());
 				}

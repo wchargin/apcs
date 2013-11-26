@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
@@ -127,7 +128,7 @@ public class IndexGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (index != null) {
-					server.nuke();
+					server.clear();
 					index = null;
 					model.clear();
 				} else {
@@ -135,7 +136,8 @@ public class IndexGUI extends JFrame {
 					server.registerProducer(new FileTreeProducer(dpSearch
 							.getValue().toPath()));
 					for (int i = 0; i < 1024; i++) {
-						server.registerConsumer(new FileIndexingConsumer(index));
+						server.registerConsumer(new FileIndexingConsumer(index,
+								Charset.forName("UTF-8"), "html"));
 					}
 				}
 			}

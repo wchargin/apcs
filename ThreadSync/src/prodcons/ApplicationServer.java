@@ -145,6 +145,14 @@ public class ApplicationServer<T> {
 		});
 		registerThread(consumers, consumer, t);
 	}
+	
+	/**
+	 * Unregisters and stops everything.
+	 */
+	public void clear() {
+		unregisterAllProducers();
+		unregisterAllConsumers();
+	}
 
 	/**
 	 * Registers the given producer on this server.
