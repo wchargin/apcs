@@ -21,6 +21,7 @@ import javax.swing.event.ChangeListener;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import tools.customizable.CounterProperty;
 import tools.customizable.MessageProperty;
 import tools.customizable.PropertyPanel;
 import tools.customizable.PropertySet;
@@ -58,6 +59,15 @@ public class IndexGUI extends JFrame {
 		final DirectoryProperty dpSearch = new DirectoryProperty(
 				"Index directory", null);
 		props.add(dpSearch);
+
+		final TextProperty tpExtensions = new TextProperty("File extensions",
+				"html java cpp py");
+		props.add(tpExtensions);
+
+		final CounterProperty cpThreadCount = new CounterProperty(
+				"Thread count", 512);
+		cpThreadCount.setDescription("Number of indexing threads");
+		props.add(cpThreadCount);
 
 		final MessageProperty mpIndexSize = new MessageProperty(
 				"Search index size", null);
@@ -131,14 +141,19 @@ public class IndexGUI extends JFrame {
 					index = null;
 					model.clear();
 					dpSearch.setEnabled(true);
+					tpExtensions.setEnabled(true);
+					cpThreadCount.setEnabled(true);
 				} else {
 					index = new Index<>();
 					dpSearch.setEnabled(false);
+					tpExtensions.setEnabled(false);
+					cpThreadCount.setEnabled(false);
 					server.registerProducer(new FileTreeProducer(dpSearch
 							.getValue().toPath()));
-					for (int i = 0; i < 1024; i++) {
+					String[] extensions = tpExtensions.getValue().split("\\W");
+					for (int i = 0; i < cpThreadCount.getValue(); i++) {
 						server.registerConsumer(new FileIndexingConsumer(index,
-								"c", "cpp", "py"));
+								extensions));
 					}
 				}
 			}
