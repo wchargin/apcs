@@ -15,9 +15,7 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -42,38 +40,45 @@ public class FileIndex extends Index<String, Path> {
 	 * 
 	 */
 	public class FileIndexingConsumer implements Consumer<Path> {
-		private final List<String> validEndings;
-
-		public FileIndexingConsumer(String... validEndings) {
-			this.validEndings = Arrays.asList(validEndings);
-		}
-
 		@Override
 		public void consume(Path t) {
-			if (t == null) {
-				return;
-			}
-			for (String end : validEndings) {
-				if (t.toString().toLowerCase()
-						.endsWith("." + end.toLowerCase())) {
-					storeFile(t);
-					return;
-				}
+			if (isValidFile(t)) {
+				storeFile(t);
 			}
 		}
+	}
+
+	/**
+	 * Tests if a given file is valid.
+	 * 
+	 * @param t
+	 *            the file to check
+	 * @return whether the file is valid for parsing/indexing
+	 */
+	private boolean isValidFile(Path t) {
+		if (t == null) {
+			return false;
+		}
+		final String str = t.toString().toLowerCase();
+		for (String end : validEndings) {
+			if (str.endsWith("." + end.toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public class FileModificationProducer implements Producer<Path> {
 
 		private BlockingQueue<Path> q = new LinkedBlockingQueue<>();
 
-		public FileModificationProducer(final FileIndex index) {
+		public FileModificationProducer() {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try (WatchService ws = FileSystems.getDefault()
 							.newWatchService()) {
-						index.getRoot().register(ws);
+						getRoot().register(ws);
 						while (true) {
 							WatchKey key;
 							try {
@@ -93,13 +98,15 @@ public class FileIndex extends Index<String, Path> {
 								@SuppressWarnings("unchecked")
 								WatchEvent<Path> pevent = (WatchEvent<Path>) event;
 
+								
 								Path file = pevent.context();
+								System.out.println(file);
 								if (kind == ENTRY_CREATE) {
 									// consumers gonna consume
 								} else if (kind == ENTRY_DELETE) {
-									index.removeFile(file);
+									removeFile(file);
 								} else if (kind == ENTRY_MODIFY) {
-									index.removeFile(file);
+									removeFile(file);
 									try {
 										q.put(file);
 									} catch (InterruptedException e) {
@@ -139,13 +146,19 @@ public class FileIndex extends Index<String, Path> {
 	private Path root;
 
 	/**
+	 * The list of valid endings.
+	 */
+	private String[] validEndings;
+
+	/**
 	 * Creates the index with the given root directory.
 	 * 
 	 * @param root
 	 *            the root directory
 	 */
-	public FileIndex(Path root) {
+	public FileIndex(Path root, String... validEndings) {
 		this.root = root;
+		this.validEndings = validEndings;
 	}
 
 	/**
@@ -158,14 +171,21 @@ public class FileIndex extends Index<String, Path> {
 	}
 
 	/**
-	 * Creates a consumer to index items with the given extensions.
+	 * Creates a producer to watch for file changes.
 	 * 
-	 * @param validEndings
-	 *            the list of valid extensions
+	 * @return a new producer
+	 */
+	public FileModificationProducer createWatcher() {
+		return this.new FileModificationProducer();
+	}
+
+	/**
+	 * Creates a consumer to index items.
+	 * 
 	 * @return a new consumer
 	 */
-	public FileIndexingConsumer createConsumer(String... validEndings) {
-		return this.new FileIndexingConsumer(validEndings);
+	public FileIndexingConsumer createConsumer() {
+		return this.new FileIndexingConsumer();
 	}
 
 	/**

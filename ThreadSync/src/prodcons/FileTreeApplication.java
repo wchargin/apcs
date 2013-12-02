@@ -12,11 +12,11 @@ public class FileTreeApplication {
 		try (Scanner sc = new Scanner(System.in)) {
 			ApplicationServer<Path> s = new ApplicationServer<>(1000);
 			System.out.print("Enter root path: ");
-			final FileIndex index = new FileIndex(Paths.get(sc.nextLine()));
+			final FileIndex index = new FileIndex(Paths.get(sc.nextLine()),
+					"html", "c", "py", "cpp", "java");
 			s.registerProducer(index.createProducer());
 			for (int i = 0; i < 100; i++) {
-				s.registerConsumer(index.createConsumer("html", "c", "py",
-						"cpp", "java"));
+				s.registerConsumer(index.createConsumer());
 			}
 			while (true) {
 				System.out.print("Enter search string: ");

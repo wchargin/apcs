@@ -26,6 +26,7 @@ import tools.customizable.MessageProperty;
 import tools.customizable.PropertyPanel;
 import tools.customizable.PropertySet;
 import tools.customizable.TextProperty;
+import tools.customizable.TrueFalseProperty;
 import util.DirectoryProperty;
 import util.LAFOptimizer;
 
@@ -68,6 +69,10 @@ public class IndexGUI extends JFrame {
 				"Thread count", 512);
 		cpThreadCount.setDescription("Number of indexing threads");
 		props.add(cpThreadCount);
+
+		final TrueFalseProperty tfpWatchChanges = new TrueFalseProperty(
+				"Watch changes", true, "Watch", "Don't watch");
+		props.add(tfpWatchChanges);
 
 		final MessageProperty mpIndexSize = new MessageProperty(
 				"Search index size", null);
@@ -142,18 +147,24 @@ public class IndexGUI extends JFrame {
 					model.clear();
 					dpSearch.setEnabled(true);
 					tpExtensions.setEnabled(true);
+					tfpWatchChanges.setEnabled(true);
 					cpThreadCount.setEnabled(true);
 				} else {
-					index = new FileIndex(dpSearch.getValue().toPath());
+					String[] extensions = tpExtensions.getValue().split("\\W");
+					index = new FileIndex(dpSearch.getValue().toPath(),
+							extensions);
 					dpSearch.setEnabled(false);
 					tpExtensions.setEnabled(false);
+					tfpWatchChanges.setEnabled(false);
 					cpThreadCount.setEnabled(false);
 					server.registerProducer(new FileTreeProducer(dpSearch
 							.getValue().toPath()));
-					String[] extensions = tpExtensions.getValue().split("\\W");
 					for (int i = 0; i < cpThreadCount.getValue(); i++) {
-						server.registerConsumer(index
-								.createConsumer(extensions));
+						server.registerConsumer(index.createConsumer());
+					}
+					server.registerProducer(index.createWatcher());
+					if (tfpWatchChanges.getValue()) {
+						server.registerProducer(index.createWatcher());
 					}
 				}
 			}
