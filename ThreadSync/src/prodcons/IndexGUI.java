@@ -38,7 +38,7 @@ public class IndexGUI extends JFrame {
 	/**
 	 * The index for searching.
 	 */
-	private Index<String, Path> index;
+	private FileIndex index;
 
 	/**
 	 * The list model.
@@ -144,7 +144,7 @@ public class IndexGUI extends JFrame {
 					tpExtensions.setEnabled(true);
 					cpThreadCount.setEnabled(true);
 				} else {
-					index = new Index<>();
+					index = new FileIndex(dpSearch.getValue().toPath());
 					dpSearch.setEnabled(false);
 					tpExtensions.setEnabled(false);
 					cpThreadCount.setEnabled(false);
@@ -152,8 +152,8 @@ public class IndexGUI extends JFrame {
 							.getValue().toPath()));
 					String[] extensions = tpExtensions.getValue().split("\\W");
 					for (int i = 0; i < cpThreadCount.getValue(); i++) {
-						server.registerConsumer(new FileIndexingConsumer(index,
-								extensions));
+						server.registerConsumer(index
+								.createConsumer(extensions));
 					}
 				}
 			}

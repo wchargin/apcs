@@ -24,7 +24,7 @@ public class Index<K, V> {
 	/**
 	 * The map used for storage.
 	 */
-	private Map<K, Set<V>> map = Collections
+	protected Map<K, Set<V>> map = Collections
 			.synchronizedMap(new HashMap<K, Set<V>>());
 
 	/**
