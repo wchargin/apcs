@@ -4,8 +4,7 @@
  * William Chargin
  * 7 January 2014
  */
-
-#define type int
+#include "bits.h"
 
 /* unless otherwise specified, allowed operators are: */
 /* ! ~ & ^ | + << >> */
@@ -40,14 +39,46 @@ type isEqual(type x, type y) {
 /* does a logical right shift of x by n */
 /* rating: 3; max ops: 16 */
 type logicalShift(type x, type n) {
-    
+    /* am I missing something? */
+    return x >> n;
 }
 
 /* returns (x contains odd number of 1s ? 1 : 0) */
 /* rating: 4; max ops: 20 */
 type bitParity(type x) {
+    /* XORing the left and right halves of a number quasi-recursively */
+    /* explanation: */
+    /* 1 XOR 0 = 0 XOR 1 = 1; 1 XOR 1 = 0 XOR 0 = 0 */
+    /* thus for bits U, V: bitParity(0bUV) = U XOR V */
+    /* also, for any x with left- and right-halves l, r: */
+    /* bitParity(x) = bitParity(l) XOR bitParity(r); */
+    /* so recursively XOR each side */
+    /* assignment requires straightline, so inline for 32-bit integers */
     
+    type leftHalf = x >> 16;
+    type rightHalf = x & 0xFFFF;
+    x = leftHalf ^ rightHalf;
+    
+    leftHalf = x >> 8;
+    rightHalf = x & 0xFF;
+    x = leftHalf ^ rightHalf;
+    
+    leftHalf = x >> 4;
+    rightHalf = x & 0xF;
+    x = leftHalf ^ rightHalf;
+    
+    leftHalf = x >> 2;
+    rightHalf = x & 0x3;
+    x = leftHalf ^ rightHalf;
+    
+    leftHalf = x >> 1;
+    rightHalf = x & 0x1;
+    x = leftHalf ^ rightHalf;
+    
+    return x;
 }
+
+#ifdef ________________________
 
 /* returns a mask that marks the position of least significant 1 bit of x */
 /* all other positions of the mask should be zero */
@@ -72,7 +103,7 @@ type tmax() {
 
 /* compute -x without using - */
 /* rating: 2; max ops: 5 */
-type negate(x) {
+type negate(type x) {
     
 }
 
@@ -84,7 +115,7 @@ type addOk(type x, type y) {
 
 /* returns !!x without using ! */
 /* rating: 4; max ops: 10 */
-type isNonZero(type x) {
+bool isNonZero(type x) {
     
 }
 
@@ -107,3 +138,5 @@ type abs(type x) {
 type satAdd(type x, type y) {
     
 }
+
+#endif
