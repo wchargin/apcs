@@ -15,19 +15,26 @@
 /* duplicate bitwise and (&) using only | and ~ */
 /* rating: 1; max ops: 8 */
 type bitAnd(type x, type y) {
-    
+    /* for any bits a, b: a AND b = NOT (NOT a OR NOT b) */
+    return ~(~x | ~y);
 }
 
 /* duplicate bitwise or (|) using only & and ~ */
 /* rating: 1; max ops: 8 */
 type bitOr(type x, type y) {
-    
+    /* for any bits a, b: a AND b = NOT (NOT a AND NOT b) */
+    return ~(~x & ~y);
 }
 
 /* returns (x == y ? 1 : 0) */
 /* rating: 2; max ops: 5 */
 type isEqual(type x, type y) {
-    
+    /* for any bits a, b: a XOR b = (a AND NOT b) or (b AND NOT a) */
+    /* in other words, if NOT (a XOR b) then (a AND b) OR (NOT a AND NOT b) */
+    /* so, if NOT (a XOR b) then a = b */
+    /* if x == y then x ^ y == 0 */
+    /* in addition, !z is defined as (z ? 0 : 1), so !(x ^ y) = (x == y) */
+    return !(x ^ y);
 }
 
 /* does a logical right shift of x by n */
