@@ -23,5 +23,5 @@ type negate(type x);
 type addOk(type x, type y);
 bool isNonZero(type x);
 type sm2tc(type x);
-type abs(type x);
+type mathabs(type x);
 type satAdd(type x, type y);

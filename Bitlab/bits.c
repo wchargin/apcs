@@ -129,7 +129,7 @@ type sm2tc(type x) {
 
 /* compute x == tmin ? tmin : abs(x) */
 /* rating: 4; max ops: 10 */
-type abs(type x) {
+type mathabs(type x) {
     
 }
 
