@@ -82,52 +82,12 @@ type bitParity(type x) {
 /* all other positions of the mask should be zero */
 /* rating: 4; max ops: 30 */
 type leastBitPos(type x) {
-    /* use kind of a binary search */
-    
-    /* this code uses the construction: */
-    /* ((z >> n) << k) >> k */
-    /* where n is either 0 or some postive value */
-    /* to mean: */
-    /* z with the (n == 0 ? last : first) bits truncated */
-    
-    type pos = 0;     /* final position of LSB */
-    type a, b, c, d;  /* binary digits */
-    type left, right; /* left and right half of current value */
-    type rem;         /* remainder */
-    
-    /* if !(x >> 16) then LSB > 16 */
-    left = x >> 16;
-    right = x & 0xFFFF;
-    pos += (a = (!(right) << 4)); /* 0 = 0 << 4, 16 = 1 << 4 */
-    rem = ((x >> pos) << 16) >> 16;
-    
-    /* pos is now either 0 or 16 */
-    /* 0 indicates that least significant bit is in the 0-15 range */
-    /* 16 indicates that it is in the 16-31 range */
-    
-    /* now run on the remainder */
-    left = rem >> 8;
-    right = rem & 0xFF;
-    pos += (b = (!(right) << 3));
-    rem = ((rem >> b) << 24) >> 24;
-    
-    left = rem >> 4;
-    right = rem & 0xF;
-    pos += (c = (!(right) << 2));
-    rem = ((rem >> c) << 28) >> 28;
-    
-    left = rem >> 2;
-    right = rem & 0x3;
-    pos += (d = (!(right) << 1));
-    rem = ((rem >> d) << 30) >> 30;
-    
-    /* left = rem >> 1; */
-    right = rem & 0x1;
-    pos += !right;
-    
-    /* if x == 0, value of pos is undefined, but we should return 0 */
-    /* thus, return the "correct for x != 0" bitmask &d with x */
-    return (1 << pos) & x;
+    /* exploit the builtin addition operator */
+    /* binary addition on x is essentially "fill x with zeroes until you */
+    /* find a zero, then replace that with a one" */
+    /* so binary addition on ~x will result in the only bit in common be the */
+    /* LSB, and then simple bitwise and (&) will create the mask */
+    return x & (~x + 1);
 }
 
 #ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
