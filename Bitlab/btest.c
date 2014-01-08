@@ -113,5 +113,5 @@ bool testLeastBitPos(type x) {
         x >>= 1;
         pos++;
     }
-    return test == (1U << pos);
+    return test == (1 << pos);
 }
