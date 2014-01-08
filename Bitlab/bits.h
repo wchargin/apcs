@@ -5,7 +5,7 @@
  * 7 January 2014
  */
 #include <stdbool.h>
-#define type int
+#define type unsigned int
 
 /* Part I: Bit Manipulations */
 
