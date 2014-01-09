@@ -11,6 +11,11 @@
 #include "bits.h"
 #include "tester.h"
 
+/* random with negatives allowed */
+int realrand() {
+    return rand() | (rand() & 0x80000000 );
+}
+
 bool testUnaryOperation(int count, bool (*test)(type)) {
     /* Test special cases with test({-1, 0, 1}) */
     if (!test(0))  return false;
@@ -19,7 +24,7 @@ bool testUnaryOperation(int count, bool (*test)(type)) {
     
     /* Test random values */
     for (count--; count >= 0; count--) {
-        if (!test(rand())) {
+        if (!test(realrand())) {
             return false;
         }
     }
@@ -39,7 +44,7 @@ bool testBinaryOperation(int count, bool (*test)(type, type)) {
     
     /* Test random values */
     for (count--; count >= 0; count--) {
-        if (!test(rand(), rand())) {
+        if (!test(realrand(), realrand())) {
             return false;
         }
     }
