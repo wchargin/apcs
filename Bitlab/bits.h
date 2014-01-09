@@ -16,6 +16,7 @@ type logicalShift(type x, type n);
 type bitParity(type x);
 type leastBitPos(type x);
 type bitCount(type x);
+type bang(type x);
 
 /* Part II: Two's Complement Arithmetic */
 type tmax();

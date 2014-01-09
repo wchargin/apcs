@@ -107,6 +107,12 @@ type bitCount(type x) {
     
 }
 
+/* compute !x without using the ! operator */
+/* rating: 4; max ops: 12 */
+type bang(type x) {
+    
+}
+
 /* Part II: Two's Complement Arithmetic */
 
 /* returns the largest integer */
