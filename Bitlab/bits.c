@@ -62,10 +62,12 @@ type bitParity(type x) {
     /* so recursively XOR each side */
     /* assignment requires straightline, so inline for 32-bit integers */
     
-    type leftHalf = x >> 16;
+    type leftHalf = logicalShift(x, 16); /* counts as six operations */
     type rightHalf = x & 0xFFFF;
     x = leftHalf ^ rightHalf;
     
+    /* after the first iteration we don't need to logicalShift anymore */
+    /* because x has 16 highest bits 0, so >> is logical shift */
     leftHalf = x >> 8;
     rightHalf = x & 0xFF;
     x = leftHalf ^ rightHalf;
