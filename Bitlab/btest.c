@@ -94,8 +94,16 @@ bool testBitAnd(type x, type y) { return (x & y) == bitAnd(x, y); }
 bool testBitOr(type x, type y) { return (x | y) == bitOr (x, y); }
 bool testIsEqual(type x, type y) { return (x == y) == isEqual(x, y); }
 bool testLogicalShift(type x, type n) {
+    type shouldBe, is;
     n = n % 31;
-    return (x >> n) == logicalShift(x, n);
+    while (n < 0) {
+        n += 31;
+    }
+    
+    shouldBe = ((unsigned)x) >> n;
+    is = logicalShift(x, n);
+    
+    return shouldBe == is;
 }
 bool testBitParity(type x) {
     type parity = 0;

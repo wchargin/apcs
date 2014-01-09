@@ -39,8 +39,15 @@ type isEqual(type x, type y) {
 /* does a logical right shift of x by n */
 /* rating: 3; max ops: 16 */
 type logicalShift(type x, type n) {
-    /* am I missing something? */
-    return x >> n;
+    /* first do a logical shift */
+    type shifted = (x & 0x7FFFFFFF) >> n;
+    
+    /* if original high bit was set it should now go in the nth-high bit */
+    /* do the (possibly incorrect) original shift and extract that bit */
+    type mask = (x >> n) & (0x80000000U >> n);
+    
+    /* add this bit back on if necessary */
+    return shifted | mask;
 }
 
 /* returns (x contains odd number of 1s ? 1 : 0) */
