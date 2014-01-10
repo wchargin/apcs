@@ -210,7 +210,11 @@ int sign(int x) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
+    /* shift to the right spot and then AND the last byte */
+    /* logical/arithmetic doesn't matter because we only get the last byte */
     
+    int n_times_eight = n << 3;
+    return (x >> n_times_eight) & 0xFF;
 }
 // Rating: 3
 /* 
