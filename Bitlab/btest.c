@@ -63,6 +63,7 @@ bool testNegate(type x);
 bool testAddOk(type x, type y);
 bool testIsNonZero(type x);
 bool testSM2TC(type x);
+bool testMathabs(type x);
 
 int main() {
     test t;
@@ -107,6 +108,9 @@ int main() {
     
     printf("Testing sm2tc... ");
     _(t, testUnaryOperation(10000, &testSM2TC), "passes.");
+    
+    printf("Testing mathabs... ");
+    _(t, testUnaryOperation(10000, &testMathabs), "passes.");
     
     t_done();
     
@@ -171,4 +175,7 @@ bool testSM2TC(type x) {
     type tc = (sign ? (-magnitude) : magnitude);
     
     return sm2tc(x) == tc;
+}
+bool testMathabs(type x) {
+    return (x < 0 ? -x : x) == mathabs(x);
 }

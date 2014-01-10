@@ -197,13 +197,20 @@ type sm2tc(type x) {
     return (negative & negmag) | (positive & magnitude);
 }
 
-#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
-
 /* compute x == tmin ? tmin : abs(x) */
 /* rating: 4; max ops: 10 */
 type mathabs(type x) {
+    /* like sm2tc above but with different magnitude calculation */
     
+    type negative = x >> 31; /* 1111... is negative, 0 is positive */
+    type positive = ~negative;
+    
+    type minus_x = ~x + 1;
+    
+    return (negative & minus_x) | (positive & x);
 }
+
+#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* returns (x + y overflows ? tmax or tmin : x + y) */
 /* rating: 4; max ops: 30 */
