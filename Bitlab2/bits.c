@@ -170,7 +170,6 @@ int fitsBits(int x, int n) {
     /* 11111100, 11111101, 11111110, 11111111, 00000000, 00000001, ... */
     
     /* for any valid (x, n), x should fit in the truncated portion     */
-    /* shift left first to ensure logical right shift                  */
     
     int thirtytwo_minus_n = /* 32 + (~n + 1) = */ 33 + ~n;
     
@@ -188,7 +187,19 @@ int fitsBits(int x, int n) {
  *  Rating: 2
  */
 int sign(int x) {
+    /* sign(x) should be -1 if (x is negative) else (x is nonzero) */
     
+    /* If x is negative then x >> 31 wil do an arithmetic shift,   */
+    /* and the result will be 0xFFFFFFFF = -1. This solves the     */
+    /* negative case (and we can OR with the nonnegative).         */
+    int negativeCase = x >> 31; /* x < 0 ? -1 : 0 */
+    
+    /* For the nonnegative case we want (x == 0 ? 0 : 1) which is  */
+    /* equivalent to x != 0, or !!x. */
+    int nonnegativeCase = !!x;  /* x == 0 ? 0 : 1 */ 
+    
+    /* ORing these gives the final result */
+    return negativeCase | nonnegativeCase;
 }
 /* 
  * getByte - Extract byte n from word x
