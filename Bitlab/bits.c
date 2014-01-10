@@ -180,15 +180,24 @@ bool isNonZero(type x) {
     return (ifNegative | ifPositive) & 1;
 }
 
-#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
-
 /* converts sign-magnitude to two's-complement */
 /* high-order bit of input is sign bit, remainder magnitude */
 /* return two's-complement representation */
 /* rating: 4; max ops: 15 */
 type sm2tc(type x) {
+    /* compute the positive case and the negative case             */
+    /* take each case and AND with its sign                        */
+    /* take these results and OR                                   */
+    /* (it's like a bitwise ?: conditional)                        */
+    type magnitude = x & 0x7FFFFFFF;
+    type negative = x >> 31; /* 1111... is negative, 0 is positive */
+    type positive = ~negative;
+    type negmag = ~magnitude + 1;
     
+    return (negative & negmag) | (positive & magnitude);
 }
+
+#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* compute x == tmin ? tmin : abs(x) */
 /* rating: 4; max ops: 10 */
