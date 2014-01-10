@@ -161,7 +161,23 @@ int thirdBits(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
+    /* n-bit two's complement holds -2^(n-1) to 2^(n-1)-1              */
     
+    /* 3-bit two's complement, -4..3:                                  */
+    /* 100, 101, 110, 111, 000, 001, 010, 011                          */
+    
+    /* 8-bit two's complement, -4..3                                   */
+    /* 11111100, 11111101, 11111110, 11111111, 00000000, 00000001, ... */
+    
+    /* for any valid (x, n), x should fit in the truncated portion     */
+    /* shift left first to ensure logical right shift                  */
+    
+    int thirtytwo_minus_n = /* 32 + (~n + 1) = */ 33 + ~n;
+    
+    int truncated = (x << thirtytwo_minus_n) >> thirtytwo_minus_n;
+    
+    /* then calculate truncated == x as follows: */
+    return !(truncated ^ x);
 }
 /* 
  * sign - return 1 if positive, 0 if zero, and -1 if negative
