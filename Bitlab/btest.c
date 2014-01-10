@@ -60,6 +60,7 @@ bool testBitParity(type x);
 bool testLeastBitPos(type x);
 bool testBang(type x);
 bool testNegate(type x);
+bool testAddOk(type x, type y);
 
 int main() {
     test t;
@@ -95,6 +96,9 @@ int main() {
     
     printf("Testing negate... ");
     _(t, testUnaryOperation(10000, &testNegate), "passes.");
+    
+    printf("Testing addOk... ");
+    _(t, testBinaryOperation(10000, &testAddOk), "passes.");
     
     t_done();
     
@@ -145,4 +149,8 @@ bool testBang(type x) {
 }
 bool testNegate(type x) {
     return (-x) == negate(x);
+}
+bool testAddOk(type x, type y) {
+    long lsum = (long) x + y;
+    return (lsum == (int) lsum) == addOk(x, y);
 }

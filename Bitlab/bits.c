@@ -149,13 +149,30 @@ type negate(type x) {
     return ~x + 1;
 }
 
-#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
-
 /* determines whether y can be added to x without overflow */
 /* rating: 3; max ops: 20 */
-type addOk(type x, type y) {
+bool addOk(type x, type y) {
+    /* Premise: try it, see if it fails */
     
+    /* Extract signs: 0 for positive, -1 for negative */
+    int sgn_x   = (  x  ) >> 31;
+    int sgn_y   = (  y  ) >> 31;
+    int sgn_sum = (x + y) >> 31;
+    
+    /* If sgn(x) == sgn(y) and overflow occurs, high bit will be flipped    */
+    /* If signs different, then overflow cannot occur (because goes to 0)   */
+    int signsDifferentPre = sgn_x ^ sgn_y; /* 0 for same, -1 for different  */
+    
+    /* Consider the case where the signs are the same. Then we can check to */
+    /* see if the sign before is the same as the sign after.                */
+    int signsDifferentSum = sgn_x /* or sgn_y */ ^ sgn_sum;
+    
+    /* Result is now (signsDifferentPre || !(signsDifferentSum))            */
+    /* Since we only want 0/1 we get the last bit.                          */
+    return (signsDifferentPre | (~signsDifferentSum)) & 1;
 }
+
+#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* returns !!x without using ! */
 /* rating: 4; max ops: 10 */

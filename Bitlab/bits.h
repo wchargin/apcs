@@ -21,7 +21,7 @@ type bang(type x);
 /* Part II: Two's Complement Arithmetic */
 type tmax();
 type negate(type x);
-type addOk(type x, type y);
+bool addOk(type x, type y);
 bool isNonZero(type x);
 type sm2tc(type x);
 type mathabs(type x);
