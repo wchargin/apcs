@@ -89,6 +89,9 @@ int main() {
     printf("Testing bang... ");
     _(t, testUnaryOperation(1000, &testBang), "passes.");
     
+    printf("Testing tmax... ");
+    _(t, tmax() == 0x7FFFFFFF, "passes.");
+    
     t_done();
     
     return 0;

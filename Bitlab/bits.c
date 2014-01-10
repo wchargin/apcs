@@ -122,27 +122,28 @@ type bang(type x) {
     return expr & 1;
 }
 
-#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
-
+#if 0
 /* returns a count of the number of 1s in the argument */
 /* rating: 4; max ops: 40 */
 type bitCount(type x) {
     
 }
-
-/* compute !x without using the ! operator */
-/* rating: 4; max ops: 12 */
-type bang(type x) {
-    
-}
+#endif
 
 /* Part II: Two's Complement Arithmetic */
 
 /* returns the largest integer */
 /* rating: 1; max ops: 4 */
 type tmax() {
-    
+    /* writing this as if I couldn't use big constants: return 0x7FFFFFFF */
+    /* tmax is binary 01111111 11111111 11111111 11111111, */
+    /* which is the complement of tmin, */
+    /* which is (~0) << 31 */
+    /* thus we have: */
+    return ~((~0) << 31);
 }
+
+#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* compute -x without using - */
 /* rating: 2; max ops: 5 */
