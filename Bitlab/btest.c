@@ -58,6 +58,7 @@ bool testLogicalShift(type x, type n);
 
 bool testBitParity(type x);
 bool testLeastBitPos(type x);
+bool testBang(type x);
 
 int main() {
     test t;
@@ -84,6 +85,9 @@ int main() {
     
     printf("Testing leastBitPos... ");
     _(t, testUnaryOperation(10000, &testLeastBitPos), "passes.");
+    
+    printf("Testing bang... ");
+    _(t, testUnaryOperation(1000, &testBang), "passes.");
     
     t_done();
     
@@ -127,4 +131,8 @@ bool testLeastBitPos(type x) {
         pos++;
     }
     return test == (1 << pos);
+}
+bool testBang(type x) {
+    x %= 16; /* distribute more closely to zero */
+    return (!x) == bang(x);
 }

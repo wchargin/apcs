@@ -99,6 +99,29 @@ type leastBitPos(type x) {
     return x & (~x + 1);
 }
 
+/* compute !x without using the ! operator */
+/* rating: 4; max ops: 12 */
+type bang(type x) {
+    /* bang(x) = (x != 0 ? 1 : 0); */
+    /* Iff (x == 0) then (x == -x) */
+    /* Iff (x != 0) then (x != -x) */
+    /* Taking advantage of signs: sgn(x) == sgn(-x) iff x == 0 iff bang(x) */
+    
+    int negative_x = ~x + 1;
+    
+    /* 0 for nonnegative, 1 for negative */
+    int sgn_pos_x = (     x     >> 31) & 1;
+    int sgn_neg_x = (negative_x >> 31) & 1;
+    
+    /* we want return(sgn_pos_x == sgn_neg_x); but == requires bang to work */
+    int expr = ~(sgn_pos_x | sgn_neg_x);
+    
+    /* if x == 0 then sgn_pos_x = sgn_neg_x = 0, so expr will be 0b1111...  */
+    /* if x != 0 then expr will cancel out entirely and be zero             */
+    /* therefore we can just extract the last bit for the answer            */
+    return expr & 1;
+}
+
 #ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* returns a count of the number of 1s in the argument */
