@@ -222,7 +222,23 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
+    /* tmax = ~(tmin) = ~((~0) << 31); */
+    int tmax = ~((~0) << 31);
     
+    /* first do a correct logical shift on the positive value */
+    int shifted = (x & tmax) >> n;
+    
+    /* if original high bit was set it should now go in the nth-high bit */
+    /* how to represent 0x80000000U >> n without unsigned?               */
+    /* the nth-high bit is the (31 - n)th-low bit                        */
+    /* do the (possibly incorrect) original shift and extract that bit   */
+    int thirtyone_minus_n = /* 31 + (~n + 1) = */ 32 + ~n;
+    
+    
+    int mask = (x >> n) & (1 << thirtyone_minus_n);
+    
+    /* add this bit back on if necessary */
+    return shifted | mask;
 }
 /* 
  * addOK - Determine if can compute x+y without overflow
