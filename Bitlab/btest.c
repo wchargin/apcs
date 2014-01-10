@@ -59,6 +59,7 @@ bool testLogicalShift(type x, type n);
 bool testBitParity(type x);
 bool testLeastBitPos(type x);
 bool testBang(type x);
+bool testNegate(type x);
 
 int main() {
     test t;
@@ -91,6 +92,9 @@ int main() {
     
     printf("Testing tmax... ");
     _(t, tmax() == 0x7FFFFFFF, "passes.");
+    
+    printf("Testing negate... ");
+    _(t, testUnaryOperation(10000, &testNegate), "passes.");
     
     t_done();
     
@@ -138,4 +142,7 @@ bool testLeastBitPos(type x) {
 bool testBang(type x) {
     x %= 16; /* distribute more closely to zero */
     return (!x) == bang(x);
+}
+bool testNegate(type x) {
+    return (-x) == negate(x);
 }

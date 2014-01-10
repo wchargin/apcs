@@ -143,13 +143,13 @@ type tmax() {
     return ~((~0) << 31);
 }
 
-#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
-
 /* compute -x without using - */
 /* rating: 2; max ops: 5 */
 type negate(type x) {
-    
+    return ~x + 1;
 }
+
+#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* determines whether y can be added to x without overflow */
 /* rating: 3; max ops: 20 */
