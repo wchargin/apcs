@@ -335,5 +335,18 @@ int conditional(int x, int y, int z) {
  *   Rating: 4
  */
 int isPower2(int x) {
+    /* x should have exactly one "1" bit and it shouldn't be high bit */
+    /* this means that the least significant bit of x should be equal to x */
     
+    /* calculate lsb mask */
+    int lsb = x & (~x + 1);
+    
+    /* check for equality */
+    int okay = !(x ^ lsb);
+    
+    /* if negative exclude */
+    okay &= !(x >> 31);
+    
+    /* return okay && (x != 0); */
+    return okay & !!x;
 }
