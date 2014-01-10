@@ -309,7 +309,21 @@ int bang(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
+     /* basic idea: (y << (x ? 0 : 32)) | (z << (x ? 32 : 0)) */
+     /* shifting by 32 is undefined (and fails in gcc) so do 16 twice */
      
+     /* normalize x to zero or one */
+     x = !!x;
+     
+     /* calculate shifts */
+     int falseshift = x << 4;
+     int trueshift  = /* 16 - falseshift = */ 17 + ~falseshift;
+     
+     /* apply shifts */
+     y = (y << trueshift) << trueshift;
+     z = (z << falseshift) << falseshift;
+     
+     return y | z;
 }
 // Extra Credit: Rating: 4
 /*
