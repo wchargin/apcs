@@ -172,13 +172,15 @@ bool addOk(type x, type y) {
     return (signsDifferentPre | (~signsDifferentSum)) & 1;
 }
 
-#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
-
 /* returns !!x without using ! */
 /* rating: 4; max ops: 10 */
 bool isNonZero(type x) {
-    
+    type ifNegative = x >> 31;
+    type ifPositive = (~x + 1) >> 31;
+    return (ifNegative | ifPositive) & 1;
 }
+
+#ifdef __METHODS_PAST_HERE_NOT_YET_IMPLEMENTED__
 
 /* converts sign-magnitude to two's-complement */
 /* high-order bit of input is sign bit, remainder magnitude */

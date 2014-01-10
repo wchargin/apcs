@@ -61,6 +61,7 @@ bool testLeastBitPos(type x);
 bool testBang(type x);
 bool testNegate(type x);
 bool testAddOk(type x, type y);
+bool testIsNonZero(type x);
 
 int main() {
     test t;
@@ -99,6 +100,9 @@ int main() {
     
     printf("Testing addOk... ");
     _(t, testBinaryOperation(10000, &testAddOk), "passes.");
+    
+    printf("Testing isNonZero... ");
+    _(t, testUnaryOperation(10000, &testIsNonZero), "passes.");
     
     t_done();
     
@@ -153,4 +157,7 @@ bool testNegate(type x) {
 bool testAddOk(type x, type y) {
     long lsum = (long) x + y;
     return (lsum == (int) lsum) == addOk(x, y);
+}
+bool testIsNonZero(type x) {
+    return (!!x) == isNonZero(x);
 }
