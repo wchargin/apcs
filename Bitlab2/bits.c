@@ -293,7 +293,7 @@ int bang(int x) {
     int sgn_neg_x = (negative_x >> 31) & 1;
     
     /* we want return(sgn_pos_x == sgn_neg_x); but == requires bang to work */
-    int expr = (~sgn_pos_x) & (~sgn_neg_x);
+    int expr = ~(sgn_pos_x | sgn_neg_x);
     
     /* if x == 0 then sgn_pos_x = sgn_neg_x = 0, so expr will be 0b1111...  */
     /* if x != 0 then expr will cancel out entirely and be zero             */
