@@ -4,7 +4,6 @@ import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -99,6 +98,11 @@ public class EdgeDetectionGUI extends JFrame {
 	private BufferedImage original;
 
 	/**
+	 * The pre-blurred, edge-detected image.
+	 */
+	private BufferedImage edgeDetected;
+
+	/**
 	 * The processed image.
 	 */
 	private BufferedImage processed;
@@ -151,8 +155,8 @@ public class EdgeDetectionGUI extends JFrame {
 			}
 		}), new CC().growX().pushX());
 
-		JPanel pnlImageControls = new JPanel(new MigLayout());
-		pnlContent.add(pnlImageControls, new CC().growX().pushX());
+		JPanel pnlControls = new JPanel(new MigLayout());
+		pnlContent.add(pnlControls, new CC().growX().pushX());
 
 		final JSlider sldAlpha = new JSlider(0, 255, 255);
 		sldAlpha.addChangeListener(new ChangeListener() {
@@ -162,48 +166,47 @@ public class EdgeDetectionGUI extends JFrame {
 				lblView.repaint();
 			}
 		});
-		pnlImageControls.add(createLabel("Mixing alpha"), new CC().growX());
-		pnlImageControls.add(sldAlpha, new CC().growX().pushX().wrap());
+		pnlControls.add(createLabel("Mixing alpha"), new CC().growX());
+		pnlControls.add(sldAlpha, new CC().growX().pushX().wrap());
 
-		JPanel pnlTransforms = new JPanel(new GridLayout(1, 2));
-		pnlContent.add(pnlTransforms, new CC().growX().pushX());
+		final JSlider sldPreblur = new JSlider(0, 50, 2);
+		pnlControls.add(createLabel("Pre-blur radius"), new CC().growX());
+		pnlControls.add(sldPreblur, new CC().growX().pushX().wrap());
 
-		{ // gaussian blur controls
-			JPanel pnlBlurControls = new JPanel(new MigLayout());
-			pnlTransforms.add(pnlBlurControls);
+		final JSlider sldThreshold = new JSlider(0, 255, 60);
+		pnlControls.add(createLabel("Edge detection threshold"),
+				new CC().growX());
+		pnlControls.add(sldThreshold, new CC().growX().pushX().wrap());
 
-			final JSlider sldRadius = new JSlider(0, 50, 5);
-			pnlBlurControls.add(createLabel("Radius"), new CC().growX());
-			pnlBlurControls.add(sldRadius, new CC().growX().pushX().wrap());
+		final JSlider sldPostblur = new JSlider(0, 50, 0);
+		pnlControls.add(createLabel("Post-blur radius"), new CC().growX());
+		pnlControls.add(sldPostblur, new CC().growX().pushX().wrap());
 
-			pnlBlurControls.add(new JButton(
-					new AbstractAction("Gaussian Blur") {
-						@Override
-						public void actionPerformed(ActionEvent ae) {
-							processed = EdgeDetection.gaussianBlur(processed,
-									sldRadius.getValue());
-							lblView.repaint();
-						}
-					}), new CC().growX().pushX().spanX());
-		}
-
-		{ // edge detection controls
-			JPanel pnlEdgeControls = new JPanel(new MigLayout());
-			pnlTransforms.add(pnlEdgeControls);
-
-			final JSlider sldThreshold = new JSlider(0, 255, 25);
-			pnlEdgeControls.add(createLabel("Threshold"), new CC().growX());
-			pnlEdgeControls.add(sldThreshold, new CC().growX().pushX().wrap());
-
-			pnlEdgeControls.add(new JButton(new AbstractAction("Detect Edges") {
-				@Override
-				public void actionPerformed(ActionEvent ae) {
-					processed = EdgeDetection.detectEdges(processed, 1,
-							sldThreshold.getValue() / 255f);
-					lblView.repaint();
+		final ChangeListener clUpdate = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				edgeDetected = EdgeDetection.gaussianBlur(original,
+						sldPreblur.getValue());
+				edgeDetected = EdgeDetection.detectEdges(edgeDetected, 1,
+						(float) Math.pow(sldThreshold.getValue() / 255f, 2));
+				processed = EdgeDetection.gaussianBlur(edgeDetected,
+						sldPostblur.getValue());
+				lblView.repaint();
+			}
+		};
+		sldPreblur.addChangeListener(clUpdate);
+		sldThreshold.addChangeListener(clUpdate);
+		sldPostblur.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if (edgeDetected == null) {
+					clUpdate.stateChanged(e);
 				}
-			}), new CC().growX().pushX().spanX());
-		}
+				processed = EdgeDetection.gaussianBlur(edgeDetected,
+						sldPostblur.getValue());
+				lblView.repaint();
+			}
+		});
 
 		pnlContent.add(new JButton(new AbstractAction("Reset Transformations") {
 			@Override

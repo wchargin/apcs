@@ -39,6 +39,14 @@ public class EdgeDetection {
 
 		Graphics g = out.getGraphics();
 
+		float[][][] image = new float[width][height][];
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				image[x][y] = new Color(in.getRGB(x, y))
+						.getColorComponents(null);
+			}
+		}
+
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				float[] min = null, max = null;
@@ -47,8 +55,7 @@ public class EdgeDetection {
 						if ((i < 0 || i >= width) || (j < 0 || j >= height)) {
 							continue;
 						}
-						float[] components = new Color(in.getRGB(i, j))
-								.getColorComponents(null);
+						float[] components = image[i][j];
 						if (min == null) {
 							min = components.clone();
 						}
@@ -94,7 +101,7 @@ public class EdgeDetection {
 			throw new IllegalArgumentException("input image cannot be null");
 		}
 		if (radius <= 0) {
-			throw new IllegalArgumentException("radius must be > 0");
+			return in;
 		}
 
 		int rt2p1 = radius * 2 + 1;
@@ -125,7 +132,7 @@ public class EdgeDetection {
 		Kernel ver = new Kernel(1, rt2p1, convolution);
 		ConvolveOp ohor = new ConvolveOp(hor, ConvolveOp.EDGE_NO_OP, null);
 		ConvolveOp over = new ConvolveOp(ver, ConvolveOp.EDGE_NO_OP, null);
-		
+
 		return ohor.filter(over.filter(in, null), null);
 	}
 }
