@@ -2,7 +2,6 @@ package edge;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
@@ -72,14 +71,11 @@ public class EdgeDetection {
 					throw new AssertionError(
 							"component arrays min and max have unequal length");
 				}
-				float[] color = new float[min.length];
+				boolean isEdge = false;
 				for (int c = 0; c < min.length; c++) {
-					boolean isEdge = (max[c] - min[c] > threshold);
-					color[c] = isEdge ? 1 : 0;
+					isEdge |= (max[c] - min[c] > threshold);
 				}
-				Color paint = new Color(
-						ColorSpace.getInstance(ColorSpace.CS_sRGB), color, 1);
-				g.setColor(paint);
+				g.setColor(isEdge ? Color.BLACK : Color.WHITE);
 				g.fillRect(x, y, 1, 1);
 			}
 		}
