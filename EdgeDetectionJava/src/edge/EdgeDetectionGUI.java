@@ -172,7 +172,7 @@ public class EdgeDetectionGUI extends JFrame {
 			JPanel pnlBlurControls = new JPanel(new MigLayout());
 			pnlTransforms.add(pnlBlurControls);
 
-			final JSlider sldRadius = new JSlider(0, 10, 3);
+			final JSlider sldRadius = new JSlider(0, 50, 5);
 			pnlBlurControls.add(createLabel("Radius"), new CC().growX());
 			pnlBlurControls.add(sldRadius, new CC().growX().pushX().wrap());
 

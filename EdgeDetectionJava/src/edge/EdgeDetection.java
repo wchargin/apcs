@@ -100,36 +100,32 @@ public class EdgeDetection {
 		int rt2p1 = radius * 2 + 1;
 
 		// Generate a convolution matrix
-		float[][] convolution = new float[rt2p1][rt2p1];
+		float[] convolution = new float[rt2p1];
 
+		// Create a 1D gaussian
 		// Initial population
 		float sum = 0;
-		float sigmasq = (float) Math.pow(radius / 2.5d, 2);
+		float sigma = radius / 2.5f; // seems to work nicely
+		float sigmasq = (float) (Math.pow(sigma, 2));
+		float fac = (float) (1 / (Math.sqrt(2 * Math.PI)) * sigma);
+
 		for (int i = 0; i < convolution.length; i++) {
-			float row[] = convolution[i];
-			for (int j = 0; j < row.length; j++) {
-				double radiusq = Math.pow(radius - i, 2)
-						+ Math.pow(radius - j, 2);
-				// G(x, y) = 1/(2*pi*sigma^2) * e^(-sqradius / (2*sigma^2))
-				sum += (row[j] = (float) (1d / (2 * Math.PI * sigmasq) * Math
-						.exp(-radiusq / (2 * sigmasq))));
-			}
+			double radiusq = Math.pow(radius - i, 2);
+			double value = fac * Math.exp(-radiusq / (2 * sigmasq));
+			sum += (convolution[i] = (float) value);
 		}
 
 		// Normalize to have sum of 1.0
 		float scale = 1f / sum;
 		for (int i = 0; i < convolution.length; i++) {
-			float[] row = convolution[i];
-			for (int j = 0; j < row.length; j++) {
-				row[j] *= scale;
-			}
+			convolution[i] *= scale;
 		}
 
-		float[] data = new float[rt2p1 * rt2p1];
-		for (int i = 0; i < data.length; i++) {
-			data[i] = convolution[i / rt2p1][i % rt2p1];
-		}
-
-		return new ConvolveOp(new Kernel(rt2p1, rt2p1, data)).filter(in, null);
+		Kernel hor = new Kernel(rt2p1, 1, convolution);
+		Kernel ver = new Kernel(1, rt2p1, convolution);
+		ConvolveOp ohor = new ConvolveOp(hor, ConvolveOp.EDGE_NO_OP, null);
+		ConvolveOp over = new ConvolveOp(ver, ConvolveOp.EDGE_NO_OP, null);
+		
+		return ohor.filter(over.filter(in, null), null);
 	}
 }
