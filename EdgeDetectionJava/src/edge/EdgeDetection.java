@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 
 /**
  * Utility class for edge detection algorithms.
@@ -76,5 +78,58 @@ public class EdgeDetection {
 		}
 		g.dispose();
 		return out;
+	}
+
+	/**
+	 * Performs a Gaussian blur of the given radius.
+	 * 
+	 * @param in
+	 *            the image to blur
+	 * @param radius
+	 *            the radius for the blur
+	 * @return the blurred image
+	 */
+	public static BufferedImage gaussianBlur(BufferedImage in, int radius) {
+		if (in == null) {
+			throw new IllegalArgumentException("input image cannot be null");
+		}
+		if (radius <= 0) {
+			throw new IllegalArgumentException("radius must be > 0");
+		}
+
+		int rt2p1 = radius * 2 + 1;
+
+		// Generate a convolution matrix
+		float[][] convolution = new float[rt2p1][rt2p1];
+
+		// Initial population
+		float sum = 0;
+		float sigmasq = (float) Math.pow(radius / 2.5d, 2);
+		for (int i = 0; i < convolution.length; i++) {
+			float row[] = convolution[i];
+			for (int j = 0; j < row.length; j++) {
+				double radiusq = Math.pow(radius - i, 2)
+						+ Math.pow(radius - j, 2);
+				// G(x, y) = 1/(2*pi*sigma^2) * e^(-sqradius / (2*sigma^2))
+				sum += (row[j] = (float) (1d / (2 * Math.PI * sigmasq) * Math
+						.exp(-radiusq / (2 * sigmasq))));
+			}
+		}
+
+		// Normalize to have sum of 1.0
+		float scale = 1f / sum;
+		for (int i = 0; i < convolution.length; i++) {
+			float[] row = convolution[i];
+			for (int j = 0; j < row.length; j++) {
+				row[j] *= scale;
+			}
+		}
+
+		float[] data = new float[rt2p1 * rt2p1];
+		for (int i = 0; i < data.length; i++) {
+			data[i] = convolution[i / rt2p1][i % rt2p1];
+		}
+
+		return new ConvolveOp(new Kernel(rt2p1, rt2p1, data)).filter(in, null);
 	}
 }

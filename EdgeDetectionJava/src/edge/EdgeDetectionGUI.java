@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -55,7 +56,7 @@ public class EdgeDetectionGUI extends JFrame {
 			g2d.drawImage(original, 0, 0, getWidth(), getHeight(), null);
 			g2d.setComposite(AlphaComposite.getInstance(
 					AlphaComposite.SRC_OVER, alpha));
-			g2d.drawImage(detected, 0, 0, getWidth(), getHeight(), null);
+			g2d.drawImage(processed, 0, 0, getWidth(), getHeight(), null);
 		}
 
 	}
@@ -100,7 +101,7 @@ public class EdgeDetectionGUI extends JFrame {
 	/**
 	 * The processed image.
 	 */
-	private BufferedImage detected;
+	private BufferedImage processed;
 
 	/**
 	 * The alpha of the image overlay: {@code 0f} is full original image, while
@@ -139,7 +140,7 @@ public class EdgeDetectionGUI extends JFrame {
 				try {
 					BufferedImage image = ImageIO.read(f);
 					original = image;
-					detected = image;
+					processed = image;
 					lblView.repaint();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -150,8 +151,8 @@ public class EdgeDetectionGUI extends JFrame {
 			}
 		}), new CC().growX().pushX());
 
-		JPanel pnlControls = new JPanel(new MigLayout());
-		pnlContent.add(pnlControls, new CC().growX().pushX());
+		JPanel pnlImageControls = new JPanel(new MigLayout());
+		pnlContent.add(pnlImageControls, new CC().growX().pushX());
 
 		final JSlider sldAlpha = new JSlider(0, 255, 255);
 		sldAlpha.addChangeListener(new ChangeListener() {
@@ -161,22 +162,53 @@ public class EdgeDetectionGUI extends JFrame {
 				lblView.repaint();
 			}
 		});
-		pnlControls.add(createLabel("Mixing alpha"), new CC().growX());
-		pnlControls.add(sldAlpha, new CC().growX().pushX().wrap());
+		pnlImageControls.add(createLabel("Mixing alpha"), new CC().growX());
+		pnlImageControls.add(sldAlpha, new CC().growX().pushX().wrap());
 
-		final JSlider sldThreshold = new JSlider(0, 255, 25);
-		pnlControls.add(createLabel("Threshold"), new CC().growX());
-		pnlControls.add(sldThreshold, new CC().growX().pushX().wrap());
+		JPanel pnlTransforms = new JPanel(new GridLayout(1, 2));
+		pnlContent.add(pnlTransforms, new CC().growX().pushX());
 
-		final JSlider sldRadius = new JSlider(0, 5, 1);
-		pnlControls.add(createLabel("Radius"), new CC().growX());
-		pnlControls.add(sldRadius, new CC().growX().pushX().wrap());
+		{ // gaussian blur controls
+			JPanel pnlBlurControls = new JPanel(new MigLayout());
+			pnlTransforms.add(pnlBlurControls);
 
-		pnlContent.add(new JButton(new AbstractAction("Detect Edges") {
+			final JSlider sldRadius = new JSlider(0, 10, 3);
+			pnlBlurControls.add(createLabel("Radius"), new CC().growX());
+			pnlBlurControls.add(sldRadius, new CC().growX().pushX().wrap());
+
+			pnlBlurControls.add(new JButton(
+					new AbstractAction("Gaussian Blur") {
+						@Override
+						public void actionPerformed(ActionEvent ae) {
+							processed = EdgeDetection.gaussianBlur(processed,
+									sldRadius.getValue());
+							lblView.repaint();
+						}
+					}), new CC().growX().pushX().spanX());
+		}
+
+		{ // edge detection controls
+			JPanel pnlEdgeControls = new JPanel(new MigLayout());
+			pnlTransforms.add(pnlEdgeControls);
+
+			final JSlider sldThreshold = new JSlider(0, 255, 25);
+			pnlEdgeControls.add(createLabel("Threshold"), new CC().growX());
+			pnlEdgeControls.add(sldThreshold, new CC().growX().pushX().wrap());
+
+			pnlEdgeControls.add(new JButton(new AbstractAction("Detect Edges") {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					processed = EdgeDetection.detectEdges(processed, 1,
+							sldThreshold.getValue() / 255f);
+					lblView.repaint();
+				}
+			}), new CC().growX().pushX().spanX());
+		}
+
+		pnlContent.add(new JButton(new AbstractAction("Reset Transformations") {
 			@Override
-			public void actionPerformed(ActionEvent ae) {
-				detected = EdgeDetection.detectEdges(original,
-						sldRadius.getValue(), sldThreshold.getValue() / 255f);
+			public void actionPerformed(ActionEvent arg0) {
+				processed = original;
 				lblView.repaint();
 			}
 		}), new CC().growX().pushX());
