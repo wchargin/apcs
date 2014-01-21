@@ -52,9 +52,11 @@ public class EdgeDetectionGUI extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
+			g2d.setComposite(AlphaComposite.getInstance(
+					AlphaComposite.SRC_OVER, alpha <= 0.5 ? 1f : 2f - alpha * 2f));
 			g2d.drawImage(original, 0, 0, getWidth(), getHeight(), null);
 			g2d.setComposite(AlphaComposite.getInstance(
-					AlphaComposite.SRC_OVER, alpha));
+					AlphaComposite.SRC_OVER, alpha >= 0.5 ? 1f : alpha * 2f));
 			g2d.drawImage(processed, 0, 0, getWidth(), getHeight(), null);
 		}
 
@@ -158,7 +160,7 @@ public class EdgeDetectionGUI extends JFrame {
 		JPanel pnlControls = new JPanel(new MigLayout());
 		pnlContent.add(pnlControls, new CC().growX().pushX());
 
-		final JSlider sldAlpha = new JSlider(0, 255, 255);
+		final JSlider sldAlpha = new JSlider(0, 255, 127);
 		sldAlpha.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent ce) {
@@ -169,7 +171,7 @@ public class EdgeDetectionGUI extends JFrame {
 		pnlControls.add(createLabel("Mixing alpha"), new CC().growX());
 		pnlControls.add(sldAlpha, new CC().growX().pushX().wrap());
 
-		final JSlider sldPreblur = new JSlider(0, 50, 2);
+		final JSlider sldPreblur = new JSlider(0, 10, 2);
 		pnlControls.add(createLabel("Pre-blur radius"), new CC().growX());
 		pnlControls.add(sldPreblur, new CC().growX().pushX().wrap());
 
