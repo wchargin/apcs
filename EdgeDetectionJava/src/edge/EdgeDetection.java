@@ -25,7 +25,7 @@ public class EdgeDetection {
 	 *            the threshold of difference
 	 * @return the edge image
 	 */
-	public static BufferedImage detectEdges(BufferedImage in, int radius,
+	public static BufferedImage detectEdges(BufferedImage in, float radius,
 			float threshold) {
 		if (in == null) {
 			throw new IllegalArgumentException("input image cannot be null");
@@ -33,53 +33,65 @@ public class EdgeDetection {
 		final int width = in.getWidth();
 		final int height = in.getHeight();
 		BufferedImage out = new BufferedImage(width, height,
-				BufferedImage.TYPE_INT_RGB);
-		int halfRadius = (radius + 1) / 2;
+				BufferedImage.TYPE_INT_ARGB);
+		int halfRadius = (int) Math.ceil((radius + 1) / 2);
 
-		Graphics g = out.getGraphics();
+		Graphics gr = out.getGraphics();
 
-		float[][][] image = new float[width][height][];
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				image[x][y] = new Color(in.getRGB(x, y))
-						.getColorComponents(null);
+		long time = System.nanoTime();
+
+		float[][] image = new float[width][height];
+		int[] rgb = in.getRGB(0, 0, width, height, null, 0, width);
+		{
+			int z = 0;
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					int c = rgb[z++] & 0x00FFFFFF;
+
+					int b = c & 0xFF;
+					int g = c & 0xFF00 >>> 8;
+					int r = c & 0xFF0000 >>> 16;
+
+					image[x][y] = (r + g + b) / 3f / 255f;
+				}
 			}
 		}
+		System.out.println(System.nanoTime() - time);
+
+		boolean[][] isEdge = new boolean[width][height];
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				float[] min = null, max = null;
+				float min = Float.MAX_VALUE, max = Float.MIN_VALUE;
 				for (int i = x - halfRadius; i < x + halfRadius; i++) {
 					for (int j = y - halfRadius; j < y + halfRadius; j++) {
 						if ((i < 0 || i >= width) || (j < 0 || j >= height)) {
 							continue;
 						}
-						float[] components = image[i][j];
-						if (min == null) {
-							min = components.clone();
+						float value = image[i][j];
+						if (value < min) {
+							min = value;
 						}
-						if (max == null) {
-							max = components.clone();
-						}
-						for (int c = 0; c < components.length; c++) {
-							min[c] = Math.min(min[c], components[c]);
-							max[c] = Math.max(max[c], components[c]);
+						if (value > max) {
+							max = value;
 						}
 					}
 				}
-				if (min.length != max.length) {
-					throw new AssertionError(
-							"component arrays min and max have unequal length");
-				}
-				boolean isEdge = false;
-				for (int c = 0; c < min.length; c++) {
-					isEdge |= (max[c] - min[c] > threshold);
-				}
-				g.setColor(isEdge ? Color.BLACK : Color.WHITE);
-				g.fillRect(x, y, 1, 1);
+				isEdge[x][y] = (max - min) > threshold;
 			}
 		}
-		g.dispose();
+		System.out.println(System.nanoTime() - time);
+		gr.setColor(Color.BLACK);
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (isEdge[x][y]) {
+					gr.fillRect(x, y, 1, 1);
+				}
+			}
+		}
+		System.out.println(System.nanoTime() - time);
+		gr.dispose();
+		System.out.println();
 		return out;
 	}
 
