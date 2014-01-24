@@ -45,7 +45,7 @@ public class SobelDetection {
 	}
 
 	public static void main(String[] args) throws Exception {
-		final boolean USE_COLOR = false;
+		final boolean USE_COLOR = true;
 
 		BufferedImage im = ImageIO.read(new File("H:\\stab.jpg"));
 		final int w = im.getWidth(), h = im.getHeight();
