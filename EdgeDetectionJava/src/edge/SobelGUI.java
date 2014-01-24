@@ -1,7 +1,6 @@
 package edge;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -181,6 +180,31 @@ public class SobelGUI extends JFrame {
 		pnlControls
 				.add(createLabel("Perform edge detection"), new CC().growX());
 		pnlControls.add(btnPerform, new CC().growX().pushX().wrap());
+
+		final JButton btnSave = new JButton(new AbstractAction("Save to File") {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setFileFilter(new FileNameExtensionFilter("PNG files",
+						"png"));
+				chooser.setMultiSelectionEnabled(false);
+				int ret = chooser.showSaveDialog(SobelGUI.this);
+				if (ret != JFileChooser.APPROVE_OPTION) {
+					return;
+				}
+				File f = chooser.getSelectedFile();
+				try {
+					ImageIO.write(processed, "png", f);
+				} catch (IOException e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(SobelGUI.this,
+							e.getMessage(), "Unexpected Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		pnlControls.add(createLabel("Save image"), new CC().growX());
+		pnlControls.add(btnSave, new CC().growX().pushX().wrap());
 	}
 
 	protected BufferedImage doEdgeDetection(BufferedImage im,
@@ -213,10 +237,13 @@ public class SobelGUI extends JFrame {
 		}
 		for (int i = 0; i < rgb.length; i++) {
 			if (useColor) {
-				rgb[i] = new Color(r[i], g[i], b[i]).getRGB();
+				int rr = (int) (r[i] * 255);
+				int gg = (int) (g[i] * 255);
+				int bb = (int) (b[i] * 255);
+				rgb[i] = (rr) | (gg << 8) | (bb << 16) | (0xFF000000);
 			} else {
-				float z = result[i];
-				rgb[i] = new Color(z, z, z).getRGB();
+				int z = (int) (result[i] * 255);
+				rgb[i] = (z << 8 | z) << 8 | z | 0xFF000000;
 			}
 		}
 		BufferedImage out = new BufferedImage(w, h, im.getType());
