@@ -110,12 +110,13 @@ public class SobelVideo {
 	}
 
 	public static void main(String[] args) throws IOException, JCodecException {
-		videoEdgeDetect(new File("H:\\DragonFire.mp4"), false, new File(
+		videoEdgeDetect(new File("H:\\DragonFire.mp4"), false, false, new File(
 				"H:\\EdgeDragon.mp4"));
 	}
 
 	public static void videoEdgeDetect(File inFile, final boolean useColor,
-			File outFile) throws IOException, JCodecException {
+			final boolean wrapEdges, File outFile) throws IOException,
+			JCodecException {
 		SeekableByteChannel channel = NIOUtils.readableFileChannel(inFile);
 		FrameGrab grab = new FrameGrab(channel);
 		grab.seekToFramePrecise(0);
@@ -146,11 +147,11 @@ public class SobelVideo {
 				}
 				float[] result = null;
 				if (useColor) {
-					r = SobelDetection.sobel(w, h, r);
-					g = SobelDetection.sobel(w, h, g);
-					b = SobelDetection.sobel(w, h, b);
+					r = SobelDetection.sobel(w, h, r, wrapEdges);
+					g = SobelDetection.sobel(w, h, g, wrapEdges);
+					b = SobelDetection.sobel(w, h, b, wrapEdges);
 				} else {
-					result = SobelDetection.sobel(w, h, vals);
+					result = SobelDetection.sobel(w, h, vals, wrapEdges);
 				}
 				for (int i = 0; i < rgb.length; i++) {
 					if (useColor) {

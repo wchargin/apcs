@@ -9,7 +9,8 @@ import javax.swing.JOptionPane;
 
 public class SobelDetection {
 
-	public static float[] sobel(int width, int height, float[] vals) {
+	public static float[] sobel(int width, int height, float[] vals,
+			boolean wrapEdges) {
 		// each axis: do two convolutions instead of one to get O(n) not O(n^2)
 		float[] k1 = { 1, 2, 1 };
 		float[] k2 = { 1, 0, -1 };
@@ -20,11 +21,11 @@ public class SobelDetection {
 		float[] ymag = new float[vals.length];
 		float[] dum = new float[vals.length];
 
-		convolve(width, height, vals, 3, k2, dum); // G_x step 1
-		convolve(width, height, dum, 1, k1, xmag); // G_x step 2
+		convolve(width, height, vals, 3, k2, dum, wrapEdges); // G_x step 1
+		convolve(width, height, dum, 1, k1, xmag, wrapEdges); // G_x step 2
 
-		convolve(width, height, vals, 3, k1, dum); // G_y step 1
-		convolve(width, height, dum, 1, k2, ymag); // G_y step 2
+		convolve(width, height, vals, 3, k1, dum, wrapEdges); // G_y step 1
+		convolve(width, height, dum, 1, k2, ymag, wrapEdges); // G_y step 2
 
 		float[] ret = new float[vals.length];
 		float max = 0;
@@ -68,11 +69,11 @@ public class SobelDetection {
 		}
 		float[] result;
 		if (USE_COLOR) {
-			r = sobel(w, h, r);
-			g = sobel(w, h, g);
-			b = sobel(w, h, b);
+			r = sobel(w, h, r, false);
+			g = sobel(w, h, g, false);
+			b = sobel(w, h, b, false);
 		} else {
-			result = sobel(w, h, vals);
+			result = sobel(w, h, vals, false);
 		}
 		for (int i = 0; i < rgb.length; i++) {
 			if (USE_COLOR) {
@@ -105,7 +106,7 @@ public class SobelDetection {
 	 *            output array
 	 */
 	private static void convolve(int wi, int hi, float[] vals, int wk,
-			float[] kernel, float[] out) {
+			float[] kernel, float[] out, boolean wrapEdges) {
 		final int lk = kernel.length;
 		final int hk = lk / wk;
 		final int offh = -(wk - 1) / 2;
@@ -121,6 +122,10 @@ public class SobelDetection {
 					// calculate x and y values
 					int x = i + u + offh;
 					int y = (j + v + offv);
+					if (!wrapEdges && (x < 0 || x >= wi || y < 0 || y >= hi)) {
+						continue;
+					}
+
 					// prevent underflow
 					while (x < 0)
 						x += wi;
