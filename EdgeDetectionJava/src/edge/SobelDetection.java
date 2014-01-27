@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 public class SobelDetection {
 
 	public static float[] sobel(int width, int height, float[] vals,
-			boolean wrapEdges) {
+			boolean wrapEdges, float brightadjust) {
 		// each axis: do two convolutions instead of one to get O(n) not O(n^2)
 		float[] k1 = { 1, 2, 1 };
 		float[] k2 = { 1, 0, -1 };
@@ -40,7 +40,7 @@ public class SobelDetection {
 			}
 		}
 		for (int i = 0; i < ret.length; i++) {
-			ret[i] /= max;
+			ret[i] = Math.min(1, ret[i] / max / brightadjust);
 		}
 		return ret;
 	}
@@ -69,11 +69,11 @@ public class SobelDetection {
 		}
 		float[] result;
 		if (USE_COLOR) {
-			r = sobel(w, h, r, false);
-			g = sobel(w, h, g, false);
-			b = sobel(w, h, b, false);
+			r = sobel(w, h, r, false, 1);
+			g = sobel(w, h, g, false, 1);
+			b = sobel(w, h, b, false, 1);
 		} else {
-			result = sobel(w, h, vals, false);
+			result = sobel(w, h, vals, false, 1);
 		}
 		for (int i = 0; i < rgb.length; i++) {
 			if (USE_COLOR) {

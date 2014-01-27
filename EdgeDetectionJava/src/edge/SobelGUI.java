@@ -173,12 +173,17 @@ public class SobelGUI extends JFrame {
 		pnlControls.add(createLabel("Wrap edges"), new CC().growX());
 		pnlControls.add(chkbxWrap, new CC().growX().pushX().wrap());
 
+		final JSlider sldBrightAdjust = new JSlider(32, 255, 32);
+		pnlControls.add(createLabel("Brightness adjust"), new CC().growX());
+		pnlControls.add(sldBrightAdjust, new CC().growX().pushX().wrap());
+
 		final JButton btnPerform = new JButton(new AbstractAction(
 				"Run Sobel algorithm") {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				processed = doEdgeDetection(original, chkbxColor.isSelected(),
-						chkbxWrap.isSelected());
+						chkbxWrap.isSelected(),
+						1f - sldBrightAdjust.getValue() / 255f);
 				lblView.repaint();
 			}
 		});
@@ -213,7 +218,8 @@ public class SobelGUI extends JFrame {
 	}
 
 	protected BufferedImage doEdgeDetection(BufferedImage im,
-			final boolean useColor, final boolean wrapEdges) {
+			final boolean useColor, final boolean wrapEdges,
+			final float brightadjust) {
 		final int w = im.getWidth(), h = im.getHeight();
 
 		int[] rgb = new int[im.getWidth() * im.getHeight()];
@@ -234,11 +240,11 @@ public class SobelGUI extends JFrame {
 		}
 		float[] result = null;
 		if (useColor) {
-			r = SobelDetection.sobel(w, h, r, wrapEdges);
-			g = SobelDetection.sobel(w, h, g, wrapEdges);
-			b = SobelDetection.sobel(w, h, b, wrapEdges);
+			r = SobelDetection.sobel(w, h, r, wrapEdges, brightadjust);
+			g = SobelDetection.sobel(w, h, g, wrapEdges, brightadjust);
+			b = SobelDetection.sobel(w, h, b, wrapEdges, brightadjust);
 		} else {
-			result = SobelDetection.sobel(w, h, vals, wrapEdges);
+			result = SobelDetection.sobel(w, h, vals, wrapEdges, brightadjust);
 		}
 		for (int i = 0; i < rgb.length; i++) {
 			if (useColor) {
