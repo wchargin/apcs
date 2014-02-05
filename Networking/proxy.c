@@ -2,12 +2,16 @@
 #include "csapp.h"
 
 FILE *lg;
+sem_t logmutex;
 
 void plog(const char * format, ...) {
+    /* prints formatted string to stdout and the log file */
     va_list ap1, ap2;
     time_t timer;
     char buffer[20];
     struct tm* tm_info;
+
+    sem_wait(&logmutex);
 
     time(&timer);
     tm_info = localtime(&timer);
@@ -24,9 +28,12 @@ void plog(const char * format, ...) {
     printf("%s - ", buffer);
     vprintf(format, ap2);
     va_end(ap2);
+
+    sem_post(&logmutex);
 }
 
 void onint() {
+    /* run on ^C interrupt to clean up */
     plog("Killed by interrupt\n");
     if (lg != NULL) {
         Fclose(lg);
@@ -42,6 +49,7 @@ void echo(int connfd) {
     Rio_readinitb(&rio, connfd);
     while((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
         printf("server received %d bytes\n", (int)n);
+        plog("%s", buf);
         Rio_writen(connfd, buf, n);
     }
 }
@@ -56,6 +64,7 @@ int main(int argc, char **argv) {
         exit(0);
     }
     signal(SIGINT, onint);
+    sem_init(&logmutex, 1, 1); /* addr, shared, initial value */
     lg = Fopen("proxy.log", "w");
     if (lg == NULL) {
         plog("Failed to open proxy.log\n");
