@@ -41,19 +41,59 @@ void onint() {
     exit(0);
 }
 
-void *handleconn(void *connptr) {
-    /* argument should be int* pointing tp connection file descriptor */
+typedef struct {
+    int clientfd;
+    int serverfd;
+} relayinfo;
+
+void *dorelay(void *infoptr) {
+    /* argument should be relayinfo* pointing to information struct */
+    /* catches SIGUSR1 when it is time to die */
     size_t n;
     char buf[MAXLINE];
     rio_t rio;
+    int clientfd, serverfd;
 
+    relayinfo info = *(relayinfo *) infoptr;
+    clientfd = info.clientfd;
+    serverfd = info.serverfd;
+
+    plog("Opening server-client relay.\n");
+
+    Rio_readinitb(&rio, info.serverfd);
+    while ((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
+        /* got data from server; echo back to client */
+        plog("[SERV] Data incoming: %d bytes\n", n);
+        Rio_writen(info.clientfd, buf, n); 
+    } 
+    plog("Closing server-client relay.\n");
+    Close(clientfd);
+    Close(serverfd);
+}
+
+void *handleconn(void *connptr) {
+    /* argument should be int* pointing tp connection file descriptor */
+    size_t n;
+    char bufcl[MAXLINE], bufsv[MAXLINE];
+    rio_t rio;
+    relayinfo info;
+    pthread_t relay;
     int connfd = *(int *) connptr;
+    int serverfd = NULL;
 
     Rio_readinitb(&rio, connfd);
-    while((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
-        plog("[DATA] %s", buf);
+    while((n = Rio_readlineb(&rio, bufcl, MAXLINE)) != 0) {
+        plog("[DATA] %s", bufcl);
         /* TODO actually handle the proxy request */
-        Rio_writen(connfd, buf, n);
+        if (!serverfd) { /* TODO check if header is a GET [host] [httpver] */
+            /* TODO initialize values for info */
+            char *host;
+            host = "www.google.com";
+            info.clientfd = connfd;
+            info.serverfd = serverfd = Open_clientfd(host, 80);
+            Pthread_create(&relay, NULL, dorelay, &info);
+        }
+        Rio_writen(serverfd, bufcl, n);
     }
     plog("Connection closed.\n");
     Close(connfd);
