@@ -34,24 +34,29 @@ void plog(const char * format, ...) {
 
 void onint() {
     /* run on ^C interrupt to clean up */
-    plog("Killed by interrupt\n");
+    plog("Killed by interrupt.\n");
     if (lg != NULL) {
         Fclose(lg);
     }
     exit(0);
 }
 
-void echo(int connfd) {
+void *handleconn(void *connptr) {
+    /* argument should be int* pointing tp connection file descriptor */
     size_t n;
     char buf[MAXLINE];
     rio_t rio;
-    
+
+    int connfd = *(int *) connptr;
+
     Rio_readinitb(&rio, connfd);
     while((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
-        printf("server received %d bytes\n", (int)n);
-        plog("%s", buf);
+        plog("[DATA] %s", buf);
+        /* TODO actually handle the proxy request */
         Rio_writen(connfd, buf, n);
     }
+    plog("Connection closed.\n");
+    Close(connfd);
 }
 
 int main(int argc, char **argv) {
@@ -80,6 +85,7 @@ int main(int argc, char **argv) {
         plog("Listening for connections...\n");
         clientlen = sizeof(clientaddr);
         connfd = Accept(listenfd, (SA *)&clientaddr, &clientlen);
+        pthread_t tid;
 
         /* determine the domain name and IP address of the client */
         hp = Gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr,
@@ -87,8 +93,7 @@ int main(int argc, char **argv) {
         haddrp = inet_ntoa(clientaddr.sin_addr);
         plog("Connected to %s (%s).\n", hp->h_name, haddrp);
         
-        echo(connfd);
-        Close(connfd);
+        Pthread_create(&tid, NULL, handleconn, &connfd);
     }
     exit(0);
 }
