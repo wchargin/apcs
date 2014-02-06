@@ -79,18 +79,25 @@ void *handleconn(void *connptr) {
     relayinfo info;
     pthread_t relay;
     int connfd = *(int *) connptr;
-    int serverfd = NULL;
+    int serverfd = 0;
 
     Rio_readinitb(&rio, connfd);
     while((n = Rio_readlineb(&rio, bufcl, MAXLINE)) != 0) {
         plog("[DATA] %s", bufcl);
-        /* TODO actually handle the proxy request */
-        if (!serverfd) { /* TODO check if header is a GET [host] [httpver] */
-            /* TODO initialize values for info */
-            char *host;
-            host = "www.google.com";
+        if (!serverfd) {
+            char method[MAXLINE], uri[MAXLINE], version[MAXLINE], host[MAXLINE];
+            int port = 80;
+            if (sscanf(bufcl, "%s %s %s", method, uri, version) != 3) {
+                plog("String parsing failed; exiting connection thraed.\n");
+                return;
+            }
+            sscanf(uri, "%*[^:]://%[^/]", host); 
+            sscanf(host, "%[^:]:%d", host, &port);
+
+            plog("Configuring connection to host %s on port: %d\n", host, port);
+
             info.clientfd = connfd;
-            info.serverfd = serverfd = Open_clientfd(host, 80);
+            info.serverfd = serverfd = Open_clientfd(host, port);
             Pthread_create(&relay, NULL, dorelay, &info);
         }
         Rio_writen(serverfd, bufcl, n);
