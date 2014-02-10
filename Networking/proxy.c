@@ -60,15 +60,20 @@ void *dorelay(void *infoptr) {
 
     plog("Opening server-client relay.\n");
 
-    Rio_readinitb(&rio, info.serverfd);
+    rio_readinitb(&rio, info.serverfd);
     while ((n = Rio_readlineb(&rio, buf, MAXLINE)) != 0) {
         /* got data from server; echo back to client */
         plog("[SERV] Data incoming: %d bytes\n", n);
-        Rio_writen(info.clientfd, buf, n); 
+        if (rio_writen(info.clientfd, buf, n) != n) {
+            break;
+        } 
     } 
     plog("Closing server-client relay.\n");
-    Close(clientfd);
-    Close(serverfd);
+
+    /* use close instead of Close - don't complain on error */
+    /* (if it's already closed that's okay) */
+    close(clientfd);
+    close(serverfd);
 }
 
 void *handleconn(void *connptr) {
@@ -81,8 +86,8 @@ void *handleconn(void *connptr) {
     int connfd = *(int *) connptr;
     int serverfd = 0;
 
-    Rio_readinitb(&rio, connfd);
-    while((n = Rio_readlineb(&rio, bufcl, MAXLINE)) != 0) {
+    rio_readinitb(&rio, connfd);
+    while((n = rio_readlineb(&rio, bufcl, MAXLINE)) != 0) {
         plog("[DATA] %s", bufcl);
         if (!serverfd) {
             char method[MAXLINE], uri[MAXLINE], version[MAXLINE], host[MAXLINE];
@@ -100,10 +105,10 @@ void *handleconn(void *connptr) {
             info.serverfd = serverfd = Open_clientfd(host, port);
             Pthread_create(&relay, NULL, dorelay, &info);
         }
-        Rio_writen(serverfd, bufcl, n);
+        rio_writen(serverfd, bufcl, n);
     }
     plog("Connection closed.\n");
-    Close(connfd);
+    close(connfd);
 }
 
 int main(int argc, char **argv) {
