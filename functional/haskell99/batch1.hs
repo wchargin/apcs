@@ -33,3 +33,8 @@ flatten :: NestedList a -> [a]
 flatten (Elem x) = [x]
 flatten (List []) = []
 flatten (List (x:xs)) = flatten x ++ (foldl1 (++) $ map flatten xs)
+
+compress :: (Eq a) => [a] -> [a]
+compress [] = []
+compress (x:xs) = x : compress remainder
+  where remainder = dropWhile (== x) xs
