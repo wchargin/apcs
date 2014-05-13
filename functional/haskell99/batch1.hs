@@ -38,3 +38,8 @@ compress :: (Eq a) => [a] -> [a]
 compress [] = []
 compress (x:xs) = x : compress remainder
   where remainder = dropWhile (== x) xs
+
+-- this is Haskell's `group` function
+pack :: (Eq a) => [a] -> [[a]]
+pack [] = []
+pack (x:xs) = (x : takeWhile (== x) xs) : (pack $ dropWhile (== x) xs)
