@@ -15,3 +15,7 @@ secondLastElem (x:xs) = lastElem xs
 [] !!! _ = error "index too large"
 (x:xs) !!! 0 = x
 (x:xs) !!! n = xs !!! (n - 1)
+
+length' :: [a] -> Int
+length [] = 0
+length (x:xs) = 1 + length xs
