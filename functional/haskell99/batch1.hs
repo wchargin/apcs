@@ -43,3 +43,7 @@ compress (x:xs) = x : compress remainder
 pack :: (Eq a) => [a] -> [[a]]
 pack [] = []
 pack (x:xs) = (x : takeWhile (== x) xs) : (pack $ dropWhile (== x) xs)
+
+-- in point-free form
+encode :: (Eq a) => [a] -> [(Int, a)]
+encode = map (\x -> (length x, head x)) . pack
