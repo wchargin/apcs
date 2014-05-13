@@ -26,3 +26,10 @@ reverse' (x:xs) = reverse' xs ++ [x]
 
 isPalindrome :: (Eq a) => [a] -> Bool
 isPalindrome xs = xs == reverse xs
+
+data NestedList a = Elem a | List [NestedList a]
+
+flatten :: NestedList a -> [a]
+flatten (Elem x) = [x]
+flatten (List []) = []
+flatten (List (x:xs)) = flatten x ++ (foldl1 (++) $ map flatten xs)
