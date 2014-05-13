@@ -10,3 +10,8 @@ secondLastElem [] = error "empty list"
 secondLastElem [x] = error "list too short"
 secondLastElem [x,y] = x
 secondLastElem (x:xs) = lastElem xs
+
+(!!!) :: [a] -> Int -> a
+[] !!! _ = error "index too large"
+(x:xs) !!! 0 = x
+(x:xs) !!! n = xs !!! (n - 1)
