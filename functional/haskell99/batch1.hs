@@ -17,9 +17,9 @@ secondLastElem (x:xs) = lastElem xs
 (x:xs) !!! n = xs !!! (n - 1)
 
 length' :: [a] -> Int
-length [] = 0
-length (x:xs) = 1 + length xs
+length' [] = 0
+length' (x:xs) = 1 + length' xs
 
 reverse' :: [a] -> [a]
 reverse' [] = []
-reverse' (x:xs) = reverse' xs ++ x
+reverse' (x:xs) = reverse' xs ++ [x]
