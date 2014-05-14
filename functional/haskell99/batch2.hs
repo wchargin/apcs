@@ -8,3 +8,8 @@ encodeModified = map f . group
   where f xs = (case length xs of 1 -> Single
                                   _ -> Multiple (length xs))
                (head xs)
+
+decodeModified :: [MultiElement a] -> [a]
+decodeModified = concatMap decodeMultiElement
+  where decodeMultiElement (Single x) = [x]
+        decodeMultiElement (Multiple n x) = replicate n x
