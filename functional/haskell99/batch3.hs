@@ -30,3 +30,17 @@ uniqSelect xs n = do
 
 permute :: [a] -> IO [a]
 permute xs = uniqSelect xs (length xs)
+
+-- Problem does not specify if equivalent combinations should be included.
+-- That is, should `combinations 2 "abc"` yield
+--   ["ab", "bc", "ca"]
+-- or
+--   ["ab", "ac", "bc", "ba", "cb", "ca"] ?
+-- This implementation includes combinations that are set-equivalent (that is,
+-- are equivalent irrespective of order).
+combinations :: Int -> [a] -> [[a]]
+combinations 1 xs = map (:[]) xs
+combinations n xs = concatMap f $ take (length xs)  [0..]
+ where f index = let elem = xs !! index
+                     remainder = take index xs ++ (tail $ drop index xs)
+                 in (elem:) <$> combinations (n - 1) remainder
