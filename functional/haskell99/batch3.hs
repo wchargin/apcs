@@ -27,3 +27,6 @@ uniqSelect xs n = do
   let elem = xs !! index
       remainder = take index xs ++ (tail $ drop index xs)
   (elem:) <$> uniqSelect remainder (n - 1)
+
+permute :: [a] -> IO [a]
+permute xs = uniqSelect xs (length xs)
