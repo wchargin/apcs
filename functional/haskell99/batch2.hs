@@ -70,3 +70,9 @@ rotate n xs = right ++ left
   where s = split n xs
         left = fst s
         right = snd s
+
+removeAt :: Int -> [a] -> (a, [a])
+removeAt n xs = (head right, left ++ tail right)
+  where s = split n xs
+        left = fst s
+        right = snd s
