@@ -55,3 +55,12 @@ split n l@(x:xs) = (a ++ [head b], tail b)
   where s = split (n - 1) l
         a = fst s
         b = snd s
+
+-- The specification for this problem indicates two questionable behaviors:
+--  (1) "both limits included"
+--  (2) "start counting with 1"
+-- I have elected to ignore both of these requirements, on the grounds
+-- described in Edsger Dijkstra's "Why Numbering Should Start At Zero" (a
+-- paper that also describes the superiority of closed-open intervals).
+slice :: Int -> Int -> [a] -> [a]
+slice a b = (drop a) . (take b)
