@@ -47,3 +47,11 @@ dropEvery n as = f [] [] as
                           then f (xs ++ ys) []
                           else f xs (ys ++ [z]))
                           zs
+
+-- not sure about the efficiency of this implementation
+split :: Int -> [a] -> ([a], [a])
+split 0 xs = ([], xs)
+split n l@(x:xs) = (a ++ [head b], tail b)
+  where s = split (n - 1) l
+        a = fst s
+        b = snd s
