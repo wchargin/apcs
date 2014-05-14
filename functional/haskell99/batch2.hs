@@ -22,3 +22,12 @@ encodeDirect (x:xs) = (createElement these) : encodeDirect others
         createElement xs = case length xs of 1 -> Single
                                              _ -> Multiple (length xs)
                          $ head xs
+
+-- changing order of parameters from question because
+-- (1) it seems more Haskell style
+-- (2) it works better with built-ins
+repli :: Int -> [a] -> [a]
+repli = concatMap . replicate
+
+dupli :: [a] -> [a]
+dupli = repli 2
