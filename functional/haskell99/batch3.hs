@@ -19,3 +19,11 @@ randomSelect xs n = do
   index <- randomRIO (0, length xs - 1)
   let elem = xs !! index
   (elem:) <$> randomSelect xs (n - 1)
+
+uniqSelect :: [a] -> Int -> IO [a]
+uniqSelect _ 0 = return []
+uniqSelect xs n = do
+  index <- randomRIO (0, length xs - 1)
+  let elem = xs !! index
+      remainder = take index xs ++ (tail $ drop index xs)
+  (elem:) <$> uniqSelect remainder (n - 1)
