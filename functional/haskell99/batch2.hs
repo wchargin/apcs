@@ -64,3 +64,9 @@ split n l@(x:xs) = (a ++ [head b], tail b)
 -- paper that also describes the superiority of closed-open intervals).
 slice :: Int -> Int -> [a] -> [a]
 slice a b = (drop a) . (take b)
+
+rotate :: Int -> [a] -> [a]
+rotate n xs = right ++ left
+  where s = split n xs
+        left = fst s
+        right = snd s
