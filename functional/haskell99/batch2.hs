@@ -31,3 +31,19 @@ repli = concatMap . replicate
 
 dupli :: [a] -> [a]
 dupli = repli 2
+
+-- The inner function here works by maintaining three arguments:
+--  (1) a list of completed items that is periodically enlarged
+--  (2) a list of the current run being processed
+--  (3) a list of all unprocessed items
+-- 
+-- At each iteration, the function either modifies the current run, if it is
+-- of length less than the maximum length, or clears the current run and
+-- copies it into the completed list.
+dropEvery :: Int -> [a] -> [a]
+dropEvery n as = f [] [] as
+  where f xs ys [] = xs ++ ys
+        f xs ys (z:zs) = (if length ys == n - 1
+                          then f (xs ++ ys) []
+                          else f xs (ys ++ [z]))
+                          zs
