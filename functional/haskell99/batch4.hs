@@ -15,3 +15,11 @@ coprime a b = 1 == gcd' a b
 totient :: Int -> Int
 totient 1 = 1
 totient m = length $ filter (coprime m) [1 .. m - 1]
+
+primeFactors :: Int -> [Int]
+primeFactors 1 = []
+primeFactors n =
+  case factors of []     -> [n]
+                  (x:xs) -> x : primeFactors (n `div` x)
+  where factors = filter ((== 0) . (n `mod`)) [2..max]
+        max     = ceiling $ sqrt $ fromIntegral x
