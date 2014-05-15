@@ -8,3 +8,6 @@ gcd' :: Int -> Int -> Int
 gcd' a b
   | b == 0    = abs a
   | otherwise = gcd' b $ a `mod` b
+
+coprime :: Int -> Int -> Bool
+coprime a b = 1 == gcd' a b
