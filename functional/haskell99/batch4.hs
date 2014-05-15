@@ -1,5 +1,7 @@
 module Batch4 where
 
+import Data.List
+
 isPrime :: Int -> Bool
 isPrime x = and [x `mod` n /= 0 | n <- [2..max]]
   where max = ceiling $ sqrt $ fromIntegral x
@@ -23,3 +25,7 @@ primeFactors n =
                   (x:xs) -> x : primeFactors (n `div` x)
   where factors = filter ((== 0) . (n `mod`)) [2..max]
         max     = ceiling $ sqrt $ fromIntegral x
+
+primeFactors' :: Int -> [(Int, Int)]
+primeFactors' = map f . group . primeFactors
+  where f xs = (head xs, length xs)
