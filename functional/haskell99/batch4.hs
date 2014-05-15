@@ -11,3 +11,7 @@ gcd' a b
 
 coprime :: Int -> Int -> Bool
 coprime a b = 1 == gcd' a b
+
+totient :: Int -> Int
+totient 1 = 1
+totient m = length $ filter (coprime m) [1 .. m - 1]
