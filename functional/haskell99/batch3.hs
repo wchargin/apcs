@@ -3,6 +3,10 @@ module Batch3 where
 import Data.Functor
 import System.Random
 
+import Data.List
+import Data.Function
+
+
 insertAt :: Int -> a -> [a] -> [a]
 insertAt 0 x ys = x:ys
 insertAt n x l@(y:ys) = y : insertAt (n - 1) x ys
@@ -44,3 +48,10 @@ combinations n xs = concatMap f $ take (length xs)  [0..]
  where f index = let elem = xs !! index
                      remainder = take index xs ++ (tail $ drop index xs)
                  in (elem:) <$> combinations (n - 1) remainder
+
+lsort :: [[a]] -> [[a]]
+lsort = sortBy (compare `on` length)
+
+lfsort :: [[a]] -> [[a]]
+lfsort xss = sortBy (compare `on` numEqualLength) xss
+  where numEqualLength xs = length $ filter ((== (length xs)) . length) xss
