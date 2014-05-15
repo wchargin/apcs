@@ -29,3 +29,7 @@ primeFactors n =
 primeFactors' :: Int -> [(Int, Int)]
 primeFactors' = map f . group . primeFactors
   where f xs = (head xs, length xs)
+
+totient' :: Int -> Int
+totient' =  product. map f . primeFactors'
+  where f (p, m) = (p - 1) * p ^ (m - 1)
